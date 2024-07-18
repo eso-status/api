@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { dataSource, dataSourceOptions } from '../../db/data-source';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { runSeeders } from 'typeorm-extension';
 import { SupportModule } from './support.module';
-import { supportData } from '../../db/data/support.data';
+import { supportData } from '../../database/data/support.data';
+import { dataSource, dataSourceOptions } from '../../config/typeorm.config';
 
 describe('SupportController (e2e)', () => {
   let app: INestApplication;

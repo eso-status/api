@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SlugController } from './slug.controller';
 import { SlugService } from './slug.service';
-import { slugData } from '../../db/data/slug.data';
+import { slugData } from '../../database/data/slug.data';
 
 describe('SlugController', () => {
   let controller: SlugController;

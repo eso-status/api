@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { runSeeders } from 'typeorm-extension';
-import { dataSource } from '../data-source';
+import { dataSource } from '../../config/typeorm.config';
 
 dataSource.initialize().then(async () => {
   await dataSource.dropDatabase();

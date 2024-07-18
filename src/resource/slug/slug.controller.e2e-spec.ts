@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SlugModule } from './slug.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { dataSource, dataSourceOptions } from '../../db/data-source';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { runSeeders } from 'typeorm-extension';
-import { slugData } from '../../db/data/slug.data';
+import { slugData } from '../../database/data/slug.data';
+import { dataSource, dataSourceOptions } from '../../config/typeorm.config';
 
 describe('SlugController (e2e)', () => {
   let app: INestApplication;

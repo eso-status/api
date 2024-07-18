@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 import { Slug } from './entities/slug.entity';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { slugData } from '../../db/data/slug.data';
+import { slugData } from '../../database/data/slug.data';
 
 describe('SlugService', () => {
   let service: SlugService;

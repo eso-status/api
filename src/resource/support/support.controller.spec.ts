@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SupportController } from './support.controller';
 import { SupportService } from './support.service';
-import { supportData } from '../../db/data/support.data';
+import { supportData } from '../../database/data/support.data';
 
 describe('SupportController', () => {
   let controller: SupportController;

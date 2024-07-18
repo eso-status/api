@@ -3,7 +3,7 @@ import { SupportService } from './support.service';
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Support } from './entities/support.entity';
-import { supportData } from '../../db/data/support.data';
+import { supportData } from '../../database/data/support.data';
 
 describe('SupportService', () => {
   let service: SupportService;

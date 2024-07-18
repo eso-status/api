@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { dataSource, dataSourceOptions } from '../../db/data-source';
 import { INestApplication } from '@nestjs/common';
 import { runSeeders } from 'typeorm-extension';
 import { Support } from './entities/support.entity';
 import { SupportService } from './support.service';
 import { SupportModule } from './support.module';
-import { supportData } from '../../db/data/support.data';
+import { supportData } from '../../database/data/support.data';
+import { dataSource, dataSourceOptions } from '../../config/typeorm.config';
 
 describe('SupportService (e2e)', () => {
   let app: INestApplication;

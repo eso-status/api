@@ -3,13 +3,13 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import { SeederOptions } from 'typeorm-extension';
 import * as process from 'node:process';
 import { Slug } from '../resource/slug/entities/slug.entity';
-import { TypeSeeder } from './seeders/type.seeder';
 import { Type } from '../resource/type/entities/type.entity';
 import { Zone } from '../resource/zone/entities/zone.entity';
 import { Support } from '../resource/support/entities/support.entity';
-import { ZoneSeeder } from './seeders/zone.seeder';
-import { SupportSeeder } from './seeders/support.seeder';
-import { SlugSeeder } from './seeders/slug.seeder';
+import { TypeSeeder } from '../database/seeds/type.seeder';
+import { ZoneSeeder } from '../database/seeds/zone.seeder';
+import { SupportSeeder } from '../database/seeds/support.seeder';
+import { SlugSeeder } from '../database/seeds/slug.seeder';
 
 config();
 
@@ -18,7 +18,7 @@ export const dataSourceOptions: DataSourceOptions & SeederOptions = {
   database: process.env.DB_NAME,
   synchronize: false,
   entities: [Type, Zone, Support, Slug],
-  migrations: ['dist/db/migrations/*.js'],
+  migrations: ['dist/database/migrations/*.js'],
   seeds: [TypeSeeder, ZoneSeeder, SupportSeeder, SlugSeeder],
   factories: [],
   migrationsRun: false,
