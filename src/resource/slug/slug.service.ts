@@ -12,7 +12,7 @@ export class SlugService {
 
   async findAll(): Promise<Slug[]> {
     return await this.slugRepository.find({
-      relations: ['type', 'zone', 'support'],
+      relations: ['type', 'zone', 'support', 'service'],
     });
   }
 }

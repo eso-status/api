@@ -1,23 +1,22 @@
-import { Column, Entity, ManyToOne, OneToOne, PrimaryColumn } from 'typeorm';
-import { Type } from '../../type/entities/type.entity';
+import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
 import { Zone } from '../../zone/entities/zone.entity';
 import { Support } from '../../support/entities/support.entity';
-import { Slug as EsoStatusSlug } from '@eso-status/types';
-import { Service } from '../../service/entities/service.entity';
+import { Type } from '../../type/entities/type.entity';
+import { Slug } from '../../slug/entities/slug.entity';
+import { Status } from '../../status/entities/status.entity';
 
 @Entity({ synchronize: false })
-export class Slug {
+export class Service {
   @PrimaryColumn({
     type: 'int',
   })
   id: number;
 
-  @Column({
-    type: 'varchar',
-    length: 22,
-    nullable: false,
-  })
-  slug: EsoStatusSlug;
+  @Column({ type: 'int', nullable: false })
+  slugId?: number;
+
+  @Column({ type: 'int', nullable: false })
+  statusId?: number;
 
   @Column({ type: 'int', nullable: false })
   typeId?: number;
@@ -28,6 +27,12 @@ export class Slug {
   @Column({ type: 'int', nullable: false })
   zoneId?: number;
 
+  @ManyToOne(() => Slug)
+  slug?: Slug;
+
+  @ManyToOne(() => Status)
+  status?: Status;
+
   @ManyToOne(() => Type)
   type?: Type;
 
@@ -36,7 +41,4 @@ export class Slug {
 
   @ManyToOne(() => Zone)
   zone?: Zone;
-
-  @OneToOne(() => Service, (service) => service.slug)
-  service?: Service;
 }
