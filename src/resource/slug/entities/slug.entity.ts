@@ -1,4 +1,7 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
+import { Type } from '../../type/entities/type.entity';
+import { Zone } from '../../zone/entities/zone.entity';
+import { Support } from '../../support/entities/support.entity';
 
 @Entity({ synchronize: false })
 export class Slug {
@@ -13,4 +16,22 @@ export class Slug {
     nullable: false,
   })
   slug: string;
+
+  @Column({ type: 'int', nullable: false })
+  typeId?: number;
+
+  @Column({ type: 'int', nullable: false })
+  supportId?: number;
+
+  @Column({ type: 'int', nullable: false })
+  zoneId?: number;
+
+  @ManyToOne(() => Type)
+  type?: Type;
+
+  @ManyToOne(() => Support)
+  support?: Support;
+
+  @ManyToOne(() => Zone)
+  zone?: Zone;
 }

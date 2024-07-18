@@ -1,21 +1,29 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { SlugModule } from './slug.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSource, dataSourceOptions } from '../../db/data-source';
 import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
 import { runSeeders } from 'typeorm-extension';
-import { slugData } from '../../db/data/slug.data';
+import { ZoneModule } from './zone.module';
+import { Zone } from './entities/zone.entity';
+import { ZoneService } from './zone.service';
+import { zoneData } from '../../db/data/zone.data';
 
-describe('SlugController (e2e)', () => {
+describe('ZoneService (e2e)', () => {
   let app: INestApplication;
+  let zoneService: ZoneService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [TypeOrmModule.forRoot(dataSourceOptions), SlugModule],
+      imports: [
+        TypeOrmModule.forRoot(dataSourceOptions),
+        TypeOrmModule.forFeature([Zone]),
+        ZoneModule,
+      ],
+      providers: [ZoneService],
     }).compile();
 
     app = module.createNestApplication();
+    zoneService = module.get<ZoneService>(ZoneService);
     await app.init();
 
     await dataSource.initialize();
@@ -28,9 +36,8 @@ describe('SlugController (e2e)', () => {
     await app.close();
   });
 
-  it('should return an array of slugs', async () => {
-    const response = await request(app.getHttpServer()).get('/slug');
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual(slugData);
+  it('should return an array of zones', async () => {
+    const receivedZones: Zone[] = await zoneService.findAll();
+    expect(receivedZones).toEqual(zoneData);
   });
 });

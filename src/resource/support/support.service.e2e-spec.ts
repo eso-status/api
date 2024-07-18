@@ -1,29 +1,29 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Slug } from './entities/slug.entity';
-import { SlugModule } from './slug.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSource, dataSourceOptions } from '../../db/data-source';
 import { INestApplication } from '@nestjs/common';
 import { runSeeders } from 'typeorm-extension';
-import { SlugService } from './slug.service';
-import { slugData } from '../../db/data/slug.data';
+import { Support } from './entities/support.entity';
+import { SupportService } from './support.service';
+import { SupportModule } from './support.module';
+import { supportData } from '../../db/data/support.data';
 
-describe('SlugService (e2e)', () => {
+describe('SupportService (e2e)', () => {
   let app: INestApplication;
-  let slugService: SlugService;
+  let supportService: SupportService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         TypeOrmModule.forRoot(dataSourceOptions),
-        TypeOrmModule.forFeature([Slug]),
-        SlugModule,
+        TypeOrmModule.forFeature([Support]),
+        SupportModule,
       ],
-      providers: [SlugService],
+      providers: [SupportService],
     }).compile();
 
     app = module.createNestApplication();
-    slugService = module.get<SlugService>(SlugService);
+    supportService = module.get<SupportService>(SupportService);
     await app.init();
 
     await dataSource.initialize();
@@ -36,8 +36,8 @@ describe('SlugService (e2e)', () => {
     await app.close();
   });
 
-  it('should return an array of slugs', async () => {
-    const receivedUsers = await slugService.findAll();
-    expect(receivedUsers).toEqual(slugData);
+  it('should return an array of supports', async () => {
+    const receivedSupports: Support[] = await supportService.findAll();
+    expect(receivedSupports).toEqual(supportData);
   });
 });
