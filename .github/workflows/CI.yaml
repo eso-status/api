@@ -23,11 +23,21 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
+      - name: Create env file
+        run: |
+          cp .env.example .env
+
       - name: Build assets
         run: npm run build
 
       - name: Run linter
         run: npm run lint
+
+      - name: Run database migration
+        run: npm run migration:run
+
+      - name: Run seeders
+        run: npm run seed
 
       - name: Run test
         run: npm run test:cov
