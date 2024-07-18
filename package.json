@@ -19,9 +19,10 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --runInBand --config ./test/jest-e2e.json",
     "seed": "npm run build && node dist/db/seeders/seed.js",
-    "migration:run" : "npm run build && typeorm migration:run -d ./dist/db/data-source.js"
+    "migration:run": "npm run build && typeorm migration:run -d ./dist/db/data-source.js"
   },
   "dependencies": {
+    "@eso-status/types": "1.0.6",
     "@nestjs/common": "10.3.10",
     "@nestjs/core": "10.3.10",
     "@nestjs/mapped-types": "2.0.5",
