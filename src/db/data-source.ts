@@ -8,7 +8,7 @@ import { SlugSeeder } from './seeders/slug.seeder';
 config();
 
 export const dataSourceOptions: DataSourceOptions & SeederOptions = {
-  type: <'sqlite'>process.env.DB_TYPE || 'sqlite',
+  type: <'sqlite' | 'mysql'>process.env.DB_TYPE,
   database: process.env.DB_NAME,
   synchronize: false,
   entities: [Slug],
