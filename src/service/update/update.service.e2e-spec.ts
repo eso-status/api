@@ -73,8 +73,8 @@ describe('UpdateService (e2e)', () => {
   });
 
   it('should update event received from client', (done) => {
-    const queue = [];
-    queue['service_store_eso'] = {
+    const queue: any = [];
+    queue.service_store_eso = {
       slug: 'service_store_eso',
       status: 'up',
       type: 'service',

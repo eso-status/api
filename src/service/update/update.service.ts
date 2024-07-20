@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { EsoStatus, Slug } from '@eso-status/types';
-import { Status as EsoStatusStatus } from '@eso-status/types';
+import { EsoStatus, Slug, Status as EsoStatusStatus } from '@eso-status/types';
 import { ServiceService } from '../../resource/service/service.service';
 import { StatusService } from '../../resource/status/status.service';
 import { Status } from '../../resource/status/entities/status.entity';

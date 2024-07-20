@@ -34,8 +34,8 @@ describe('UpdateService', () => {
   });
 
   it('should getQueue return correct data', async () => {
-    const queue = [];
-    queue['service_store_eso'] = {
+    const queue: any = [];
+    queue.service_store_eso = {
       slug: 'service_store_eso',
       status: 'up',
       type: 'service',

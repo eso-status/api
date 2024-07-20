@@ -25,7 +25,7 @@ const winstonLogger = winston.createLogger({
           return `[32m[${process.env.APP_NAME}] ${process.pid}  - [39m${timestamp}[32m     ${level.toUpperCase()} [${context}] : ${message}[39m`;
         }),
       ),
-      silent: !(process.env.NODE_ENV === 'development'),
+      silent: process.env.NODE_ENV !== 'development',
     }),
   ],
 });
