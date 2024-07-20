@@ -33,7 +33,7 @@ export const dataSourceOptions: DataSourceOptions & SeederOptions = {
   ],
   factories: [],
   migrationsRun: false,
-  logging: process.env.APP_ENV === 'development',
+  logging: process.env.DB_DEBUG === 'true',
   dropSchema: false,
 };
 

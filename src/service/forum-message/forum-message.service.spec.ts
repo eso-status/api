@@ -14,6 +14,7 @@ import {
   forumMessageEsoStatusList,
   rawForumMessageEsoStatusList,
 } from '../../database/data/forumMessage.data';
+import { Scraper } from '../../class/scraper/scraper';
 
 config();
 
@@ -33,6 +34,7 @@ describe('ForumMessageService', () => {
         ServiceService,
         StatusService,
         WebsocketService,
+        Scraper,
       ],
     }).compile();
 
@@ -44,7 +46,7 @@ describe('ForumMessageService', () => {
       .spyOn(service, 'getRawData')
       .mockImplementation(async () => rawForumMessageEsoStatusList);
 
-    const result = await service.getData();
+    const result = service.scraper.formatData(await service.getRawData());
 
     expect(result).toEqual(forumMessageEsoStatusList);
     expect(service.getRawData).toHaveBeenCalled();

@@ -14,9 +14,13 @@ import { LiveServicesService } from './service/live-services/live-services.servi
 import { ServiceAlertsService } from './service/service-alerts/service-alerts.service';
 import { WebsocketService } from './service/websocket/websocket.service';
 import { WinstonService } from './service/winston/winston.service';
+import { Scraper } from './class/scraper/scraper';
+import { AppService } from './app.service';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     DatabaseModule,
     SlugModule,
     TypeModule,
@@ -25,17 +29,20 @@ import { WinstonService } from './service/winston/winston.service';
     StatusModule,
     ServiceModule,
     ScheduleModule.forRoot(),
-    UpdateService,
   ],
   controllers: [AppController],
   providers: [
+    AppService,
     ForumMessageService,
     LiveServicesService,
     ServiceAlertsService,
     WebsocketService,
     WinstonService,
+    Scraper,
+    UpdateService,
   ],
   exports: [
+    Scraper,
     UpdateService,
     ForumMessageService,
     LiveServicesService,

@@ -14,6 +14,7 @@ import {
   liveServiceEsoStatusList,
   rawLiveServiceEsoStatusList,
 } from '../../database/data/liveServices.data';
+import { Scraper } from '../../class/scraper/scraper';
 
 config();
 
@@ -33,6 +34,7 @@ describe('LiveServicesService', () => {
         ServiceService,
         StatusService,
         WebsocketService,
+        Scraper,
       ],
     }).compile();
 
@@ -44,7 +46,7 @@ describe('LiveServicesService', () => {
       .spyOn(service, 'getRawData')
       .mockImplementation(async () => rawLiveServiceEsoStatusList);
 
-    const result = await service.getData();
+    const result = service.scraper.formatData(await service.getRawData());
 
     expect(result).toEqual(liveServiceEsoStatusList);
     expect(service.getRawData).toHaveBeenCalled();

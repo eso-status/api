@@ -14,6 +14,7 @@ import {
   rawServiceAlertEsoStatusList,
   serviceAlertEsoStatusList,
 } from '../../database/data/serviceAlerts.data';
+import { Scraper } from '../../class/scraper/scraper';
 
 config();
 
@@ -33,6 +34,7 @@ describe('ServiceAlertsService', () => {
         ServiceService,
         StatusService,
         WebsocketService,
+        Scraper,
       ],
     }).compile();
 
@@ -44,7 +46,7 @@ describe('ServiceAlertsService', () => {
       .spyOn(service, 'getRawData')
       .mockImplementation(async () => rawServiceAlertEsoStatusList);
 
-    const result = await service.getData();
+    const result = service.scraper.formatData(await service.getRawData());
 
     expect(result).toEqual(serviceAlertEsoStatusList);
     expect(service.getRawData).toHaveBeenCalled();

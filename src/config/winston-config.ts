@@ -1,7 +1,6 @@
 import * as winston from 'winston';
 import * as WinstonCloudWatch from 'winston-cloudwatch';
 import { config } from 'dotenv';
-import * as process from 'node:process';
 
 config();
 
@@ -26,14 +25,10 @@ const winstonLogger = winston.createLogger({
           return `[32m[${process.env.APP_NAME}] ${process.pid}  - [39m${timestamp}[32m     ${level.toUpperCase()} ${context ? `[${context}] ` : ''}${message}[39m`;
         }),
       ),
-      silent: true,
+      silent: !(process.env.NODE_ENV === 'development'),
     }),
   ],
 });
-
-if (process.env.NODE_ENV === 'development') {
-  winstonLogger.transports[0].silent = false;
-}
 
 if (process.env.NODE_ENV === 'production') {
   winstonLogger.transports.push(cloudWatch);

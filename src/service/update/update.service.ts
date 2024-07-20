@@ -143,6 +143,6 @@ export class UpdateService {
     );
 
     // Empty queue
-    // this.setQueue([]);
+    this.setQueue([]);
   }
 }
