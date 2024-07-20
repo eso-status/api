@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Service } from './entities/service.entity';
-import { Slug, Status } from '@eso-status/types';
+import { Slug } from '@eso-status/types';
 
 @Injectable()
 export class ServiceService {
