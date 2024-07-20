@@ -1,11 +1,5 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
 import { DatabaseModule } from './database/database.module';
-import { SlugModule } from './resource/slug/slug.module';
-import { TypeModule } from './resource/type/type.module';
-import { ZoneModule } from './resource/zone/zone.module';
-import { SupportModule } from './resource/support/support.module';
-import { StatusModule } from './resource/status/status.module';
 import { ServiceModule } from './resource/service/service.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { UpdateService } from './service/update/update.service';
@@ -15,22 +9,23 @@ import { ServiceAlertsService } from './service/service-alerts/service-alerts.se
 import { WebsocketService } from './service/websocket/websocket.service';
 import { WinstonService } from './service/winston/winston.service';
 import { Scraper } from './class/scraper/scraper';
-import { AppService } from './app.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Zone } from './resource/zone/entities/zone.entity';
+import { Type } from './resource/type/entities/type.entity';
+import { Support } from './resource/support/entities/support.entity';
+import { Slug } from './resource/slug/entities/slug.entity';
+import { StatusModule } from './resource/status/status.module';
 
 @Module({
   imports: [
-    DatabaseModule,
-    SlugModule,
-    TypeModule,
-    ZoneModule,
-    SupportModule,
+    TypeOrmModule.forFeature([Zone, Type, Support, Slug]),
     StatusModule,
+    DatabaseModule,
     ServiceModule,
     ScheduleModule.forRoot(),
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [
-    AppService,
     ForumMessageService,
     LiveServicesService,
     ServiceAlertsService,
