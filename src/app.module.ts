@@ -16,11 +16,9 @@ import { WebsocketService } from './service/websocket/websocket.service';
 import { WinstonService } from './service/winston/winston.service';
 import { Scraper } from './class/scraper/scraper';
 import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
     DatabaseModule,
     SlugModule,
     TypeModule,
