@@ -16,7 +16,7 @@ export const rawServiceAlertEsoStatusList: RawEsoStatus[] = [
       moment()
         .utc()
         .set('years', 2024)
-        .set('months', 8) // TODO à check
+        .set('months', 8)
         .set('date', 19)
         .set('hours', 4)
         .set('minutes', 20)
