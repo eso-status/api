@@ -9,7 +9,7 @@ export class Scraper {
   public formatData(rawEsoStatusList: RawEsoStatus[]): EsoStatus[] {
     return rawEsoStatusList.map(
       (rawEsoStatus: RawEsoStatus): EsoStatus => ({
-        slug: rawEsoStatus.slugs[0] ?? undefined,
+        slug: rawEsoStatus.slugs[0],
         status: rawEsoStatus.status,
         type: rawEsoStatus.type ?? 'server',
         support: rawEsoStatus.support,
