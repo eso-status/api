@@ -27,6 +27,7 @@ jobs:
         run: |
           cp .env.example .env.test
           sed -i -e "s/APP_ENV=development/APP_ENV=testing/g" .env.test
+          cp .env.test .env
 
       - name: Build assets
         run: npm run build
