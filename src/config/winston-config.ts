@@ -22,7 +22,7 @@ const winstonLogger = winston.createLogger({
           format: 'MM/DD/YYYY, hh:mm:ss A',
         }),
         winston.format.printf(({ level, message, timestamp, context }) => {
-          return `[32m[${process.env.APP_NAME}] ${process.pid}  - [39m${timestamp}[32m     ${level.toUpperCase()} ${context ? `[${context}] ` : ''}${message}[39m`;
+          return `[32m[${process.env.APP_NAME}] ${process.pid}  - [39m${timestamp}[32m     ${level.toUpperCase()} [${context}] : ${message}[39m`;
         }),
       ),
       silent: !(process.env.NODE_ENV === 'development'),
