@@ -1,8 +1,9 @@
+import { Status as EsoStatusStatus } from '@eso-status/types';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
 import { Status } from './entities/status.entity';
-import { Status as EsoStatusStatus } from '@eso-status/types';
 
 @Injectable()
 export class StatusService {
@@ -12,9 +13,9 @@ export class StatusService {
   ) {}
 
   async findByStatus(status: EsoStatusStatus): Promise<Status> {
-    return await this.statusRepository.findOne({
+    return this.statusRepository.findOne({
       where: {
-        status: status,
+        status,
       },
     });
   }

@@ -1,5 +1,6 @@
-import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 import { Status as EsoStatusStatus } from '@eso-status/types';
+import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
+
 import { Service } from '../../service/entities/service.entity';
 
 @Entity({ synchronize: false })
@@ -16,6 +17,6 @@ export class Status {
   })
   status: EsoStatusStatus;
 
-  @OneToMany(() => Service, (service) => service.slug)
+  @OneToMany(() => Service, service => service.slug)
   service?: Service[];
 }

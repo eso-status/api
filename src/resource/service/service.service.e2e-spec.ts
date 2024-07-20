@@ -1,14 +1,19 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { config } from 'dotenv';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { dataSource, dataSourceOptions } from '../../config/typeorm.config';
-import { ServiceService } from './service.service';
-import { Service } from 'aws-sdk';
-import { serviceData } from '../../database/data/service.data';
 import { INestApplication } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Service } from 'aws-sdk';
+import { config } from 'dotenv';
 import { runSeeders } from 'typeorm-extension';
-import { ServiceModule } from './service.module';
+
+import { dataSource, dataSourceOptions } from '../../config/typeorm.config';
+
+import { serviceData } from '../../database/data/service.data';
+
 import { statusData } from '../../database/data/status.data';
+
+import { ServiceModule } from './service.module';
+
+import { ServiceService } from './service.service';
 
 config();
 

@@ -1,6 +1,7 @@
-import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
-import { Slug } from '../../slug/entities/slug.entity';
 import { Zone as EsoStatusZone } from '@eso-status/types';
+import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
+
+import { Slug } from '../../slug/entities/slug.entity';
 
 @Entity({ synchronize: false })
 export class Zone {
@@ -16,6 +17,6 @@ export class Zone {
   })
   zone: EsoStatusZone;
 
-  @OneToMany(() => Slug, (slug) => slug.zone)
+  @OneToMany(() => Slug, slug => slug.zone)
   slugs?: Slug[];
 }

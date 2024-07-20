@@ -1,12 +1,13 @@
-import { Injectable } from '@nestjs/common';
 import { EsoStatus, Slug, Status as EsoStatusStatus } from '@eso-status/types';
-import { ServiceService } from '../../resource/service/service.service';
-import { StatusService } from '../../resource/status/status.service';
-import { Status } from '../../resource/status/entities/status.entity';
-import { WebsocketService } from '../websocket/websocket.service';
-import { Service } from '../../resource/service/entities/service.entity';
-import { WinstonService } from '../winston/winston.service';
+import { Injectable } from '@nestjs/common';
 import { Interval } from '@nestjs/schedule';
+
+import { Service } from '../../resource/service/entities/service.entity';
+import { ServiceService } from '../../resource/service/service.service';
+import { Status } from '../../resource/status/entities/status.entity';
+import { StatusService } from '../../resource/status/status.service';
+import { WebsocketService } from '../websocket/websocket.service';
+import { WinstonService } from '../winston/winston.service';
 
 @Injectable()
 export class UpdateService {
@@ -134,9 +135,10 @@ export class UpdateService {
       `Service${Object.entries(this.getQueue()).length > 1 ? 's' : ''} (${Object.entries(
         this.getQueue(),
       )
-        .map((esoStatus: [Slug, EsoStatus]) => {
-          return `${esoStatus[0]}(${esoStatus[1].status})`;
-        })
+        .map(
+          (esoStatus: [Slug, EsoStatus]) =>
+            `${esoStatus[0]}(${esoStatus[1].status})`,
+        )
         .join(', ')}) status update event emitted`,
       'UpdateService.sendUpdateEvent',
     );

@@ -1,9 +1,10 @@
+import { Slug as EsoStatusSlug } from '@eso-status/types';
 import { Column, Entity, ManyToOne, OneToOne, PrimaryColumn } from 'typeorm';
+
+import { Service } from '../../service/entities/service.entity';
+import { Support } from '../../support/entities/support.entity';
 import { Type } from '../../type/entities/type.entity';
 import { Zone } from '../../zone/entities/zone.entity';
-import { Support } from '../../support/entities/support.entity';
-import { Slug as EsoStatusSlug } from '@eso-status/types';
-import { Service } from '../../service/entities/service.entity';
 
 @Entity({ synchronize: false })
 export class Slug {
@@ -37,6 +38,6 @@ export class Slug {
   @ManyToOne(() => Zone)
   zone?: Zone;
 
-  @OneToOne(() => Service, (service) => service.slug)
+  @OneToOne(() => Service, service => service.slug)
   service?: Service;
 }

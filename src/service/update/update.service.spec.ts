@@ -1,14 +1,17 @@
+import { EsoStatus } from '@eso-status/types';
 import { Test, TestingModule } from '@nestjs/testing';
-import { UpdateService } from './update.service';
-import { config } from 'dotenv';
-import { WebsocketService } from '../websocket/websocket.service';
-import { WinstonService } from '../winston/winston.service';
-import { ServiceService } from '../../resource/service/service.service';
-import { StatusService } from '../../resource/status/status.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { config } from 'dotenv';
+
 import { dataSourceOptions } from '../../config/typeorm.config';
 import { Service } from '../../resource/service/entities/service.entity';
+import { ServiceService } from '../../resource/service/service.service';
 import { Status } from '../../resource/status/entities/status.entity';
+import { StatusService } from '../../resource/status/status.service';
+import { WebsocketService } from '../websocket/websocket.service';
+import { WinstonService } from '../winston/winston.service';
+
+import { UpdateService } from './update.service';
 
 config();
 
@@ -33,8 +36,10 @@ describe('UpdateService', () => {
     service = module.get<UpdateService>(UpdateService);
   });
 
-  it('should getQueue return correct data', async () => {
-    const queue: any = [];
+  it('should getQueue return correct data', () => {
+    const queue: EsoStatus[] = [];
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     queue.service_store_eso = {
       slug: 'service_store_eso',
       status: 'up',

@@ -1,10 +1,12 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { config } from 'dotenv';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { dataSource, dataSourceOptions } from '../../config/typeorm.config';
 import { INestApplication } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { config } from 'dotenv';
 import { runSeeders } from 'typeorm-extension';
+
+import { dataSource, dataSourceOptions } from '../../config/typeorm.config';
 import { statusData } from '../../database/data/status.data';
+
 import { Status } from './entities/status.entity';
 import { StatusModule } from './status.module';
 import { StatusService } from './status.service';

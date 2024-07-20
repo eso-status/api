@@ -1,9 +1,10 @@
 import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
-import { Zone } from '../../zone/entities/zone.entity';
-import { Support } from '../../support/entities/support.entity';
-import { Type } from '../../type/entities/type.entity';
+
 import { Slug } from '../../slug/entities/slug.entity';
 import { Status } from '../../status/entities/status.entity';
+import { Support } from '../../support/entities/support.entity';
+import { Type } from '../../type/entities/type.entity';
+import { Zone } from '../../zone/entities/zone.entity';
 
 @Entity({ synchronize: false })
 export class Service {

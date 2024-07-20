@@ -1,8 +1,9 @@
+import ServiceAlertConnector from '@eso-status/service-alerts/lib/connectors/ServiceAlertConnector';
+import { RawEsoStatus } from '@eso-status/types';
 import { Injectable } from '@nestjs/common';
 import { Interval } from '@nestjs/schedule';
 import { config } from 'dotenv';
-import { RawEsoStatus } from '@eso-status/types';
-import ServiceAlertConnector from '@eso-status/service-alerts/lib/connectors/ServiceAlertConnector';
+
 import { Scraper } from '../../class/scraper/scraper';
 
 config();

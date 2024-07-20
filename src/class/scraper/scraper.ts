@@ -1,6 +1,7 @@
 import { EsoStatus, RawEsoStatus } from '@eso-status/types';
-import { UpdateService } from '../../service/update/update.service';
 import { Injectable } from '@nestjs/common';
+
+import { UpdateService } from '../../service/update/update.service';
 
 @Injectable()
 export class Scraper {
@@ -20,8 +21,12 @@ export class Scraper {
   }
 
   public async scrap(rawEsoStatusList: RawEsoStatus[]) {
-    this.formatData(rawEsoStatusList).forEach((esoStatus: EsoStatus): void => {
-      this.updateService.update(esoStatus);
-    });
+    await Promise.all(
+      this.formatData(rawEsoStatusList).map(
+        (esoStatus: EsoStatus): Promise<void> => {
+          return this.updateService.update(esoStatus);
+        },
+      ),
+    );
   }
 }

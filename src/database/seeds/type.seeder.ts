@@ -1,5 +1,6 @@
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, InsertResult, Repository } from 'typeorm';
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
+
 import { Type } from '../../resource/type/entities/type.entity';
 import { typeData } from '../data/type.data';
 
@@ -11,9 +12,10 @@ export class TypeSeeder implements Seeder {
   ): Promise<any> {
     dataSource.getRepository(Type);
     const repository: Repository<Type> = dataSource.getRepository(Type);
-
-    for (const type of typeData) {
-      await repository.insert(type);
-    }
+    await Promise.all(
+      typeData.map((type: Type): Promise<InsertResult> => {
+        return repository.insert(type);
+      }),
+    );
   }
 }

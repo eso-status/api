@@ -1,6 +1,7 @@
-import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
-import { Slug } from '../../slug/entities/slug.entity';
 import { Support as EsoStatusSupport } from '@eso-status/types';
+import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
+
+import { Slug } from '../../slug/entities/slug.entity';
 
 @Entity({ synchronize: false })
 export class Support {
@@ -16,6 +17,6 @@ export class Support {
   })
   support: EsoStatusSupport;
 
-  @OneToMany(() => Slug, (slug) => slug.support)
+  @OneToMany(() => Slug, slug => slug.support)
   slugs?: Slug[];
 }

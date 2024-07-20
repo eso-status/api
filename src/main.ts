@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { config } from 'dotenv';
+
+import { AppModule } from './app.module';
 import { WinstonService } from './service/winston/winston.service';
 
 config();
@@ -11,4 +12,8 @@ async function bootstrap() {
   });
   await app.listen(process.env.APP_PORT);
 }
-bootstrap();
+bootstrap()
+  .then()
+  .catch((error: Error): void => {
+    throw error;
+  });

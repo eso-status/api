@@ -1,17 +1,19 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import { config } from 'dotenv';
-import { ServiceAlertsService } from './service-alerts.service';
-import { Scraper } from '../../class/scraper/scraper';
-import { UpdateService } from '../update/update.service';
-import { StatusService } from '../../resource/status/status.service';
-import { WebsocketService } from '../websocket/websocket.service';
-import { WinstonService } from '../winston/winston.service';
-import { ServiceService } from '../../resource/service/service.service';
+import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { config } from 'dotenv';
+
+import { Scraper } from '../../class/scraper/scraper';
 import { dataSourceOptions } from '../../config/typeorm.config';
 import { Service } from '../../resource/service/entities/service.entity';
+import { ServiceService } from '../../resource/service/service.service';
 import { Status } from '../../resource/status/entities/status.entity';
+import { StatusService } from '../../resource/status/status.service';
+import { UpdateService } from '../update/update.service';
+import { WebsocketService } from '../websocket/websocket.service';
+import { WinstonService } from '../winston/winston.service';
+
+import { ServiceAlertsService } from './service-alerts.service';
 
 config();
 
