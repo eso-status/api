@@ -1,4 +1,4 @@
-import { EsoStatus, RawEsoStatus, Slug } from '@eso-status/types';
+import { EsoStatus, RawEsoStatus } from '@eso-status/types';
 import { UpdateService } from '../../service/update/update.service';
 import { Injectable } from '@nestjs/common';
 
@@ -9,7 +9,7 @@ export class Scraper {
   public formatData(rawEsoStatusList: RawEsoStatus[]): EsoStatus[] {
     return rawEsoStatusList.map(
       (rawEsoStatus: RawEsoStatus): EsoStatus => ({
-        slug: <Slug>(rawEsoStatus.slugs ? rawEsoStatus.slugs[0] : ''),
+        slug: rawEsoStatus.slugs[0] ?? undefined,
         status: rawEsoStatus.status,
         type: rawEsoStatus.type ?? 'server',
         support: rawEsoStatus.support,
