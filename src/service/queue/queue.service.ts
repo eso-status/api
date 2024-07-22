@@ -54,9 +54,7 @@ export class QueueService {
 
     // Write log with details (slug with new status)
     this.winstonService.log(
-      `Service${Object.entries(this.getQueue()).length > 1 ? 's' : ''} (${Object.entries(
-        this.getQueue(),
-      )
+      `Service(s) (${Object.entries(this.getQueue())
         .map(
           (esoStatus: [Slug, EsoStatus]) =>
             `${esoStatus[0]}(${esoStatus[1].status})`,

@@ -7,9 +7,15 @@ import { Server } from 'socket.io';
 import { Socket } from 'socket.io-client';
 import * as io from 'socket.io-client';
 
+import { ForumMessage } from '../../class/forum-message/forum-message';
+import { LiveServices } from '../../class/live-services/live-services';
+import { ServiceAlerts } from '../../class/service-alerts/service-alerts';
 import { dataSourceOptions } from '../../config/typeorm.config';
 import { Service } from '../../resource/service/entities/service.entity';
+import { ServiceService } from '../../resource/service/service.service';
 import { Status } from '../../resource/status/entities/status.entity';
+import { StatusService } from '../../resource/status/status.service';
+import { ScrapingService } from '../scraping/scraping.service';
 import { WebsocketService } from '../websocket/websocket.service';
 
 import { WinstonService } from '../winston/winston.service';
@@ -21,6 +27,7 @@ config();
 describe('QueueService (e2e)', () => {
   let app: INestApplication;
   let queueService: QueueService;
+  let scrapingService: ScrapingService;
   let websocketService: WebsocketService;
   let serverSocket: Server;
   let clientSocket: Socket;
@@ -31,11 +38,22 @@ describe('QueueService (e2e)', () => {
         TypeOrmModule.forRoot(dataSourceOptions),
         TypeOrmModule.forFeature([Service, Status]),
       ],
-      providers: [QueueService, WebsocketService, WinstonService],
+      providers: [
+        QueueService,
+        WebsocketService,
+        WinstonService,
+        ScrapingService,
+        ForumMessage,
+        LiveServices,
+        ServiceAlerts,
+        ServiceService,
+        StatusService,
+      ],
     }).compile();
 
     app = module.createNestApplication();
     queueService = module.get<QueueService>(QueueService);
+    scrapingService = module.get<ScrapingService>(ScrapingService);
     websocketService = module.get<WebsocketService>(WebsocketService);
     serverSocket = new Server(Number(process.env.APP_PORT));
     websocketService.server = serverSocket;
@@ -102,7 +120,7 @@ describe('QueueService (e2e)', () => {
         resolve();
       });
 
-      queueService.pushQueue();
+      scrapingService.doQueue();
     });
   });
 });
