@@ -7,9 +7,6 @@ import { Server } from 'socket.io';
 import { Socket } from 'socket.io-client';
 import * as io from 'socket.io-client';
 
-import { ForumMessage } from '../../class/forum-message/forum-message';
-import { LiveServices } from '../../class/live-services/live-services';
-import { ServiceAlerts } from '../../class/service-alerts/service-alerts';
 import { dataSourceOptions } from '../../config/typeorm.config';
 import { Service } from '../../resource/service/entities/service.entity';
 import { ServiceService } from '../../resource/service/service.service';
@@ -43,9 +40,6 @@ describe('QueueService (e2e)', () => {
         WebsocketService,
         WinstonService,
         ScrapingService,
-        ForumMessage,
-        LiveServices,
-        ServiceAlerts,
         ServiceService,
         StatusService,
       ],

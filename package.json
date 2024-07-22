@@ -24,7 +24,7 @@
   "dependencies": {
     "@eso-status/forum-message": "1.0.8",
     "@eso-status/live-services": "1.0.6",
-    "@eso-status/service-alerts": "1.0.6",
+    "@eso-status/service-alerts": "1.0.7",
     "@eso-status/types": "1.0.6",
     "@nestjs/common": "10.3.10",
     "@nestjs/core": "10.3.10",

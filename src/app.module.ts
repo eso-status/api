@@ -2,10 +2,6 @@ import { Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { ForumMessage } from './class/forum-message/forum-message';
-import { LiveServices } from './class/live-services/live-services';
-import { Scraper } from './class/scraper/scraper';
-import { ServiceAlerts } from './class/service-alerts/service-alerts';
 import { DatabaseModule } from './database/database.module';
 import { ServiceModule } from './resource/service/service.module';
 import { Slug } from './resource/slug/entities/slug.entity';
@@ -27,25 +23,7 @@ import { WinstonService } from './service/winston/winston.service';
     ScheduleModule.forRoot(),
   ],
   controllers: [],
-  providers: [
-    WebsocketService,
-    WinstonService,
-    Scraper,
-    ForumMessage,
-    ServiceAlerts,
-    LiveServices,
-    ScrapingService,
-    QueueService,
-  ],
-  exports: [
-    Scraper,
-    WebsocketService,
-    WinstonService,
-    QueueService,
-    ScrapingService,
-    ForumMessage,
-    ServiceAlerts,
-    LiveServices,
-  ],
+  providers: [WebsocketService, WinstonService, ScrapingService, QueueService],
+  exports: [WebsocketService, WinstonService, QueueService, ScrapingService],
 })
 export class AppModule {}

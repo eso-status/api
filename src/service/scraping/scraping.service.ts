@@ -1,13 +1,16 @@
-import { EsoStatus, Status as EsoStatusStatus } from '@eso-status/types';
+import { ForumMessage } from '@eso-status/forum-message';
+import { LiveServices } from '@eso-status/live-services';
+import { ServiceAlerts } from '@eso-status/service-alerts';
+import {
+  EsoStatus,
+  RawEsoStatus,
+  Status as EsoStatusStatus,
+} from '@eso-status/types';
 import { Injectable } from '@nestjs/common';
 
 import { Interval } from '@nestjs/schedule';
 import { config } from 'dotenv';
 
-import { ForumMessage } from '../../class/forum-message/forum-message';
-import { LiveServices } from '../../class/live-services/live-services';
-import { Scraper } from '../../class/scraper/scraper';
-import { ServiceAlerts } from '../../class/service-alerts/service-alerts';
 import { Service } from '../../resource/service/entities/service.entity';
 import { ServiceService } from '../../resource/service/service.service';
 import { Status } from '../../resource/status/entities/status.entity';
@@ -20,9 +23,6 @@ config();
 @Injectable()
 export class ScrapingService {
   constructor(
-    private readonly forumMessage: ForumMessage,
-    private readonly liveServices: LiveServices,
-    private readonly serviceAlerts: ServiceAlerts,
     private readonly queueService: QueueService,
     private readonly serviceService: ServiceService,
     private readonly statusService: StatusService,
@@ -99,11 +99,27 @@ export class ScrapingService {
     this.queueService.updateQueue(esoStatus);
   }
 
+  public formatData(rawEsoStatusList: RawEsoStatus[]): EsoStatus[] {
+    return rawEsoStatusList.map(
+      (rawEsoStatus: RawEsoStatus): EsoStatus => ({
+        slug: rawEsoStatus.slugs[0],
+        status: rawEsoStatus.status,
+        type: rawEsoStatus.type ?? 'server',
+        support: rawEsoStatus.support,
+        zone: rawEsoStatus.zone,
+        raw: rawEsoStatus,
+      }),
+    );
+  }
+
   private async doHandle(
     scraperClass: ForumMessage | LiveServices | ServiceAlerts,
   ): Promise<void> {
     await Promise.all(
-      Scraper.formatData(await scraperClass.getRawData()).map(
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-call
+      this.formatData(await scraperClass.getData()).map(
         (esoStatus: EsoStatus): Promise<void> => {
           return this.update(esoStatus);
         },
@@ -113,17 +129,17 @@ export class ScrapingService {
 
   @Interval(Number(process.env.FORUM_MESSAGE_UPDATE_INTERVAL))
   public async handleForumMessage() {
-    await this.doHandle(this.forumMessage);
+    await this.doHandle(ForumMessage);
   }
 
   @Interval(Number(process.env.LIVE_SERVICES_UPDATE_INTERVAL))
   public async handleLiveServices() {
-    await this.doHandle(this.liveServices);
+    await this.doHandle(LiveServices);
   }
 
   @Interval(Number(process.env.SERVICE_ALERTS_UPDATE_INTERVAL))
   public async handleServiceAlerts() {
-    await this.doHandle(this.serviceAlerts);
+    await this.doHandle(ServiceAlerts);
   }
 
   @Interval(Number(process.env.UPDATE_INTERVAL))
