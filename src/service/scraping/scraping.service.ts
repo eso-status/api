@@ -1,44 +1,33 @@
-import { EsoStatus, Slug, Status as EsoStatusStatus } from '@eso-status/types';
+import { EsoStatus, Status as EsoStatusStatus } from '@eso-status/types';
 import { Injectable } from '@nestjs/common';
-import { Interval } from '@nestjs/schedule';
 
+import { Interval } from '@nestjs/schedule';
+import { config } from 'dotenv';
+
+import { ForumMessage } from '../../class/forum-message/forum-message';
+import { LiveServices } from '../../class/live-services/live-services';
+import { Scraper } from '../../class/scraper/scraper';
+import { ServiceAlerts } from '../../class/service-alerts/service-alerts';
 import { Service } from '../../resource/service/entities/service.entity';
 import { ServiceService } from '../../resource/service/service.service';
 import { Status } from '../../resource/status/entities/status.entity';
 import { StatusService } from '../../resource/status/status.service';
-import { WebsocketService } from '../websocket/websocket.service';
+import { QueueService } from '../queue/queue.service';
 import { WinstonService } from '../winston/winston.service';
 
+config();
+
 @Injectable()
-export class UpdateService {
+export class ScrapingService {
   constructor(
+    private readonly forumMessage: ForumMessage,
+    private readonly liveServices: LiveServices,
+    private readonly serviceAlerts: ServiceAlerts,
+    private readonly queueService: QueueService,
     private readonly serviceService: ServiceService,
     private readonly statusService: StatusService,
-    private readonly websocketService: WebsocketService,
     private readonly winstonService: WinstonService,
   ) {}
-
-  private queue: EsoStatus[] = [];
-
-  public getQueue(): EsoStatus[] {
-    return this.queue;
-  }
-
-  private setQueue(esoStatusList: EsoStatus[]): void {
-    this.queue = esoStatusList;
-  }
-
-  /**
-   * Method used to update queue
-   *
-   * @param esoStatus
-   * @private
-   */
-  private updateQueue(esoStatus: EsoStatus): void {
-    const queue: EsoStatus[] = this.getQueue();
-    queue[esoStatus.slug] = esoStatus;
-    this.setQueue(queue);
-  }
 
   /**
    * Method used to check if status change of an EsoStatus
@@ -89,7 +78,7 @@ export class UpdateService {
     // Write log with details (raw data)
     this.winstonService.log(
       `New esoStatus change detected: ${JSON.stringify(esoStatus.raw)}`,
-      'UpdateService.update',
+      'ScrapingService.update',
     );
 
     // Get status in database by status
@@ -103,47 +92,42 @@ export class UpdateService {
     // Write log with detail (slug, old status and new status)
     this.winstonService.log(
       `Service (slug: ${service.slug.slug}) status from ${service.status.status} to ${esoStatus.status}`,
-      'UpdateService.doUpdate',
+      'ScrapingService.update',
     );
 
     // Update queue
-    this.updateQueue(esoStatus);
+    this.queueService.updateQueue(esoStatus);
   }
 
-  /**
-   * Method used to push queue data with interval
-   */
-  @Interval(Number(process.env.UPDATE_INTERVAL))
-  public handleInterval(): void {
-    // Return function if queue is empty
-    if (Object.entries(this.getQueue()).length === 0) {
-      return;
-    }
-
-    // Emit update event with queue data
-    // Return function if event emit failed
-    if (
-      !this.websocketService
-        .getServer()
-        .emit('update', Object.values(this.getQueue()))
-    ) {
-      return;
-    }
-
-    // Write log with details (slug with new status)
-    this.winstonService.log(
-      `Service${Object.entries(this.getQueue()).length > 1 ? 's' : ''} (${Object.entries(
-        this.getQueue(),
-      )
-        .map(
-          (esoStatus: [Slug, EsoStatus]) =>
-            `${esoStatus[0]}(${esoStatus[1].status})`,
-        )
-        .join(', ')}) status update event emitted`,
-      'UpdateService.sendUpdateEvent',
+  private async doHandle(
+    scraperClass: ForumMessage | LiveServices | ServiceAlerts,
+  ): Promise<void> {
+    await Promise.all(
+      Scraper.formatData(await scraperClass.getRawData()).map(
+        (esoStatus: EsoStatus): Promise<void> => {
+          return this.update(esoStatus);
+        },
+      ),
     );
+  }
 
-    // Empty queue
-    this.setQueue([]);
+  @Interval(Number(process.env.FORUM_MESSAGE_UPDATE_INTERVAL))
+  public async handleForumMessage() {
+    await this.doHandle(this.forumMessage);
+  }
+
+  @Interval(Number(process.env.LIVE_SERVICES_UPDATE_INTERVAL))
+  public async handleLiveServices() {
+    await this.doHandle(this.liveServices);
+  }
+
+  @Interval(Number(process.env.SERVICE_ALERTS_UPDATE_INTERVAL))
+  public async handleServiceAlerts() {
+    await this.doHandle(this.serviceAlerts);
+  }
+
+  @Interval(Number(process.env.UPDATE_INTERVAL))
+  public doQueue(): void {
+    this.queueService.pushQueue();
   }
 }

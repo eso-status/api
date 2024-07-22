@@ -2,7 +2,10 @@ import { Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { ForumMessage } from './class/forum-message/forum-message';
+import { LiveServices } from './class/live-services/live-services';
 import { Scraper } from './class/scraper/scraper';
+import { ServiceAlerts } from './class/service-alerts/service-alerts';
 import { DatabaseModule } from './database/database.module';
 import { ServiceModule } from './resource/service/service.module';
 import { Slug } from './resource/slug/entities/slug.entity';
@@ -10,10 +13,8 @@ import { StatusModule } from './resource/status/status.module';
 import { Support } from './resource/support/entities/support.entity';
 import { Type } from './resource/type/entities/type.entity';
 import { Zone } from './resource/zone/entities/zone.entity';
-import { ForumMessageService } from './service/forum-message/forum-message.service';
-import { LiveServicesService } from './service/live-services/live-services.service';
-import { ServiceAlertsService } from './service/service-alerts/service-alerts.service';
-import { UpdateService } from './service/update/update.service';
+import { QueueService } from './service/queue/queue.service';
+import { ScrapingService } from './service/scraping/scraping.service';
 import { WebsocketService } from './service/websocket/websocket.service';
 import { WinstonService } from './service/winston/winston.service';
 
@@ -27,22 +28,24 @@ import { WinstonService } from './service/winston/winston.service';
   ],
   controllers: [],
   providers: [
-    ForumMessageService,
-    LiveServicesService,
-    ServiceAlertsService,
     WebsocketService,
     WinstonService,
     Scraper,
-    UpdateService,
+    ForumMessage,
+    ServiceAlerts,
+    LiveServices,
+    ScrapingService,
+    QueueService,
   ],
   exports: [
     Scraper,
-    UpdateService,
-    ForumMessageService,
-    LiveServicesService,
-    ServiceAlertsService,
     WebsocketService,
     WinstonService,
+    QueueService,
+    ScrapingService,
+    ForumMessage,
+    ServiceAlerts,
+    LiveServices,
   ],
 })
 export class AppModule {}

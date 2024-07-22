@@ -9,19 +9,18 @@ import * as io from 'socket.io-client';
 
 import { dataSourceOptions } from '../../config/typeorm.config';
 import { Service } from '../../resource/service/entities/service.entity';
-import { ServiceService } from '../../resource/service/service.service';
 import { Status } from '../../resource/status/entities/status.entity';
-import { StatusService } from '../../resource/status/status.service';
 import { WebsocketService } from '../websocket/websocket.service';
+
 import { WinstonService } from '../winston/winston.service';
 
-import { UpdateService } from './update.service';
+import { QueueService } from './queue.service';
 
 config();
 
-describe('UpdateService (e2e)', () => {
+describe('QueueService (e2e)', () => {
   let app: INestApplication;
-  let updateService: UpdateService;
+  let queueService: QueueService;
   let websocketService: WebsocketService;
   let serverSocket: Server;
   let clientSocket: Socket;
@@ -32,17 +31,11 @@ describe('UpdateService (e2e)', () => {
         TypeOrmModule.forRoot(dataSourceOptions),
         TypeOrmModule.forFeature([Service, Status]),
       ],
-      providers: [
-        UpdateService,
-        WebsocketService,
-        WinstonService,
-        ServiceService,
-        StatusService,
-      ],
+      providers: [QueueService, WebsocketService, WinstonService],
     }).compile();
 
     app = module.createNestApplication();
-    updateService = module.get<UpdateService>(UpdateService);
+    queueService = module.get<QueueService>(QueueService);
     websocketService = module.get<WebsocketService>(WebsocketService);
     serverSocket = new Server(Number(process.env.APP_PORT));
     websocketService.server = serverSocket;
@@ -76,10 +69,7 @@ describe('UpdateService (e2e)', () => {
 
   it('should update event received from client', async () => {
     await new Promise<void>((resolve): void => {
-      const queue: EsoStatus[] = [];
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      queue.service_store_eso = {
+      const queueItem: EsoStatus = {
         slug: 'service_store_eso',
         status: 'up',
         type: 'service',
@@ -95,24 +85,24 @@ describe('UpdateService (e2e)', () => {
           rawDate: ' />2024.07.01 - 12:00 UTC (08:00 EDT)',
           rawData: 'The ESO store and account system are currently available.',
           slugs: ['service_store_eso'],
-          dates: ['2024-08-01T12:00:00.000Z'],
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-expect-error
+          dates: ['2024-09-01T12:00:00.000Z'],
           type: 'service',
           support: 'store',
           zone: 'eso',
           status: 'up',
         },
       };
-
-      jest.spyOn(updateService, 'getQueue').mockImplementation(() => queue);
+      jest.spyOn(queueService, 'setQueue').mockImplementation(() => []);
+      queueService.updateQueue(queueItem);
 
       clientSocket.on('update', (data: EsoStatus[]) => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        expect(data).toEqual([queue.service_store_eso]);
+        expect(data).toEqual([queueItem]);
         resolve();
       });
 
-      updateService.handleInterval();
+      queueService.pushQueue();
     });
   });
 });

@@ -1,25 +1,26 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { config } from 'dotenv';
 
-import { Scraper } from '../../class/scraper/scraper';
 import { dataSourceOptions } from '../../config/typeorm.config';
 import { Service } from '../../resource/service/entities/service.entity';
+
 import { ServiceService } from '../../resource/service/service.service';
 import { Status } from '../../resource/status/entities/status.entity';
 import { StatusService } from '../../resource/status/status.service';
-import { UpdateService } from '../update/update.service';
-import { WebsocketService } from '../websocket/websocket.service';
-import { WinstonService } from '../winston/winston.service';
+import { QueueService } from '../../service/queue/queue.service';
+import { ScrapingService } from '../../service/scraping/scraping.service';
+import { WebsocketService } from '../../service/websocket/websocket.service';
+import { WinstonService } from '../../service/winston/winston.service';
+import { LiveServices } from '../live-services/live-services';
+import { ServiceAlerts } from '../service-alerts/service-alerts';
 
-import { ServiceAlertsService } from './service-alerts.service';
+import { ForumMessage } from './forum-message';
 
-config();
-
-describe('ServiceAlertsService (e2e)', () => {
+describe('ForumMessage (e2e)', () => {
   let app: INestApplication;
-  let service: ServiceAlertsService;
+  let scrapingService: ScrapingService;
+  let scrapingClass: ForumMessage;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -28,18 +29,21 @@ describe('ServiceAlertsService (e2e)', () => {
         TypeOrmModule.forFeature([Service, Status]),
       ],
       providers: [
-        ServiceAlertsService,
-        Scraper,
-        UpdateService,
+        ScrapingService,
+        ForumMessage,
+        LiveServices,
+        ServiceAlerts,
+        QueueService,
         ServiceService,
         StatusService,
-        WebsocketService,
         WinstonService,
+        WebsocketService,
       ],
     }).compile();
 
     app = module.createNestApplication();
-    service = module.get<ServiceAlertsService>(ServiceAlertsService);
+    scrapingService = module.get<ScrapingService>(ScrapingService);
+    scrapingClass = module.get<ForumMessage>(ForumMessage);
     await app.init();
   });
 
@@ -48,9 +52,9 @@ describe('ServiceAlertsService (e2e)', () => {
   });
 
   it('should getRawData called', async () => {
-    const getRawData = jest.spyOn(service, 'getRawData');
+    const getRawData = jest.spyOn(scrapingClass, 'getRawData');
 
-    await service.handleInterval();
+    await scrapingService.handleForumMessage();
 
     expect(getRawData).toHaveBeenCalled();
   });

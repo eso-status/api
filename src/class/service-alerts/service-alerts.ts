@@ -1,17 +1,11 @@
 import ServiceAlertConnector from '@eso-status/service-alerts/lib/connectors/ServiceAlertConnector';
 import { RawEsoStatus } from '@eso-status/types';
 import { Injectable } from '@nestjs/common';
-import { Interval } from '@nestjs/schedule';
-import { config } from 'dotenv';
 
-import { Scraper } from '../../class/scraper/scraper';
-
-config();
+import { Scraper } from '../scraper/scraper';
 
 @Injectable()
-export class ServiceAlertsService {
-  constructor(public readonly scraper: Scraper) {}
-
+export class ServiceAlerts extends Scraper {
   public async getRawData(): Promise<RawEsoStatus[]> {
     const remoteContent: string =
       await ServiceAlertConnector.getRemoteContent();
@@ -31,10 +25,5 @@ export class ServiceAlertsService {
     const lastRawData: RawEsoStatus[] =
       ServiceAlertConnector.getLastRawData(splitRawDataList);
     return ServiceAlertConnector.getData(lastRawData);
-  }
-
-  @Interval(Number(process.env.SERVICE_ALERTS_UPDATE_INTERVAL))
-  public async handleInterval() {
-    await this.scraper.scrap(await this.getRawData());
   }
 }
