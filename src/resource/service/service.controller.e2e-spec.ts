@@ -3,6 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as request from 'supertest';
+import { App } from 'supertest/types';
 import { runSeeders } from 'typeorm-extension';
 
 import { dataSource, dataSourceOptions } from '../../config/typeorm.config';
@@ -34,8 +35,7 @@ describe('ServiceController (e2e)', () => {
   });
 
   it('should return correct data for all slugs', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    const response = await request(app.getHttpServer()).get('/service');
+    const response = await request(<App>app.getHttpServer()).get('/service');
     expect(response.status).toBe(200);
     for (let i: number = 0; i < 12; i += 1) {
       expect(JSON.stringify(response.body)).toContain(
@@ -53,8 +53,8 @@ describe('ServiceController (e2e)', () => {
 
   it('should return correct data for specific slug', async () => {
     for (let i: number = 0; i < 12; i += 1) {
-      // eslint-disable-next-line no-await-in-loop,@typescript-eslint/no-unsafe-argument
-      const response = await request(app.getHttpServer()).get(
+      // eslint-disable-next-line no-await-in-loop
+      const response = await request(<App>app.getHttpServer()).get(
         `/service/${serviceData[i].slug.slug}`,
       );
       expect(response.status).toBe(200);

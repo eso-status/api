@@ -3,6 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from 'dotenv';
+import * as moment from 'moment';
 import { Server } from 'socket.io';
 import { Socket } from 'socket.io-client';
 import * as io from 'socket.io-client';
@@ -97,9 +98,21 @@ describe('QueueService (e2e)', () => {
           rawDate: ' />2024.07.01 - 12:00 UTC (08:00 EDT)',
           rawData: 'The ESO store and account system are currently available.',
           slugs: ['service_store_eso'],
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-expect-error
-          dates: ['2024-09-01T12:00:00.000Z'],
+          dates: [
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            moment()
+              .utc()
+              .set('years', 2024)
+              .set('months', 9)
+              .set('date', 1)
+              .set('hours', 12)
+              .set('minutes', 0)
+              .set('seconds', 0)
+              .set('milliseconds', 0)
+              .utcOffset(0)
+              .toISOString(),
+          ],
           type: 'service',
           support: 'store',
           zone: 'eso',

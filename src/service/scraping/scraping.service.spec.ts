@@ -56,10 +56,13 @@ describe('ScrapingService', () => {
   });
 
   it('should format ForumMessage datas', async () => {
-    jest.spyOn(ForumMessage, 'getData').mockImplementation(
-      // eslint-disable-next-line @typescript-eslint/require-await
-      async (): Promise<RawEsoStatus[]> => rawForumMessageEsoStatusList,
-    );
+    jest
+      .spyOn(ForumMessage, 'getData')
+      .mockImplementation(async (): Promise<RawEsoStatus[]> => {
+        return new Promise(resolve => {
+          resolve(rawForumMessageEsoStatusList);
+        });
+      });
 
     const result: EsoStatus[] = service.formatData(
       await ForumMessage.getData(),
@@ -69,10 +72,13 @@ describe('ScrapingService', () => {
   });
 
   it('should format LiveServices datas', async () => {
-    jest.spyOn(LiveServices, 'getData').mockImplementation(
-      // eslint-disable-next-line @typescript-eslint/require-await
-      async (): Promise<RawEsoStatus[]> => rawLiveServiceEsoStatusList,
-    );
+    jest
+      .spyOn(LiveServices, 'getData')
+      .mockImplementation(async (): Promise<RawEsoStatus[]> => {
+        return new Promise(resolve => {
+          resolve(rawLiveServiceEsoStatusList);
+        });
+      });
 
     const result: EsoStatus[] = service.formatData(
       await LiveServices.getData(),
@@ -82,10 +88,13 @@ describe('ScrapingService', () => {
   });
 
   it('should format ServiceAlerts datas', async () => {
-    jest.spyOn(ServiceAlerts, 'getData').mockImplementation(
-      // eslint-disable-next-line @typescript-eslint/require-await
-      async (): Promise<RawEsoStatus[]> => rawServiceAlertEsoStatusList,
-    );
+    jest
+      .spyOn(ServiceAlerts, 'getData')
+      .mockImplementation(async (): Promise<RawEsoStatus[]> => {
+        return new Promise(resolve => {
+          resolve(rawServiceAlertEsoStatusList);
+        });
+      });
 
     const result: EsoStatus[] = service.formatData(
       await ServiceAlerts.getData(),

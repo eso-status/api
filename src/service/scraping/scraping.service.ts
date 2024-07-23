@@ -112,14 +112,9 @@ export class ScrapingService {
     );
   }
 
-  private async doHandle(
-    scraperClass: ForumMessage | LiveServices | ServiceAlerts,
-  ): Promise<void> {
+  private async doHandle(rawEsoStatus: RawEsoStatus[]): Promise<void> {
     await Promise.all(
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-call
-      this.formatData(await scraperClass.getData()).map(
+      this.formatData(rawEsoStatus).map(
         (esoStatus: EsoStatus): Promise<void> => {
           return this.update(esoStatus);
         },
@@ -128,18 +123,18 @@ export class ScrapingService {
   }
 
   @Interval(Number(process.env.FORUM_MESSAGE_UPDATE_INTERVAL))
-  public async handleForumMessage() {
-    await this.doHandle(ForumMessage);
+  public async handleForumMessage(): Promise<void> {
+    await this.doHandle(await ForumMessage.getData());
   }
 
   @Interval(Number(process.env.LIVE_SERVICES_UPDATE_INTERVAL))
-  public async handleLiveServices() {
-    await this.doHandle(LiveServices);
+  public async handleLiveServices(): Promise<void> {
+    await this.doHandle(await LiveServices.getData());
   }
 
   @Interval(Number(process.env.SERVICE_ALERTS_UPDATE_INTERVAL))
-  public async handleServiceAlerts() {
-    await this.doHandle(ServiceAlerts);
+  public async handleServiceAlerts(): Promise<void> {
+    await this.doHandle(await ServiceAlerts.getData());
   }
 
   @Interval(Number(process.env.UPDATE_INTERVAL))
