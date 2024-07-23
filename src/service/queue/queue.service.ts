@@ -60,7 +60,7 @@ export class QueueService {
             `${esoStatus[0]}(${esoStatus[1].status})`,
         )
         .join(', ')}) status update event emitted`,
-      'QueueService.handleInterval',
+      'QueueService.pushQueue',
     );
 
     // Empty queue
