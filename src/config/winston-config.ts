@@ -1,5 +1,6 @@
 import { config } from 'dotenv';
 import * as winston from 'winston';
+import { Logger } from 'winston';
 import * as WinstonCloudWatch from 'winston-cloudwatch';
 
 config();
@@ -13,7 +14,7 @@ const cloudWatch: WinstonCloudWatch = new WinstonCloudWatch({
   jsonMessage: true, // Option pour formater les messages en JSON pour CloudWatch
 });
 
-const winstonLogger = winston.createLogger({
+const winstonLogger: Logger = winston.createLogger({
   level: 'info',
   transports: [
     new winston.transports.Console({
@@ -22,7 +23,7 @@ const winstonLogger = winston.createLogger({
           format: 'MM/DD/YYYY, hh:mm:ss A',
         }),
         winston.format.printf(
-          ({ level, message, timestamp, context }) =>
+          ({ level, message, timestamp, context }): string =>
             `[32m[${process.env.APP_NAME}] ${process.pid}  - [39m${timestamp}[32m     ${level.toUpperCase()} [${context}] : ${message}[39m`,
         ),
       ),

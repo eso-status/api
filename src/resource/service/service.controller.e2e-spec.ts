@@ -3,6 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as request from 'supertest';
+import supertest from 'supertest';
 import { App } from 'supertest/types';
 import { runSeeders } from 'typeorm-extension';
 
@@ -15,7 +16,7 @@ import { ServiceModule } from './service.module';
 describe('ServiceController (e2e)', () => {
   let app: INestApplication;
 
-  beforeEach(async () => {
+  beforeEach(async (): Promise<void> => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [TypeOrmModule.forRoot(dataSourceOptions), ServiceModule],
     }).compile();
@@ -29,13 +30,15 @@ describe('ServiceController (e2e)', () => {
     await runSeeders(dataSource);
   });
 
-  afterEach(async () => {
+  afterEach(async (): Promise<void> => {
     await app.close();
     await dataSource.destroy();
   });
 
-  it('should return correct data for all slugs', async () => {
-    const response = await request(<App>app.getHttpServer()).get('/service');
+  it('should return correct data for all slugs', async (): Promise<void> => {
+    const response: supertest.Response = await request(
+      <App>app.getHttpServer(),
+    ).get('/service');
     expect(response.status).toBe(200);
     for (let i: number = 0; i < 12; i += 1) {
       expect(JSON.stringify(response.body)).toContain(
@@ -54,9 +57,9 @@ describe('ServiceController (e2e)', () => {
   it('should return correct data for specific slug', async () => {
     for (let i: number = 0; i < 12; i += 1) {
       // eslint-disable-next-line no-await-in-loop
-      const response = await request(<App>app.getHttpServer()).get(
-        `/service/${serviceData[i].slug.slug}`,
-      );
+      const response: supertest.Response = await request(
+        <App>app.getHttpServer(),
+      ).get(`/service/${serviceData[i].slug.slug}`);
       expect(response.status).toBe(200);
       expect(JSON.stringify(response.body)).toContain(
         JSON.stringify({

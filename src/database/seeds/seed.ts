@@ -5,7 +5,7 @@ import { dataSource } from '../../config/typeorm.config';
 
 dataSource
   .initialize()
-  .then(async () => {
+  .then(async (): Promise<void> => {
     await dataSource.dropDatabase();
     await dataSource.runMigrations();
     await runSeeders(dataSource);

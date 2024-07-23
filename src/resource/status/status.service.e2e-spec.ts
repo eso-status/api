@@ -13,11 +13,11 @@ import { StatusService } from './status.service';
 
 config();
 
-describe('StatusService (e2e)', () => {
+describe('StatusService (e2e)', (): void => {
   let app: INestApplication;
   let service: StatusService;
 
-  beforeEach(async () => {
+  beforeEach(async (): Promise<void> => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         TypeOrmModule.forRoot(dataSourceOptions),
@@ -37,31 +37,31 @@ describe('StatusService (e2e)', () => {
     await runSeeders(dataSource);
   });
 
-  afterEach(async () => {
+  afterEach(async (): Promise<void> => {
     await app.close();
     await dataSource.destroy();
   });
 
-  it('should findByStatus return correct data for up', async () => {
-    const result = await service.findByStatus('up');
+  it('should findByStatus return correct data for up', async (): Promise<void> => {
+    const result: Status = await service.findByStatus('up');
 
     expect(result).toEqual(statusData[0]);
   });
 
-  it('should findByStatus return correct data for down', async () => {
-    const result = await service.findByStatus('down');
+  it('should findByStatus return correct data for down', async (): Promise<void> => {
+    const result: Status = await service.findByStatus('down');
 
     expect(result).toEqual(statusData[1]);
   });
 
-  it('should findByStatus return correct data for issues', async () => {
-    const result = await service.findByStatus('issues');
+  it('should findByStatus return correct data for issues', async (): Promise<void> => {
+    const result: Status = await service.findByStatus('issues');
 
     expect(result).toEqual(statusData[2]);
   });
 
-  it('should findByStatus return correct data for planned', async () => {
-    const result = await service.findByStatus('planned');
+  it('should findByStatus return correct data for planned', async (): Promise<void> => {
+    const result: Status = await service.findByStatus('planned');
 
     expect(result).toEqual(statusData[3]);
   });

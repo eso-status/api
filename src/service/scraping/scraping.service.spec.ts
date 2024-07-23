@@ -33,10 +33,10 @@ import { ScrapingService } from './scraping.service';
 
 config();
 
-describe('ScrapingService', () => {
+describe('ScrapingService', (): void => {
   let service: ScrapingService;
 
-  beforeEach(async () => {
+  beforeEach(async (): Promise<void> => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         TypeOrmModule.forRoot(dataSourceOptions),
@@ -55,7 +55,7 @@ describe('ScrapingService', () => {
     service = module.get<ScrapingService>(ScrapingService);
   });
 
-  it('should format ForumMessage datas', async () => {
+  it('should format ForumMessage datas', async (): Promise<void> => {
     jest
       .spyOn(ForumMessage, 'getData')
       .mockImplementation(async (): Promise<RawEsoStatus[]> => {
@@ -69,7 +69,7 @@ describe('ScrapingService', () => {
     expect(result).toEqual(forumMessageEsoStatusList);
   });
 
-  it('should format LiveServices datas', async () => {
+  it('should format LiveServices datas', async (): Promise<void> => {
     jest
       .spyOn(LiveServices, 'getData')
       .mockImplementation(async (): Promise<RawEsoStatus[]> => {
@@ -83,7 +83,7 @@ describe('ScrapingService', () => {
     expect(result).toEqual(liveServiceEsoStatusList);
   });
 
-  it('should format ServiceAlerts datas', async () => {
+  it('should format ServiceAlerts datas', async (): Promise<void> => {
     jest
       .spyOn(ServiceAlerts, 'getData')
       .mockImplementation(async (): Promise<RawEsoStatus[]> => {

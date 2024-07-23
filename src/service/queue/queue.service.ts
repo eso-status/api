@@ -56,7 +56,7 @@ export class QueueService {
     this.winstonService.log(
       `Service(s) (${Object.entries(this.getQueue())
         .map(
-          (esoStatus: [Slug, EsoStatus]) =>
+          (esoStatus: [Slug, EsoStatus]): string =>
             `${esoStatus[0]}(${esoStatus[1].status})`,
         )
         .join(', ')}) status update event emitted`,

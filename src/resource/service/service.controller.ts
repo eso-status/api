@@ -17,7 +17,7 @@ export class ServiceController {
   }
 
   @Get(':slug')
-  async findOne(@Param('slug') slug: Slug) {
+  async findOne(@Param('slug') slug: Slug): Promise<EsoStatus> {
     return this.serviceService.format(
       await this.serviceService.findBySlug(slug),
     );

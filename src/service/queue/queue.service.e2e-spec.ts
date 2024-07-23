@@ -22,7 +22,7 @@ import { QueueService } from './queue.service';
 
 config();
 
-describe('QueueService (e2e)', () => {
+describe('QueueService (e2e)', (): void => {
   let app: INestApplication;
   let queueService: QueueService;
   let scrapingService: ScrapingService;
@@ -30,7 +30,7 @@ describe('QueueService (e2e)', () => {
   let serverSocket: Server;
   let clientSocket: Socket;
 
-  beforeEach(async () => {
+  beforeEach(async (): Promise<void> => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         TypeOrmModule.forRoot(dataSourceOptions),
@@ -55,7 +55,7 @@ describe('QueueService (e2e)', () => {
 
     jest
       .spyOn(websocketService, 'getServer')
-      .mockImplementation(() => serverSocket);
+      .mockImplementation((): Server => serverSocket);
 
     clientSocket = io.connect(
       `${process.env.APP_PROTOCOL}://${process.env.APP_HOST}:${process.env.APP_PORT}`,
@@ -64,13 +64,13 @@ describe('QueueService (e2e)', () => {
     await app.init();
 
     await new Promise<void>((resolve): void => {
-      clientSocket.on('connect', () => {
+      clientSocket.on('connect', (): void => {
         resolve();
       });
     });
   });
 
-  afterEach(async () => {
+  afterEach(async (): Promise<void> => {
     await app.close();
     clientSocket.disconnect();
     await new Promise<void>((resolve): void => {
@@ -80,7 +80,7 @@ describe('QueueService (e2e)', () => {
     });
   });
 
-  it('should update event received from client', async () => {
+  it('should update event received from client', async (): Promise<void> => {
     await new Promise<void>((resolve): void => {
       const queueItem: EsoStatus = {
         slug: 'service_store_eso',
@@ -119,10 +119,10 @@ describe('QueueService (e2e)', () => {
           status: 'up',
         },
       };
-      jest.spyOn(queueService, 'setQueue').mockImplementation(() => []);
+      jest.spyOn(queueService, 'setQueue').mockImplementation((): [] => []);
       queueService.updateQueue(queueItem);
 
-      clientSocket.on('update', (data: EsoStatus[]) => {
+      clientSocket.on('update', (data: EsoStatus[]): void => {
         expect(data).toEqual([queueItem]);
         resolve();
       });
