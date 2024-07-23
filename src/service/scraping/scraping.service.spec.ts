@@ -59,9 +59,7 @@ describe('ScrapingService', () => {
     jest
       .spyOn(ForumMessage, 'getData')
       .mockImplementation(async (): Promise<RawEsoStatus[]> => {
-        return new Promise(resolve => {
-          resolve(rawForumMessageEsoStatusList);
-        });
+        return Promise.resolve(rawForumMessageEsoStatusList);
       });
 
     const result: EsoStatus[] = service.formatData(
@@ -75,9 +73,7 @@ describe('ScrapingService', () => {
     jest
       .spyOn(LiveServices, 'getData')
       .mockImplementation(async (): Promise<RawEsoStatus[]> => {
-        return new Promise(resolve => {
-          resolve(rawLiveServiceEsoStatusList);
-        });
+        return Promise.resolve(rawLiveServiceEsoStatusList);
       });
 
     const result: EsoStatus[] = service.formatData(
@@ -91,9 +87,7 @@ describe('ScrapingService', () => {
     jest
       .spyOn(ServiceAlerts, 'getData')
       .mockImplementation(async (): Promise<RawEsoStatus[]> => {
-        return new Promise(resolve => {
-          resolve(rawServiceAlertEsoStatusList);
-        });
+        return Promise.resolve(rawServiceAlertEsoStatusList);
       });
 
     const result: EsoStatus[] = service.formatData(
