@@ -87,7 +87,7 @@ export class ScrapingService {
     );
 
     // Update service status in database
-    await this.serviceService.updateStatus(service.id, newStatus.id);
+    await this.serviceService.update(service.id, newStatus.id, esoStatus.raw);
 
     // Write log with detail (slug, old status and new status)
     this.winstonService.log(

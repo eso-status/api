@@ -1,4 +1,11 @@
-import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 import { Slug } from '../../slug/entities/slug.entity';
 import { Status } from '../../status/entities/status.entity';
@@ -27,6 +34,19 @@ export class Service {
 
   @Column({ type: 'int', nullable: false })
   zoneId?: number;
+
+  @Column({ type: 'text', nullable: false })
+  rawData: string;
+
+  @CreateDateColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  createdAt?: Date;
+
+  @UpdateDateColumn({
+    type: 'datetime',
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
+  updatedAt?: Date;
 
   @ManyToOne(() => Slug)
   slug?: Slug;

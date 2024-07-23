@@ -1,4 +1,4 @@
-import { Slug } from '@eso-status/types';
+import { EsoStatus, RawEsoStatus, Slug } from '@eso-status/types';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -12,6 +12,23 @@ export class ServiceService {
     private readonly serviceRepository: Repository<Service>,
   ) {}
 
+  format(service: Service): EsoStatus {
+    return {
+      slug: service.slug.slug,
+      status: service.status.status,
+      type: service.type.type,
+      support: service.support.support,
+      zone: service.zone.zone,
+      raw: <RawEsoStatus>JSON.parse(service.rawData),
+    };
+  }
+
+  async findAll(): Promise<Service[]> {
+    return this.serviceRepository.find({
+      relations: ['slug', 'status', 'type', 'zone', 'support'],
+    });
+  }
+
   async findBySlug(slug: Slug): Promise<Service> {
     return this.serviceRepository.findOne({
       relations: ['slug', 'status', 'type', 'zone', 'support'],
@@ -23,7 +40,10 @@ export class ServiceService {
     });
   }
 
-  async updateStatus(id: number, statusId: number): Promise<void> {
-    await this.serviceRepository.update(id, { statusId });
+  async update(id: number, statusId: number, raw: RawEsoStatus): Promise<void> {
+    await this.serviceRepository.update(id, {
+      statusId,
+      rawData: JSON.stringify(raw),
+    });
   }
 }

@@ -1,3 +1,4 @@
+import { RawEsoStatus } from '@eso-status/types';
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -121,8 +122,12 @@ describe('ServiceService (e2e)', () => {
   it('should updateStatus works', async () => {
     let findBySlugResult = await service.findBySlug('server_xbox_na');
     expect(findBySlugResult.status).toEqual(statusData[1]);
+    const newRawEsoStatus: RawEsoStatus = <RawEsoStatus>(
+      JSON.parse(findBySlugResult.rawData)
+    );
+    newRawEsoStatus.status = 'up';
 
-    await service.updateStatus(1, 1);
+    await service.update(1, 1, newRawEsoStatus);
     findBySlugResult = await service.findBySlug('server_xbox_na');
 
     expect(findBySlugResult.status).toEqual(statusData[0]);

@@ -44,6 +44,22 @@ export class CreateServiceTable1721317393167 implements MigrationInterface {
             length: '1',
             isNullable: false,
           },
+          {
+            name: 'rawData',
+            type: 'text',
+            isNullable: false,
+          },
+          {
+            name: 'createdAt',
+            type: 'datetime',
+            default: 'CURRENT_TIMESTAMP',
+          },
+          {
+            name: 'updatedAt',
+            type: 'datetime',
+            default: 'CURRENT_TIMESTAMP',
+            onUpdate: 'CURRENT_TIMESTAMP',
+          },
         ],
         foreignKeys: [
           {
