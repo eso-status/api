@@ -25,9 +25,31 @@ jobs:
 
       - name: Create env file
         run: |
-          cp .env.example .env.test
-          sed -i -e "s/APP_ENV=development/APP_ENV=testing/g" .env.test
-          cp .env.test .env
+          cat .env.example > .env
+          sed -i -e "s/__NODE_ENV__/testing/g" ./.env
+          sed -i -e "s/__APP_NAME__/eso-status/g" ./.env
+          sed -i -e "s/__APP_PROTOCOL__/http/g" ./.env
+          sed -i -e "s/__APP_HOST__/localhost/g" ./.env
+          sed -i -e "s/__APP_PORT__/3000/g" ./.env
+          sed -i -e "s/__SSL_PRIVATE__/$SSL_PRIVATE/g" ./.env
+          sed -i -e "s/__SSL_CERTIFICATE__/$SSL_CERTIFICATE/g" ./.env
+          sed -i -e "s/__SSL_CA_BUNDLE__/$SSL_CA_BUNDLE/g" ./.env
+          sed -i -e "s/__DB_TYPE__/mysql/g" ./.env
+          sed -i -e "s/__DB_HOST__/localhost/g" ./.env
+          sed -i -e "s/__DB_PORT__/3306/g" ./.env
+          sed -i -e "s/__DB_NAME__/eso-status/g" ./.env
+          sed -i -e "s/__DB_USER__/root/g" ./.env
+          sed -i -e "s/__DB_PASSWORD__/root/g" ./.env
+          sed -i -e "s/__DB_DEBUG__/$DB_DEBUG/g" ./.env
+          sed -i -e "s/__FORUM_MESSAGE_UPDATE_INTERVAL__/1000/g" ./.env
+          sed -i -e "s/__LIVE_SERVICES_UPDATE_INTERVAL__/1000/g" ./.env
+          sed -i -e "s/__SERVICE_ALERTS_UPDATE_INTERVAL__/1000/g" ./.env
+          sed -i -e "s/__QUEUE_INTERVAL__/1000/g" ./.env
+          sed -i -e "s/__AWS_ACCESS_KEY_ID__/$AWS_ACCESS_KEY_ID/g" ./.env
+          sed -i -e "s/__AWS_SECRET_ACCESS_KEY__/$AWS_SECRET_ACCESS_KEY/g" ./.env
+          sed -i -e "s/__AWS_REGION__/$AWS_REGION/g" ./.env
+          sed -i -e "s/__CLOUDWATCH_GROUP_NAME__/$CLOUDWATCH_GROUP_NAME/g" ./.env
+          sed -i -e "s/__CLOUDWATCH_STREAM_NAME__/$CLOUDWATCH_STREAM_NAME/g" ./.env
 
       - name: Build assets
         run: npm run build
