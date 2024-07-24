@@ -14,13 +14,13 @@
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
     "lint:fix": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "DOTENV_CONFIG_PATH=.env.test jest --runInBand --setupFiles dotenv/config",
-    "test:watch": "DOTENV_CONFIG_PATH=.env.test jest --runInBand --watch --setupFiles dotenv/config",
-    "test:cov": "DOTENV_CONFIG_PATH=.env.test jest --runInBand --coverage --setupFiles dotenv/config",
-    "test:debug": "DOTENV_CONFIG_PATH=.env.test node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand --setupFiles dotenv/config",
-    "test:e2e": "DOTENV_CONFIG_PATH=.env.test jest --runInBand --config ./test/jest-e2e.json --setupFiles dotenv/config",
-    "seed": "DOTENV_CONFIG_PATH=.env.test npm run build && node dist/database/seeds/seed.js",
-    "migration:run": "DOTENV_CONFIG_PATH=.env.test npm run build && typeorm migration:run -d ./dist/config/typeorm.config.js"
+    "test": "jest --runInBand --setupFiles",
+    "test:watch": "jest --runInBand --watch --setupFiles dotenv/config",
+    "test:cov": "jest --runInBand --coverage --setupFiles dotenv/config",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand --setupFiles dotenv/config",
+    "test:e2e": "jest --runInBand --config ./test/jest-e2e.json --setupFiles dotenv/config",
+    "seed": "npm run build && node dist/database/seeds/seed.js",
+    "migration:run": "npm run build && typeorm migration:run -d ./dist/config/typeorm.config.js"
   },
   "dependencies": {
     "@eso-status/forum-message": "1.0.8",
