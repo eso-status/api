@@ -1,3 +1,5 @@
+import * as fs from 'node:fs';
+
 import { INestApplication } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { config } from 'dotenv';
@@ -10,7 +12,13 @@ config();
 async function bootstrap() {
   const app: INestApplication = await NestFactory.create(AppModule, {
     logger: new WinstonService(),
+    httpsOptions: {
+      key: fs.readFileSync('private.key'),
+      cert: fs.readFileSync('certificate.crt'),
+      ca: fs.readFileSync('ca_bundle.crt'),
+    },
   });
+
   await app.listen(process.env.APP_PORT);
 }
 bootstrap()
