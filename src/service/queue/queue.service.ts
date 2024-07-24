@@ -50,7 +50,7 @@ export class QueueService {
     // Return function if event emit failed
     this.websocketService
       .getServer()
-      .emit('update', Object.values(this.getQueue()));
+      .emit('statusUpdate', Object.values(this.getQueue()));
 
     // Write log with details (slug with new status)
     this.winstonService.log(

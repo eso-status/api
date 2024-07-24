@@ -5,11 +5,18 @@ import { NestFactory } from '@nestjs/core';
 import { config } from 'dotenv';
 
 import { AppModule } from './app.module';
+import { dataSource } from './config/typeorm.config';
 import { WinstonService } from './service/winston/winston.service';
 
 config();
 
 async function bootstrap() {
+  if (process.env.NODE_ENV === 'development') {
+    await dataSource.initialize();
+    await dataSource.dropDatabase();
+    await dataSource.runMigrations();
+  }
+
   const app: INestApplication = await NestFactory.create(AppModule, {
     logger: new WinstonService(),
     httpsOptions: {

@@ -122,7 +122,7 @@ describe('QueueService (e2e)', (): void => {
       jest.spyOn(queueService, 'setQueue').mockImplementation((): [] => []);
       queueService.updateQueue(queueItem);
 
-      clientSocket.on('update', (data: EsoStatus[]): void => {
+      clientSocket.on('statusUpdate', (data: EsoStatus[]): void => {
         expect(data).toEqual([queueItem]);
         resolve();
       });
