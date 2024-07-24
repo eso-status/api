@@ -5,6 +5,8 @@ import { Server } from 'socket.io';
   cors: {
     origin: '*',
   },
+  secure: true,
+  transports: ['websocket'],
 })
 export class WebsocketService {
   @WebSocketServer() server: Server;

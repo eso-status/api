@@ -1,4 +1,4 @@
-import { InsertResult, MigrationInterface, QueryRunner } from 'typeorm';
+import { MigrationInterface, QueryRunner } from 'typeorm';
 import { Table } from 'typeorm/schema-builder/table/Table';
 
 import { dataSource } from '../../config/typeorm.config';
@@ -54,11 +54,6 @@ export class CreateServiceTable1721317393167 implements MigrationInterface {
             isNullable: false,
           },
           {
-            name: 'createdAt',
-            type: 'datetime',
-            default: 'CURRENT_TIMESTAMP',
-          },
-          {
             name: 'updatedAt',
             type: 'datetime',
             default: 'CURRENT_TIMESTAMP',
@@ -111,13 +106,12 @@ export class CreateServiceTable1721317393167 implements MigrationInterface {
       true,
     );
 
+    await dataSource.initialize();
+
     await Promise.all(
-      serviceData.map((service: Service): Promise<InsertResult> => {
-        return dataSource
-          .createQueryBuilder()
-          .insert()
-          .into(Service)
-          .values({
+      serviceData.map((service: Service): Promise<Service> => {
+        return dataSource.getRepository(Service).save(
+          dataSource.getRepository(Service).create({
             id: service.id,
             slugId: service.slugId,
             typeId: service.typeId,
@@ -125,10 +119,12 @@ export class CreateServiceTable1721317393167 implements MigrationInterface {
             zoneId: service.zoneId,
             statusId: service.statusId,
             rawData: service.rawData,
-          })
-          .execute();
+          }),
+        );
       }),
     );
+
+    await dataSource.destroy();
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

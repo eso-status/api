@@ -137,7 +137,7 @@ export class ScrapingService {
     await this.doHandle(await ServiceAlerts.getData());
   }
 
-  @Interval(Number(process.env.UPDATE_INTERVAL))
+  @Interval(Number(process.env.QUEUE_INTERVAL))
   public doQueue(): void {
     this.queueService.pushQueue();
   }

@@ -1,4 +1,4 @@
-import { InsertResult, MigrationInterface, QueryRunner } from 'typeorm';
+import { MigrationInterface, QueryRunner } from 'typeorm';
 import { Table } from 'typeorm/schema-builder/table/Table';
 
 import { dataSource } from '../../config/typeorm.config';
@@ -73,22 +73,23 @@ export class CreateSlugTable1721301961662 implements MigrationInterface {
       true,
     );
 
+    await dataSource.initialize();
+
     await Promise.all(
-      slugData.map((slug: Slug): Promise<InsertResult> => {
-        return dataSource
-          .createQueryBuilder()
-          .insert()
-          .into(Slug)
-          .values({
+      slugData.map((slug: Slug): Promise<Slug> => {
+        return dataSource.getRepository(Slug).save(
+          dataSource.getRepository(Slug).create({
             id: slug.id,
             slug: slug.slug,
             typeId: slug.typeId,
             supportId: slug.supportId,
             zoneId: slug.zoneId,
-          })
-          .execute();
+          }),
+        );
       }),
     );
+
+    await dataSource.destroy();
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

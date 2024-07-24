@@ -7,19 +7,20 @@ export const rawServiceAlertEsoStatusList: RawEsoStatus[] = [
       'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
     ],
     raw: [
-      '<div><!-- ENTER ESO SERVICE ALERTS BELOW THIS LINE -->\n  <p>2024.07.19 - 4:20 UTC (12:20 EDT)</p>\n<p>The Xbox Live™ service interruption has been resolved.</p>\n  ',
+      '<div><!-- ENTER ESO SERVICE ALERTS BELOW THIS LINE -->\n  <p>2024.07.24 - 10:00 UTC (6:00 EDT)</p>\n<p>The North American Xbox megaserver is currently unavailable while we perform maintenance. </p>\n<p>The European Xbox megaserver is currently unavailable while we perform maintenance.</p>\n<p>The North American PlayStation® megaserver is currently unavailable while we perform maintenance. </p>\n<p>The European PlayStation® megaserver is currently unavailable while we perform maintenance.</p>\n',
     ],
-    rawDate: '  2024.07.19 - 4:20 UTC (12:20 EDT)',
-    rawData: 'The Xbox Live™ service interruption has been resolved.',
+    rawDate: '  2024.07.24 - 10:00 UTC (6:00 EDT)',
+    rawData:
+      'The North American Xbox megaserver is currently unavailable while we perform maintenance. ',
     slugs: ['server_xbox_na'],
     dates: [
       moment()
         .utc()
         .set('years', 2024)
         .set('months', 8)
-        .set('date', 19)
-        .set('hours', 4)
-        .set('minutes', 20)
+        .set('date', 24)
+        .set('hours', 10)
+        .set('minutes', 0)
         .set('seconds', 0)
         .set('milliseconds', 0)
         .utcOffset(0),
@@ -27,26 +28,27 @@ export const rawServiceAlertEsoStatusList: RawEsoStatus[] = [
     type: 'server',
     support: 'xbox',
     zone: 'na',
-    status: 'up',
+    status: 'down',
   },
   {
     sources: [
       'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
     ],
     raw: [
-      '<div><!-- ENTER ESO SERVICE ALERTS BELOW THIS LINE -->\n  <p>2024.07.19 - 4:20 UTC (12:20 EDT)</p>\n<p>The Xbox Live™ service interruption has been resolved.</p>\n  ',
+      '<div><!-- ENTER ESO SERVICE ALERTS BELOW THIS LINE -->\n  <p>2024.07.24 - 10:00 UTC (6:00 EDT)</p>\n<p>The North American Xbox megaserver is currently unavailable while we perform maintenance. </p>\n<p>The European Xbox megaserver is currently unavailable while we perform maintenance.</p>\n<p>The North American PlayStation® megaserver is currently unavailable while we perform maintenance. </p>\n<p>The European PlayStation® megaserver is currently unavailable while we perform maintenance.</p>\n',
     ],
-    rawDate: '  2024.07.19 - 4:20 UTC (12:20 EDT)',
-    rawData: 'The Xbox Live™ service interruption has been resolved.',
+    rawDate: '  2024.07.24 - 10:00 UTC (6:00 EDT)',
+    rawData:
+      'The European Xbox megaserver is currently unavailable while we perform maintenance.',
     slugs: ['server_xbox_eu'],
     dates: [
       moment()
         .utc()
         .set('years', 2024)
         .set('months', 8)
-        .set('date', 19)
-        .set('hours', 4)
-        .set('minutes', 20)
+        .set('date', 24)
+        .set('hours', 10)
+        .set('minutes', 0)
         .set('seconds', 0)
         .set('milliseconds', 0)
         .utcOffset(0),
@@ -54,7 +56,7 @@ export const rawServiceAlertEsoStatusList: RawEsoStatus[] = [
     type: 'server',
     support: 'xbox',
     zone: 'eu',
-    status: 'up',
+    status: 'down',
   },
   {
     sources: [
@@ -88,19 +90,19 @@ export const rawServiceAlertEsoStatusList: RawEsoStatus[] = [
       'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
     ],
     raw: [
-      ' />\n<p>2024.07.10 - 16:00 UTC (12:00 EDT)</p>\n<p>The issues related to logging in to the North American PlayStation® megaserver have been resolved at this time. </p>\n',
+      '<div><!-- ENTER ESO SERVICE ALERTS BELOW THIS LINE -->\n  <p>2024.07.24 - 10:00 UTC (6:00 EDT)</p>\n<p>The North American Xbox megaserver is currently unavailable while we perform maintenance. </p>\n<p>The European Xbox megaserver is currently unavailable while we perform maintenance.</p>\n<p>The North American PlayStation® megaserver is currently unavailable while we perform maintenance. </p>\n<p>The European PlayStation® megaserver is currently unavailable while we perform maintenance.</p>\n',
     ],
-    rawDate: ' />2024.07.10 - 16:00 UTC (12:00 EDT)',
+    rawDate: '  2024.07.24 - 10:00 UTC (6:00 EDT)',
     rawData:
-      'The issues related to logging in to the North American PlayStation® megaserver have been resolved at this time. ',
+      'The North American PlayStation® megaserver is currently unavailable while we perform maintenance. ',
     slugs: ['server_ps_na'],
     dates: [
       moment()
         .utc()
         .set('years', 2024)
         .set('months', 8)
-        .set('date', 10)
-        .set('hours', 16)
+        .set('date', 24)
+        .set('hours', 10)
         .set('minutes', 0)
         .set('seconds', 0)
         .set('milliseconds', 0)
@@ -109,26 +111,27 @@ export const rawServiceAlertEsoStatusList: RawEsoStatus[] = [
     type: 'server',
     support: 'ps',
     zone: 'na',
-    status: 'up',
+    status: 'down',
   },
   {
     sources: [
       'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
     ],
     raw: [
-      ' />\n\n<p>2024.07.10 - 14:15 UTC (10:15 EDT)</p>\n<p>The North American Xbox megaserver is currently available.</p>\n<p>The European Xbox megaserver is currently available.</p>\n<p>The North American PlayStation® megaserver is currently available.</p>\n<p>The European PlayStation® megaserver is currently available.</p>\n',
+      '<div><!-- ENTER ESO SERVICE ALERTS BELOW THIS LINE -->\n  <p>2024.07.24 - 10:00 UTC (6:00 EDT)</p>\n<p>The North American Xbox megaserver is currently unavailable while we perform maintenance. </p>\n<p>The European Xbox megaserver is currently unavailable while we perform maintenance.</p>\n<p>The North American PlayStation® megaserver is currently unavailable while we perform maintenance. </p>\n<p>The European PlayStation® megaserver is currently unavailable while we perform maintenance.</p>\n',
     ],
-    rawDate: ' />2024.07.10 - 14:15 UTC (10:15 EDT)',
-    rawData: 'The European PlayStation® megaserver is currently available.',
+    rawDate: '  2024.07.24 - 10:00 UTC (6:00 EDT)',
+    rawData:
+      'The European PlayStation® megaserver is currently unavailable while we perform maintenance.',
     slugs: ['server_ps_eu'],
     dates: [
       moment()
         .utc()
         .set('years', 2024)
         .set('months', 8)
-        .set('date', 10)
-        .set('hours', 14)
-        .set('minutes', 15)
+        .set('date', 24)
+        .set('hours', 10)
+        .set('minutes', 0)
         .set('seconds', 0)
         .set('milliseconds', 0)
         .utcOffset(0),
@@ -136,7 +139,7 @@ export const rawServiceAlertEsoStatusList: RawEsoStatus[] = [
     type: 'server',
     support: 'ps',
     zone: 'eu',
-    status: 'up',
+    status: 'down',
   },
   {
     sources: [
@@ -251,7 +254,7 @@ export const rawServiceAlertEsoStatusList: RawEsoStatus[] = [
 export const serviceAlertEsoStatusList: EsoStatus[] = [
   {
     slug: 'server_xbox_na',
-    status: 'up',
+    status: 'down',
     type: 'server',
     support: 'xbox',
     zone: 'na',
@@ -260,19 +263,20 @@ export const serviceAlertEsoStatusList: EsoStatus[] = [
         'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
       ],
       raw: [
-        '<div><!-- ENTER ESO SERVICE ALERTS BELOW THIS LINE -->\n  <p>2024.07.19 - 4:20 UTC (12:20 EDT)</p>\n<p>The Xbox Live™ service interruption has been resolved.</p>\n  ',
+        '<div><!-- ENTER ESO SERVICE ALERTS BELOW THIS LINE -->\n  <p>2024.07.24 - 10:00 UTC (6:00 EDT)</p>\n<p>The North American Xbox megaserver is currently unavailable while we perform maintenance. </p>\n<p>The European Xbox megaserver is currently unavailable while we perform maintenance.</p>\n<p>The North American PlayStation® megaserver is currently unavailable while we perform maintenance. </p>\n<p>The European PlayStation® megaserver is currently unavailable while we perform maintenance.</p>\n',
       ],
-      rawDate: '  2024.07.19 - 4:20 UTC (12:20 EDT)',
-      rawData: 'The Xbox Live™ service interruption has been resolved.',
+      rawDate: '  2024.07.24 - 10:00 UTC (6:00 EDT)',
+      rawData:
+        'The North American Xbox megaserver is currently unavailable while we perform maintenance. ',
       slugs: ['server_xbox_na'],
       dates: [
         moment()
           .utc()
           .set('years', 2024)
           .set('months', 8)
-          .set('date', 19)
-          .set('hours', 4)
-          .set('minutes', 20)
+          .set('date', 24)
+          .set('hours', 10)
+          .set('minutes', 0)
           .set('seconds', 0)
           .set('milliseconds', 0)
           .utcOffset(0),
@@ -280,12 +284,12 @@ export const serviceAlertEsoStatusList: EsoStatus[] = [
       type: 'server',
       support: 'xbox',
       zone: 'na',
-      status: 'up',
+      status: 'down',
     },
   },
   {
     slug: 'server_xbox_eu',
-    status: 'up',
+    status: 'down',
     type: 'server',
     support: 'xbox',
     zone: 'eu',
@@ -294,19 +298,20 @@ export const serviceAlertEsoStatusList: EsoStatus[] = [
         'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
       ],
       raw: [
-        '<div><!-- ENTER ESO SERVICE ALERTS BELOW THIS LINE -->\n  <p>2024.07.19 - 4:20 UTC (12:20 EDT)</p>\n<p>The Xbox Live™ service interruption has been resolved.</p>\n  ',
+        '<div><!-- ENTER ESO SERVICE ALERTS BELOW THIS LINE -->\n  <p>2024.07.24 - 10:00 UTC (6:00 EDT)</p>\n<p>The North American Xbox megaserver is currently unavailable while we perform maintenance. </p>\n<p>The European Xbox megaserver is currently unavailable while we perform maintenance.</p>\n<p>The North American PlayStation® megaserver is currently unavailable while we perform maintenance. </p>\n<p>The European PlayStation® megaserver is currently unavailable while we perform maintenance.</p>\n',
       ],
-      rawDate: '  2024.07.19 - 4:20 UTC (12:20 EDT)',
-      rawData: 'The Xbox Live™ service interruption has been resolved.',
+      rawDate: '  2024.07.24 - 10:00 UTC (6:00 EDT)',
+      rawData:
+        'The European Xbox megaserver is currently unavailable while we perform maintenance.',
       slugs: ['server_xbox_eu'],
       dates: [
         moment()
           .utc()
           .set('years', 2024)
           .set('months', 8)
-          .set('date', 19)
-          .set('hours', 4)
-          .set('minutes', 20)
+          .set('date', 24)
+          .set('hours', 10)
+          .set('minutes', 0)
           .set('seconds', 0)
           .set('milliseconds', 0)
           .utcOffset(0),
@@ -314,7 +319,7 @@ export const serviceAlertEsoStatusList: EsoStatus[] = [
       type: 'server',
       support: 'xbox',
       zone: 'eu',
-      status: 'up',
+      status: 'down',
     },
   },
   {
@@ -353,7 +358,7 @@ export const serviceAlertEsoStatusList: EsoStatus[] = [
   },
   {
     slug: 'server_ps_na',
-    status: 'up',
+    status: 'down',
     type: 'server',
     support: 'ps',
     zone: 'na',
@@ -362,19 +367,19 @@ export const serviceAlertEsoStatusList: EsoStatus[] = [
         'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
       ],
       raw: [
-        ' />\n<p>2024.07.10 - 16:00 UTC (12:00 EDT)</p>\n<p>The issues related to logging in to the North American PlayStation® megaserver have been resolved at this time. </p>\n',
+        '<div><!-- ENTER ESO SERVICE ALERTS BELOW THIS LINE -->\n  <p>2024.07.24 - 10:00 UTC (6:00 EDT)</p>\n<p>The North American Xbox megaserver is currently unavailable while we perform maintenance. </p>\n<p>The European Xbox megaserver is currently unavailable while we perform maintenance.</p>\n<p>The North American PlayStation® megaserver is currently unavailable while we perform maintenance. </p>\n<p>The European PlayStation® megaserver is currently unavailable while we perform maintenance.</p>\n',
       ],
-      rawDate: ' />2024.07.10 - 16:00 UTC (12:00 EDT)',
+      rawDate: '  2024.07.24 - 10:00 UTC (6:00 EDT)',
       rawData:
-        'The issues related to logging in to the North American PlayStation® megaserver have been resolved at this time. ',
+        'The North American PlayStation® megaserver is currently unavailable while we perform maintenance. ',
       slugs: ['server_ps_na'],
       dates: [
         moment()
           .utc()
           .set('years', 2024)
           .set('months', 8)
-          .set('date', 10)
-          .set('hours', 16)
+          .set('date', 24)
+          .set('hours', 10)
           .set('minutes', 0)
           .set('seconds', 0)
           .set('milliseconds', 0)
@@ -383,12 +388,12 @@ export const serviceAlertEsoStatusList: EsoStatus[] = [
       type: 'server',
       support: 'ps',
       zone: 'na',
-      status: 'up',
+      status: 'down',
     },
   },
   {
     slug: 'server_ps_eu',
-    status: 'up',
+    status: 'down',
     type: 'server',
     support: 'ps',
     zone: 'eu',
@@ -397,19 +402,20 @@ export const serviceAlertEsoStatusList: EsoStatus[] = [
         'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
       ],
       raw: [
-        ' />\n\n<p>2024.07.10 - 14:15 UTC (10:15 EDT)</p>\n<p>The North American Xbox megaserver is currently available.</p>\n<p>The European Xbox megaserver is currently available.</p>\n<p>The North American PlayStation® megaserver is currently available.</p>\n<p>The European PlayStation® megaserver is currently available.</p>\n',
+        '<div><!-- ENTER ESO SERVICE ALERTS BELOW THIS LINE -->\n  <p>2024.07.24 - 10:00 UTC (6:00 EDT)</p>\n<p>The North American Xbox megaserver is currently unavailable while we perform maintenance. </p>\n<p>The European Xbox megaserver is currently unavailable while we perform maintenance.</p>\n<p>The North American PlayStation® megaserver is currently unavailable while we perform maintenance. </p>\n<p>The European PlayStation® megaserver is currently unavailable while we perform maintenance.</p>\n',
       ],
-      rawDate: ' />2024.07.10 - 14:15 UTC (10:15 EDT)',
-      rawData: 'The European PlayStation® megaserver is currently available.',
+      rawDate: '  2024.07.24 - 10:00 UTC (6:00 EDT)',
+      rawData:
+        'The European PlayStation® megaserver is currently unavailable while we perform maintenance.',
       slugs: ['server_ps_eu'],
       dates: [
         moment()
           .utc()
           .set('years', 2024)
           .set('months', 8)
-          .set('date', 10)
-          .set('hours', 14)
-          .set('minutes', 15)
+          .set('date', 24)
+          .set('hours', 10)
+          .set('minutes', 0)
           .set('seconds', 0)
           .set('milliseconds', 0)
           .utcOffset(0),
@@ -417,7 +423,7 @@ export const serviceAlertEsoStatusList: EsoStatus[] = [
       type: 'server',
       support: 'ps',
       zone: 'eu',
-      status: 'up',
+      status: 'down',
     },
   },
   {

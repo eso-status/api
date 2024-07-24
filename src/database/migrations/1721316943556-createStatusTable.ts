@@ -1,4 +1,4 @@
-import { InsertResult, MigrationInterface, QueryRunner } from 'typeorm';
+import { MigrationInterface, QueryRunner } from 'typeorm';
 import { Table } from 'typeorm/schema-builder/table/Table';
 
 import { dataSource } from '../../config/typeorm.config';
@@ -29,19 +29,20 @@ export class CreateStatusTable1721316943556 implements MigrationInterface {
       true,
     );
 
+    await dataSource.initialize();
+
     await Promise.all(
-      statusData.map((status: Status): Promise<InsertResult> => {
-        return dataSource
-          .createQueryBuilder()
-          .insert()
-          .into(Status)
-          .values({
+      statusData.map((status: Status): Promise<Status> => {
+        return dataSource.getRepository(Status).save(
+          dataSource.getRepository(Status).create({
             id: status.id,
             status: status.status,
-          })
-          .execute();
+          }),
+        );
       }),
     );
+
+    await dataSource.destroy();
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

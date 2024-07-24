@@ -1,4 +1,4 @@
-import { InsertResult, MigrationInterface, QueryRunner } from 'typeorm';
+import { MigrationInterface, QueryRunner } from 'typeorm';
 import { Table } from 'typeorm/schema-builder/table/Table';
 
 import { dataSource } from '../../config/typeorm.config';
@@ -29,19 +29,20 @@ export class CreateSupportTable1721301846590 implements MigrationInterface {
       true,
     );
 
+    await dataSource.initialize();
+
     await Promise.all(
-      supportData.map((support: Support): Promise<InsertResult> => {
-        return dataSource
-          .createQueryBuilder()
-          .insert()
-          .into(Support)
-          .values({
+      supportData.map((support: Support): Promise<Support> => {
+        return dataSource.getRepository(Support).save(
+          dataSource.getRepository(Support).create({
             id: support.id,
             support: support.support,
-          })
-          .execute();
+          }),
+        );
       }),
     );
+
+    await dataSource.destroy();
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

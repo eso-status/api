@@ -5,7 +5,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import * as request from 'supertest';
 import supertest from 'supertest';
 import { App } from 'supertest/types';
-import { runSeeders } from 'typeorm-extension';
 
 import { dataSource, dataSourceOptions } from '../../config/typeorm.config';
 
@@ -21,13 +20,12 @@ describe('ServiceController (e2e)', () => {
       imports: [TypeOrmModule.forRoot(dataSourceOptions), ServiceModule],
     }).compile();
 
-    app = module.createNestApplication();
-    await app.init();
-
     await dataSource.initialize();
     await dataSource.dropDatabase();
     await dataSource.runMigrations();
-    await runSeeders(dataSource);
+
+    app = module.createNestApplication();
+    await app.init();
   });
 
   afterEach(async (): Promise<void> => {

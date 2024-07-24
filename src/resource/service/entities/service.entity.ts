@@ -38,12 +38,6 @@ export class Service {
   @Column({ type: 'text', nullable: false })
   rawData: string;
 
-  @CreateDateColumn({
-    type: 'datetime',
-    default: (): string => 'CURRENT_TIMESTAMP',
-  })
-  createdAt?: Date;
-
   @UpdateDateColumn({
     type: 'datetime',
     default: (): string => 'CURRENT_TIMESTAMP',

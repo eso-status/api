@@ -1,4 +1,4 @@
-import { InsertResult, MigrationInterface, QueryRunner } from 'typeorm';
+import { MigrationInterface, QueryRunner } from 'typeorm';
 import { Table } from 'typeorm/schema-builder/table/Table';
 
 import { dataSource } from '../../config/typeorm.config';
@@ -29,19 +29,20 @@ export class CreateZoneTable1721301922356 implements MigrationInterface {
       true,
     );
 
+    await dataSource.initialize();
+
     await Promise.all(
-      zoneData.map((zone: Zone): Promise<InsertResult> => {
-        return dataSource
-          .createQueryBuilder()
-          .insert()
-          .into(Zone)
-          .values({
+      zoneData.map((zone: Zone): Promise<Zone> => {
+        return dataSource.getRepository(Zone).save(
+          dataSource.getRepository(Zone).create({
             id: zone.id,
             zone: zone.zone,
-          })
-          .execute();
+          }),
+        );
       }),
     );
+
+    await dataSource.destroy();
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
