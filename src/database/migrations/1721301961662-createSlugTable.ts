@@ -1,7 +1,11 @@
-import { MigrationInterface, QueryRunner } from 'typeorm';
+import { InsertResult, MigrationInterface, QueryRunner } from 'typeorm';
 import { Table } from 'typeorm/schema-builder/table/Table';
 
-export class CreateSlugTable1721289668430 implements MigrationInterface {
+import { dataSource } from '../../config/typeorm.config';
+import { Slug } from '../../resource/slug/entities/slug.entity';
+import { slugData } from '../data/slug.data';
+
+export class CreateSlugTable1721301961662 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -41,7 +45,7 @@ export class CreateSlugTable1721289668430 implements MigrationInterface {
         ],
         foreignKeys: [
           {
-            name: 'FK_Type',
+            name: 'FK_SlugType',
             columnNames: ['typeId'],
             referencedTableName: 'type',
             referencedColumnNames: ['id'],
@@ -49,7 +53,7 @@ export class CreateSlugTable1721289668430 implements MigrationInterface {
             onUpdate: 'CASCADE',
           },
           {
-            name: 'FK_Support',
+            name: 'FK_SlugSupport',
             columnNames: ['supportId'],
             referencedTableName: 'support',
             referencedColumnNames: ['id'],
@@ -57,7 +61,7 @@ export class CreateSlugTable1721289668430 implements MigrationInterface {
             onUpdate: 'CASCADE',
           },
           {
-            name: 'FK_Zone',
+            name: 'FK_SlugZone',
             columnNames: ['zoneId'],
             referencedTableName: 'zone',
             referencedColumnNames: ['id'],
@@ -67,6 +71,23 @@ export class CreateSlugTable1721289668430 implements MigrationInterface {
         ],
       }),
       true,
+    );
+
+    await Promise.all(
+      slugData.map((slug: Slug): Promise<InsertResult> => {
+        return dataSource
+          .createQueryBuilder()
+          .insert()
+          .into(Slug)
+          .values({
+            id: slug.id,
+            slug: slug.slug,
+            typeId: slug.typeId,
+            supportId: slug.supportId,
+            zoneId: slug.zoneId,
+          })
+          .execute();
+      }),
     );
   }
 

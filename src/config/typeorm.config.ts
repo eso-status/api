@@ -2,12 +2,6 @@ import { config } from 'dotenv';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { SeederOptions } from 'typeorm-extension';
 
-import { ServiceSeeder } from '../database/seeds/service.seeder';
-import { SlugSeeder } from '../database/seeds/slug.seeder';
-import { StatusSeeder } from '../database/seeds/status.seeder';
-import { SupportSeeder } from '../database/seeds/support.seeder';
-import { TypeSeeder } from '../database/seeds/type.seeder';
-import { ZoneSeeder } from '../database/seeds/zone.seeder';
 import { Service } from '../resource/service/entities/service.entity';
 import { Slug } from '../resource/slug/entities/slug.entity';
 import { Status } from '../resource/status/entities/status.entity';
@@ -23,14 +17,7 @@ export const dataSourceOptions: DataSourceOptions & SeederOptions = {
   synchronize: false,
   entities: [Type, Zone, Support, Slug, Status, Service],
   migrations: ['dist/database/migrations/*.js'],
-  seeds: [
-    TypeSeeder,
-    ZoneSeeder,
-    SupportSeeder,
-    SlugSeeder,
-    StatusSeeder,
-    ServiceSeeder,
-  ],
+  seeds: [],
   factories: [],
   migrationsRun: false,
   logging: process.env.DB_DEBUG === 'true',

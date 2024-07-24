@@ -1,5 +1,9 @@
-import { MigrationInterface, QueryRunner } from 'typeorm';
+import { InsertResult, MigrationInterface, QueryRunner } from 'typeorm';
 import { Table } from 'typeorm/schema-builder/table/Table';
+
+import { dataSource } from '../../config/typeorm.config';
+import { Status } from '../../resource/status/entities/status.entity';
+import { statusData } from '../data/status.data';
 
 export class CreateStatusTable1721316943556 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -23,6 +27,20 @@ export class CreateStatusTable1721316943556 implements MigrationInterface {
         ],
       }),
       true,
+    );
+
+    await Promise.all(
+      statusData.map((status: Status): Promise<InsertResult> => {
+        return dataSource
+          .createQueryBuilder()
+          .insert()
+          .into(Status)
+          .values({
+            id: status.id,
+            status: status.status,
+          })
+          .execute();
+      }),
     );
   }
 

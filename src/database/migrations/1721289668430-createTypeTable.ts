@@ -1,7 +1,11 @@
-import { MigrationInterface, QueryRunner } from 'typeorm';
+import { InsertResult, MigrationInterface, QueryRunner } from 'typeorm';
 import { Table } from 'typeorm/schema-builder/table/Table';
 
-export class CreateTypeTable1721301846590 implements MigrationInterface {
+import { dataSource } from '../../config/typeorm.config';
+import { Type } from '../../resource/type/entities/type.entity';
+import { typeData } from '../data/type.data';
+
+export class CreateTypeTable1721289668430 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -23,6 +27,20 @@ export class CreateTypeTable1721301846590 implements MigrationInterface {
         ],
       }),
       true,
+    );
+
+    await Promise.all(
+      typeData.map((type: Type): Promise<InsertResult> => {
+        return dataSource
+          .createQueryBuilder()
+          .insert()
+          .into(Type)
+          .values({
+            id: type.id,
+            type: type.type,
+          })
+          .execute();
+      }),
     );
   }
 

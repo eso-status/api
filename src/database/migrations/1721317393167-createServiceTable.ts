@@ -1,5 +1,9 @@
-import { MigrationInterface, QueryRunner } from 'typeorm';
+import { InsertResult, MigrationInterface, QueryRunner } from 'typeorm';
 import { Table } from 'typeorm/schema-builder/table/Table';
+
+import { dataSource } from '../../config/typeorm.config';
+import { Service } from '../../resource/service/entities/service.entity';
+import { serviceData } from '../data/service.data';
 
 export class CreateServiceTable1721317393167 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -63,7 +67,7 @@ export class CreateServiceTable1721317393167 implements MigrationInterface {
         ],
         foreignKeys: [
           {
-            name: 'FK_Slug',
+            name: 'FK_ServiceSlug',
             columnNames: ['slugId'],
             referencedTableName: 'slug',
             referencedColumnNames: ['id'],
@@ -71,7 +75,7 @@ export class CreateServiceTable1721317393167 implements MigrationInterface {
             onUpdate: 'CASCADE',
           },
           {
-            name: 'FK_Status',
+            name: 'FK_ServiceStatus',
             columnNames: ['statusId'],
             referencedTableName: 'status',
             referencedColumnNames: ['id'],
@@ -79,7 +83,7 @@ export class CreateServiceTable1721317393167 implements MigrationInterface {
             onUpdate: 'CASCADE',
           },
           {
-            name: 'FK_Type',
+            name: 'FK_ServiceType',
             columnNames: ['typeId'],
             referencedTableName: 'type',
             referencedColumnNames: ['id'],
@@ -87,7 +91,7 @@ export class CreateServiceTable1721317393167 implements MigrationInterface {
             onUpdate: 'CASCADE',
           },
           {
-            name: 'FK_Support',
+            name: 'FK_ServiceSupport',
             columnNames: ['supportId'],
             referencedTableName: 'support',
             referencedColumnNames: ['id'],
@@ -95,7 +99,7 @@ export class CreateServiceTable1721317393167 implements MigrationInterface {
             onUpdate: 'CASCADE',
           },
           {
-            name: 'FK_Zone',
+            name: 'FK_ServiceZone',
             columnNames: ['zoneId'],
             referencedTableName: 'zone',
             referencedColumnNames: ['id'],
@@ -105,6 +109,25 @@ export class CreateServiceTable1721317393167 implements MigrationInterface {
         ],
       }),
       true,
+    );
+
+    await Promise.all(
+      serviceData.map((service: Service): Promise<InsertResult> => {
+        return dataSource
+          .createQueryBuilder()
+          .insert()
+          .into(Service)
+          .values({
+            id: service.id,
+            slugId: service.slugId,
+            typeId: service.typeId,
+            supportId: service.supportId,
+            zoneId: service.zoneId,
+            statusId: service.statusId,
+            rawData: service.rawData,
+          })
+          .execute();
+      }),
     );
   }
 
