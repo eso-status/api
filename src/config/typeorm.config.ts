@@ -12,7 +12,11 @@ import { Zone } from '../resource/zone/entities/zone.entity';
 config();
 
 export const dataSourceOptions: DataSourceOptions & SeederOptions = {
-  type: <'sqlite' | 'mysql'>process.env.DB_TYPE,
+  type: <'mysql'>process.env.DB_TYPE,
+  host: process.env.DB_HOST,
+  port: Number(process.env.DB_PORT),
+  username: process.env.DB_USER,
+  password: process.env.DB_USER,
   database: process.env.DB_NAME,
   synchronize: false,
   entities: [Type, Zone, Support, Slug, Status, Service],

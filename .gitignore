@@ -59,3 +59,8 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # Database
 /src/database/dev
+
+# SSL
+/private.key
+/certificate.crt
+/ca_bundle.crt

@@ -1,0 +1,47 @@
+services:
+#  node_api_eso_status:
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '0.5'
+#          memory: 1G
+#    env_file: .env
+#    container_name: node_api_eso_status
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    depends_on:
+#      mysql_api_eso_status:
+#        condition: service_healthy
+#    volumes:
+#      - ./:/app
+#    ports:
+#      - "443:443"
+  mysql_api_eso_status:
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1024M
+    env_file: .env
+    image: mysql:8.0.28
+    container_name: mysql_api_eso_status
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: $DB_NAME
+      MYSQL_USER: $DB_USER
+      MYSQL_PASSWORD: $DB_PASSWORD
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost", "-uroot", "-proot" ]
+      interval: 0.5s
+      timeout: 1s
+      retries: 30
+  pma_api_eso_status:
+    container_name: pma_api_eso_status
+    image: phpmyadmin:5.2.1
+    environment:
+      PMA_HOST: $DB_HOST
+    ports:
+      - "80:80"
