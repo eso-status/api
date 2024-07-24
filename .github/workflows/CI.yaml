@@ -5,6 +5,11 @@ on:
     branches:
       - "*"
 
+env:
+  DB_DATABASE: test_db
+  DB_USER: root
+  DB_PASSWORD: root
+
 jobs:
   ci:
     name: CI
@@ -23,6 +28,11 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
+      - name: Start MySQL
+        run: |
+          sudo /etc/init.d/mysql start
+          mysql -e "CREATE DATABASE IF NOT EXISTS $DB_DATABASE;" -u$DB_USER -p$DB_PASSWORD
+
       - name: Create env file
         run: |
           cat .env.example > .env
@@ -37,7 +47,7 @@ jobs:
           sed -i -e "s/__DB_TYPE__/mysql/g" ./.env
           sed -i -e "s/__DB_HOST__/localhost/g" ./.env
           sed -i -e "s/__DB_PORT__/3306/g" ./.env
-          sed -i -e "s/__DB_NAME__/eso-status/g" ./.env
+          sed -i -e "s/__DB_NAME__/test_db/g" ./.env
           sed -i -e "s/__DB_USER__/root/g" ./.env
           sed -i -e "s/__DB_PASSWORD__/root/g" ./.env
           sed -i -e "s/__DB_DEBUG__/$DB_DEBUG/g" ./.env
