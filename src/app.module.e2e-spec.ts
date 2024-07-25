@@ -71,11 +71,6 @@ describe('AppModule (e2e)', (): void => {
 
     await app.init();
 
-    await dataSource.initialize();
-    // await dataSource.dropDatabase();
-    // await dataSource.runMigrations();
-    // await runSeeders(dataSource);
-
     serviceRepository = dataSource.getRepository(Service);
     archiveRepository = dataSource.getRepository(Archive);
 
@@ -98,6 +93,11 @@ describe('AppModule (e2e)', (): void => {
   });
 
   it('should update event received from client 1', async (): Promise<void> => {
+    await dataSource.initialize();
+    await dataSource.dropDatabase();
+    await dataSource.runMigrations();
+    await runSeeders(dataSource);
+
     await new Promise<void>((resolve): void => {
       const queueItem: EsoStatus = {
         slug: 'service_store_eso',
@@ -149,6 +149,11 @@ describe('AppModule (e2e)', (): void => {
   });
 
   it('should update event received from client 2', async (): Promise<void> => {
+    await dataSource.initialize();
+    await dataSource.dropDatabase();
+    await dataSource.runMigrations();
+    await runSeeders(dataSource);
+
     await new Promise<void>((resolve): void => {
       const queueItem: EsoStatus = {
         slug: 'service_store_eso',
