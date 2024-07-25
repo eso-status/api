@@ -66,7 +66,7 @@ describe('QueueService (e2e)', (): void => {
       .mockImplementation((): Server => serverSocket);
 
     clientSocket = io(`ws://${process.env.APP_HOST}:${process.env.APP_PORT}`, {
-      secure: true,
+      secure: process.env.APP_PROTOCOL === 'https',
       rejectUnauthorized: false,
       transports: ['websocket'],
     });
