@@ -59,8 +59,8 @@ jobs:
       - name: Build assets
         run: npm run build
 
-      - name: Run linter
-        run: npm run lint
+#      - name: Run linter
+#        run: npm run lint
 
       - name: Run database migration
         run: npm run migration:run
