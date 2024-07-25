@@ -418,7 +418,7 @@ describe('AppModule (e2e)', (): void => {
       },
     ];
 
-    expect(scrapingService.queueService.getQueue()).toStrictEqual([]);
+    expect(scrapingService.queueService.getRawQueue()).toStrictEqual([]);
 
     let pcNa: Service = await serviceRepository.findOne({
       where: {
@@ -624,7 +624,7 @@ describe('AppModule (e2e)', (): void => {
       },
     ];
 
-    expect(scrapingService.queueService.getQueue()).toStrictEqual(expectQueue);
+    expect(scrapingService.queueService.getRawQueue()).toStrictEqual(expectQueue);
 
     await new Promise<void>((resolve): void => {
       clientSocket.on('statusUpdate', (data: EsoStatus[]): void => {
@@ -640,7 +640,7 @@ describe('AppModule (e2e)', (): void => {
     expect(isQueueEmpty).toHaveBeenCalledTimes(1);
     expect(isQueueEmpty).toHaveNthReturnedWith(1, false);
 
-    expect(scrapingService.queueService.getQueue()).toStrictEqual([]);
+    expect(scrapingService.queueService.getRawQueue()).toStrictEqual([]);
 
     await scrapingService.handleForumMessage();
 
@@ -790,7 +790,7 @@ describe('AppModule (e2e)', (): void => {
 
     expect(getQueue).toHaveBeenCalledTimes(8);
 
-    expect(scrapingService.queueService.getQueue()).toStrictEqual([]);
+    expect(scrapingService.queueService.getRawQueue()).toStrictEqual([]);
 
     scrapingService.doQueue();
 
@@ -935,7 +935,7 @@ describe('AppModule (e2e)', (): void => {
 
     expect(getQueue).toHaveBeenCalledTimes(10);
 
-    expect(scrapingService.queueService.getQueue()).toStrictEqual([]);
+    expect(scrapingService.queueService.getRawQueue()).toStrictEqual([]);
 
     scrapingService.doQueue();
 
@@ -1114,7 +1114,7 @@ describe('AppModule (e2e)', (): void => {
       },
     ];
 
-    expect(scrapingService.queueService.getQueue()).toStrictEqual(expectQueue);
+    expect(scrapingService.queueService.getRawQueue()).toStrictEqual(expectQueue);
 
     await new Promise<void>((resolve): void => {
       clientSocket.on('statusUpdate', (data: EsoStatus[]): void => {
@@ -1130,7 +1130,7 @@ describe('AppModule (e2e)', (): void => {
     expect(isQueueEmpty).toHaveBeenCalledTimes(4);
     expect(isQueueEmpty).toHaveNthReturnedWith(4, false);
 
-    expect(scrapingService.queueService.getQueue()).toStrictEqual([]);
+    expect(scrapingService.queueService.getRawQueue()).toStrictEqual([]);
 
     await scrapingService.handleForumMessage();
 
@@ -1280,7 +1280,7 @@ describe('AppModule (e2e)', (): void => {
 
     expect(getQueue).toHaveBeenCalledTimes(19);
 
-    expect(scrapingService.queueService.getQueue()).toStrictEqual([]);
+    expect(scrapingService.queueService.getRawQueue()).toStrictEqual([]);
 
     scrapingService.doQueue();
 
@@ -1424,7 +1424,7 @@ describe('AppModule (e2e)', (): void => {
 
     expect(getQueue).toHaveBeenCalledTimes(21);
 
-    expect(scrapingService.queueService.getQueue()).toStrictEqual([]);
+    expect(scrapingService.queueService.getRawQueue()).toStrictEqual([]);
 
     scrapingService.doQueue();
 
