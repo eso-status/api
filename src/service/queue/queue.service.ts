@@ -1,4 +1,4 @@
-import { EsoStatus } from '@eso-status/types';
+import { EsoStatus, Slug } from '@eso-status/types';
 import { Injectable } from '@nestjs/common';
 
 import { config } from 'dotenv';
@@ -18,7 +18,7 @@ export class QueueService {
   private queue: EsoStatus[] = [];
 
   public getQueue(): EsoStatus[] {
-    return Object.values(this.queue);
+    return this.queue;
   }
 
   public setQueue(esoStatusList: EsoStatus[]): void {
@@ -33,15 +33,12 @@ export class QueueService {
    */
   public updateQueue(esoStatus: EsoStatus): void {
     const queue: EsoStatus[] = this.getQueue();
-    const index: number = queue.findIndex(
-      (item: EsoStatus): boolean => item.slug === esoStatus.slug,
-    );
-    queue[index] = esoStatus;
+    queue[esoStatus.slug] = esoStatus;
     this.setQueue(queue);
   }
 
   public isQueueEmpty(): boolean {
-    return this.getQueue().length === 0;
+    return Object.values(this.getQueue()).length === 0;
   }
 
   /**
@@ -55,14 +52,16 @@ export class QueueService {
 
     // Emit update event with queue data
     // Return function if event emit failed
-    this.websocketService.getServer().emit('statusUpdate', this.getQueue());
+    this.websocketService
+      .getServer()
+      .emit('statusUpdate', Object.values(this.getQueue()));
 
     // Write log with details (slug with new status)
     this.winstonService.log(
-      `Service(s) (${this.getQueue()
+      `Service(s) (${Object.entries(this.getQueue())
         .map(
-          (esoStatus: EsoStatus): string =>
-            `${esoStatus.slug}(${esoStatus.status})`,
+          (esoStatus: [Slug, EsoStatus]): string =>
+            `${esoStatus[0]}(${esoStatus[1].status})`,
         )
         .join(', ')}) status update event emitted`,
       'QueueService.pushQueue',
