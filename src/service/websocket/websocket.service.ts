@@ -8,7 +8,7 @@ config();
   cors: {
     origin: '*',
   },
-  secure: process.env.APP_PROTOCOL === 'https',
+  secure: true,
   transports: ['websocket'],
 })
 export class WebsocketService {

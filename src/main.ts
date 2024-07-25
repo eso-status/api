@@ -1,7 +1,6 @@
 import * as fs from 'node:fs';
 
 import { INestApplication } from '@nestjs/common';
-import { NestApplicationOptions } from '@nestjs/common/interfaces/nest-application-options.interface';
 import { NestFactory } from '@nestjs/core';
 import { config } from 'dotenv';
 
@@ -21,19 +20,14 @@ async function bootstrap() {
     await runSeeders(dataSource);
   }
 
-  const options: NestApplicationOptions = {
+  const app: INestApplication = await NestFactory.create(AppModule, {
     logger: new WinstonService(),
-  };
-
-  if (process.env.APP_PROTOCOL === 'https') {
-    options.httpsOptions = {
+    httpsOptions: {
       key: fs.readFileSync('private.key'),
       cert: fs.readFileSync('certificate.crt'),
       ca: fs.readFileSync('ca_bundle.crt'),
-    };
-  }
-
-  const app: INestApplication = await NestFactory.create(AppModule, options);
+    },
+  });
 
   await app.listen(process.env.APP_PORT);
 }
