@@ -8,5 +8,10 @@ COPY ./.env.example .
 COPY ./package.json .
 COPY ./start.sh /tmp/start.sh
 
+RUN chown node:node -R ./
+RUN chown node:node -R /tmp/start.sh
+
+USER node
+
 # Execute start script
 ENTRYPOINT ["/bin/sh", "/tmp/start.sh"]

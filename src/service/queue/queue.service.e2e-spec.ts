@@ -5,8 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from 'dotenv';
 import * as moment from 'moment';
 import { Server } from 'socket.io';
-import { Socket } from 'socket.io-client';
-import * as io from 'socket.io-client';
+import { Socket, io } from 'socket.io-client';
 
 import { dataSourceOptions } from '../../config/typeorm.config';
 import { ArchiveService } from '../../resource/archive/archive.service';
@@ -60,9 +59,11 @@ describe('QueueService (e2e)', (): void => {
       .spyOn(websocketService, 'getServer')
       .mockImplementation((): Server => serverSocket);
 
-    clientSocket = io.connect(
-      `${process.env.APP_PROTOCOL}://${process.env.APP_HOST}:${process.env.APP_PORT}`,
-    );
+    clientSocket = io(`ws://${process.env.APP_HOST}:${process.env.APP_PORT}`, {
+      secure: true,
+      rejectUnauthorized: false,
+      transports: ['websocket'],
+    });
 
     await app.init();
 
@@ -71,7 +72,7 @@ describe('QueueService (e2e)', (): void => {
         resolve();
       });
     });
-  });
+  }, 15000);
 
   afterEach(async (): Promise<void> => {
     await app.close();
