@@ -18,8 +18,8 @@ import { Zone } from '../resource/zone/entities/zone.entity';
 
 config();
 
-export const dataSourceOptions: DataSourceOptions & SeederOptions = {
-  type: <'sqlite' | 'mysql'>process.env.DB_TYPE,
+const sqliteDataSourceOptions: DataSourceOptions & SeederOptions = {
+  type: <'sqlite'>process.env.DB_TYPE,
   database: process.env.DB_NAME,
   synchronize: false,
   entities: [Type, Zone, Support, Slug, Status, Service, Archive],
@@ -37,5 +37,34 @@ export const dataSourceOptions: DataSourceOptions & SeederOptions = {
   logging: process.env.DB_DEBUG === 'true',
   dropSchema: false,
 };
+
+const mysqlDataSourceOptions: DataSourceOptions & SeederOptions = {
+  type: <'mysql'>process.env.DB_TYPE,
+  host: process.env.DB_HOST,
+  port: Number(process.env.DB_PORT),
+  username: process.env.DB_USER,
+  password: process.env.DB_USER,
+  database: process.env.DB_NAME,
+  synchronize: false,
+  entities: [Type, Zone, Support, Slug, Status, Service, Archive],
+  migrations: ['dist/database/migrations/*.js'],
+  seeds: [
+    TypeSeeder,
+    ZoneSeeder,
+    SupportSeeder,
+    StatusSeeder,
+    SlugSeeder,
+    ServiceSeeder,
+  ],
+  factories: [],
+  migrationsRun: false,
+  logging: process.env.DB_DEBUG === 'true',
+  dropSchema: false,
+};
+
+export const dataSourceOptions: DataSourceOptions & SeederOptions =
+  process.env.DB_TYPE === 'sqlite'
+    ? sqliteDataSourceOptions
+    : mysqlDataSourceOptions;
 
 export const dataSource: DataSource = new DataSource(dataSourceOptions);
