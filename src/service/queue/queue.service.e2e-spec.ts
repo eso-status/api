@@ -9,6 +9,8 @@ import { Socket } from 'socket.io-client';
 import * as io from 'socket.io-client';
 
 import { dataSourceOptions } from '../../config/typeorm.config';
+import { ArchiveService } from '../../resource/archive/archive.service';
+import { Archive } from '../../resource/archive/entities/archive.entity';
 import { Service } from '../../resource/service/entities/service.entity';
 import { ServiceService } from '../../resource/service/service.service';
 import { Status } from '../../resource/status/entities/status.entity';
@@ -34,7 +36,7 @@ describe('QueueService (e2e)', (): void => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         TypeOrmModule.forRoot(dataSourceOptions),
-        TypeOrmModule.forFeature([Service, Status]),
+        TypeOrmModule.forFeature([Service, Status, Archive]),
       ],
       providers: [
         QueueService,
@@ -42,6 +44,7 @@ describe('QueueService (e2e)', (): void => {
         WinstonService,
         ScrapingService,
         ServiceService,
+        ArchiveService,
         StatusService,
       ],
     }).compile();

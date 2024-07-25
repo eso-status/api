@@ -3,6 +3,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { DatabaseModule } from './database/database.module';
+import { ArchiveModule } from './resource/archive/archive.module';
 import { ServiceModule } from './resource/service/service.module';
 import { Slug } from './resource/slug/entities/slug.entity';
 import { StatusModule } from './resource/status/status.module';
@@ -20,6 +21,7 @@ import { WinstonService } from './service/winston/winston.service';
     StatusModule,
     DatabaseModule,
     ServiceModule,
+    ArchiveModule,
     ScheduleModule.forRoot(),
   ],
   controllers: [],

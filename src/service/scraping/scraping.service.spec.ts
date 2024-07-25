@@ -21,6 +21,8 @@ import {
   serviceAlertEsoStatusList,
 } from '../../database/data/serviceAlerts.data';
 
+import { ArchiveService } from '../../resource/archive/archive.service';
+import { Archive } from '../../resource/archive/entities/archive.entity';
 import { Service } from '../../resource/service/entities/service.entity';
 import { ServiceService } from '../../resource/service/service.service';
 import { Status } from '../../resource/status/entities/status.entity';
@@ -40,12 +42,13 @@ describe('ScrapingService', (): void => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         TypeOrmModule.forRoot(dataSourceOptions),
-        TypeOrmModule.forFeature([Service, Status]),
+        TypeOrmModule.forFeature([Service, Status, Archive]),
       ],
       providers: [
         ScrapingService,
         QueueService,
         ServiceService,
+        ArchiveService,
         StatusService,
         WinstonService,
         WebsocketService,

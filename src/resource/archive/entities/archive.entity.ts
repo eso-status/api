@@ -1,13 +1,12 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
-  OneToMany,
-  PrimaryColumn,
-  UpdateDateColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { Archive } from '../../archive/entities/archive.entity';
+import { Service } from '../../service/entities/service.entity';
 import { Slug } from '../../slug/entities/slug.entity';
 import { Status } from '../../status/entities/status.entity';
 import { Support } from '../../support/entities/support.entity';
@@ -15,14 +14,17 @@ import { Type } from '../../type/entities/type.entity';
 import { Zone } from '../../zone/entities/zone.entity';
 
 @Entity({ synchronize: false })
-export class Service {
-  @PrimaryColumn({
+export class Archive {
+  @PrimaryGeneratedColumn({
     type: 'int',
   })
   id: number;
 
   @Column({ type: 'int', nullable: false })
   slugId?: number;
+
+  @Column({ type: 'int', nullable: false })
+  serviceId?: number;
 
   @Column({ type: 'int', nullable: false })
   statusId?: number;
@@ -39,12 +41,14 @@ export class Service {
   @Column({ type: 'text', nullable: false })
   rawData: string;
 
-  @UpdateDateColumn({
+  @CreateDateColumn({
     type: 'datetime',
     default: (): string => 'CURRENT_TIMESTAMP',
-    onUpdate: 'CURRENT_TIMESTAMP',
   })
-  updatedAt?: Date;
+  createdAt?: Date;
+
+  @ManyToOne(() => Service)
+  service?: Service;
 
   @ManyToOne(() => Slug)
   slug?: Slug;
@@ -60,7 +64,4 @@ export class Service {
 
   @ManyToOne(() => Zone)
   zone?: Zone;
-
-  @OneToMany(() => Archive, archive => archive.service)
-  archives?: Archive[];
 }

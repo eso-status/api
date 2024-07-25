@@ -11,6 +11,7 @@ import { Injectable } from '@nestjs/common';
 import { Interval } from '@nestjs/schedule';
 import { config } from 'dotenv';
 
+import { ArchiveService } from '../../resource/archive/archive.service';
 import { Service } from '../../resource/service/entities/service.entity';
 import { ServiceService } from '../../resource/service/service.service';
 import { Status } from '../../resource/status/entities/status.entity';
@@ -25,9 +26,39 @@ export class ScrapingService {
   constructor(
     private readonly queueService: QueueService,
     private readonly serviceService: ServiceService,
+    private readonly archiveService: ArchiveService,
     private readonly statusService: StatusService,
     private readonly winstonService: WinstonService,
   ) {}
+
+  /**
+   * Method used to check if status change of an EsoStatus
+   *
+   * @param esoStatusFromScraping
+   * @param esoStatusFromDatabase
+   * @private
+   * @return true => if EsoStatus status is different in this.old list
+   */
+  private slugChanged(
+    esoStatusFromScraping: EsoStatus,
+    esoStatusFromDatabase: Service,
+  ): boolean {
+    return esoStatusFromScraping.status !== esoStatusFromDatabase.status.status;
+  }
+
+  private rawChanged(
+    esoStatusFromScraping: EsoStatus,
+    esoStatusFromDatabase: Service,
+  ): boolean {
+    if (esoStatusFromDatabase.archives.length === 0) {
+      return true;
+    }
+
+    return (
+      esoStatusFromDatabase.archives[0].rawData !==
+      JSON.stringify(esoStatusFromScraping.raw)
+    );
+  }
 
   /**
    * Method used to check if status change of an EsoStatus
@@ -41,7 +72,10 @@ export class ScrapingService {
     esoStatusFromScraping: EsoStatus,
     esoStatusFromDatabase: Service,
   ): boolean {
-    return esoStatusFromScraping.status !== esoStatusFromDatabase.status.status;
+    return (
+      this.slugChanged(esoStatusFromScraping, esoStatusFromDatabase) &&
+      this.rawChanged(esoStatusFromScraping, esoStatusFromDatabase)
+    );
   }
 
   /**
@@ -85,6 +119,9 @@ export class ScrapingService {
     const newStatus: Status = await this.statusService.findByStatus(
       esoStatus.status,
     );
+
+    // Add old service in archive table
+    await this.archiveService.add(service);
 
     // Update service status in database
     await this.serviceService.update(service.id, newStatus.id, esoStatus.raw);

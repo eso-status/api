@@ -2,6 +2,7 @@ import { config } from 'dotenv';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { SeederOptions } from 'typeorm-extension';
 
+import { Archive } from '../resource/archive/entities/archive.entity';
 import { Service } from '../resource/service/entities/service.entity';
 import { Slug } from '../resource/slug/entities/slug.entity';
 import { Status } from '../resource/status/entities/status.entity';
@@ -19,7 +20,7 @@ export const dataSourceOptions: DataSourceOptions & SeederOptions = {
   password: process.env.DB_USER,
   database: process.env.DB_NAME,
   synchronize: false,
-  entities: [Type, Zone, Support, Slug, Status, Service],
+  entities: [Type, Zone, Support, Slug, Status, Service, Archive],
   migrations: ['dist/database/migrations/*.js'],
   seeds: [],
   factories: [],

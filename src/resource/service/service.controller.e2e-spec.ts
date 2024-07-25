@@ -19,8 +19,6 @@ describe('ServiceController (e2e)', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [TypeOrmModule.forRoot(dataSourceOptions), ServiceModule],
     }).compile();
-
-    await dataSource.initialize();
     await dataSource.dropDatabase();
     await dataSource.runMigrations();
 
