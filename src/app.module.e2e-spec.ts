@@ -71,10 +71,10 @@ describe('AppModule (e2e)', (): void => {
 
     await app.init();
 
-    // await dataSource.initialize();
-    // await dataSource.dropDatabase();
-    // await dataSource.runMigrations();
-    // await runSeeders(dataSource);
+    await dataSource.initialize();
+    await dataSource.dropDatabase();
+    await dataSource.runMigrations();
+    await runSeeders(dataSource);
 
     serviceRepository = dataSource.getRepository(Service);
     archiveRepository = dataSource.getRepository(Archive);
@@ -88,7 +88,7 @@ describe('AppModule (e2e)', (): void => {
 
   afterEach(async (): Promise<void> => {
     await app.close();
-    // await dataSource.destroy();
+    await dataSource.destroy();
     clientSocket.disconnect();
     await new Promise<void>((resolve): void => {
       serverSocket.close((): void => {
