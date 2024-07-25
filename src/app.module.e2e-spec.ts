@@ -579,7 +579,7 @@ describe('QueueService (e2e)', (): void => {
     expect(pcEu.statusId).toEqual(2);
 
     expect(updateQueue).toHaveBeenCalledTimes(2);
-    expect(getQueue).toHaveBeenCalledTimes(3); // TODO to check
+    expect(getQueue).toHaveBeenCalledTimes(3);
     expect(setQueue).toHaveBeenCalledTimes(2);
 
     let expectQueue: any = [
@@ -787,7 +787,7 @@ describe('QueueService (e2e)', (): void => {
     expect(pcNa.updatedAt).toStrictEqual(firstUpdateDate);
     expect(pcEu.updatedAt).toStrictEqual(firstUpdateDate);
 
-    expect(getQueue).toHaveBeenCalledTimes(8); // TODO to check
+    expect(getQueue).toHaveBeenCalledTimes(8);
 
     expect(scrapingService.queueService.getQueue()).toStrictEqual([]);
 
@@ -932,7 +932,7 @@ describe('QueueService (e2e)', (): void => {
     expect(pcNa.updatedAt).toStrictEqual(firstUpdateDate);
     expect(pcEu.updatedAt).toStrictEqual(firstUpdateDate);
 
-    expect(getQueue).toHaveBeenCalledTimes(10); // TODO to check
+    expect(getQueue).toHaveBeenCalledTimes(10);
 
     expect(scrapingService.queueService.getQueue()).toStrictEqual([]);
 
@@ -1069,7 +1069,7 @@ describe('QueueService (e2e)', (): void => {
     expect(pcEu.statusId).toEqual(1);
 
     expect(updateQueue).toHaveBeenCalledTimes(4);
-    expect(getQueue).toHaveBeenCalledTimes(14); // TODO to check
+    expect(getQueue).toHaveBeenCalledTimes(14);
     expect(setQueue).toHaveBeenCalledTimes(5);
 
     expectQueue = [
@@ -1277,7 +1277,7 @@ describe('QueueService (e2e)', (): void => {
     expect(pcNa.updatedAt).toStrictEqual(secondUpdateDate);
     expect(pcEu.updatedAt).toStrictEqual(secondUpdateDate);
 
-    expect(getQueue).toHaveBeenCalledTimes(19); // TODO to check
+    expect(getQueue).toHaveBeenCalledTimes(19);
 
     expect(scrapingService.queueService.getQueue()).toStrictEqual([]);
 
@@ -1421,7 +1421,7 @@ describe('QueueService (e2e)', (): void => {
     expect(pcNa.updatedAt).toStrictEqual(secondUpdateDate);
     expect(pcEu.updatedAt).toStrictEqual(secondUpdateDate);
 
-    expect(getQueue).toHaveBeenCalledTimes(21); // TODO to check
+    expect(getQueue).toHaveBeenCalledTimes(21);
 
     expect(scrapingService.queueService.getQueue()).toStrictEqual([]);
 
