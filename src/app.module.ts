@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { DatabaseModule } from './database/database.module';
+import { dataSourceOptions } from './config/typeorm.config';
 import { ArchiveModule } from './resource/archive/archive.module';
 import { ServiceModule } from './resource/service/service.module';
 import { Slug } from './resource/slug/entities/slug.entity';
@@ -17,9 +17,9 @@ import { WinstonService } from './service/winston/winston.service';
 
 @Module({
   imports: [
+    TypeOrmModule.forRoot(dataSourceOptions),
     TypeOrmModule.forFeature([Zone, Type, Support, Slug]),
     StatusModule,
-    DatabaseModule,
     ServiceModule,
     ArchiveModule,
     ScheduleModule.forRoot(),
