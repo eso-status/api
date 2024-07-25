@@ -28,11 +28,6 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
-      - name: Start MySQL
-        run: |
-          sudo /etc/init.d/mysql start
-          mysql -e "CREATE DATABASE IF NOT EXISTS $DB_DATABASE;" -u$DB_USER -p$DB_PASSWORD
-
       - name: Create env file
         run: |
           cat .env.example > .env
