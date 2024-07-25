@@ -71,13 +71,13 @@ describe('AppModule (e2e)', (): void => {
 
     await app.init();
 
-    await dataSource.initialize();
-    await dataSource.dropDatabase();
-    await dataSource.runMigrations();
-    await runSeeders(dataSource);
+    // await dataSource.initialize();
+    // await dataSource.dropDatabase();
+    // await dataSource.runMigrations();
+    // await runSeeders(dataSource);
 
-    serviceRepository = dataSource.getRepository(Service);
-    archiveRepository = dataSource.getRepository(Archive);
+    // serviceRepository = dataSource.getRepository(Service);
+    // archiveRepository = dataSource.getRepository(Archive);
 
     await new Promise<void>((resolve): void => {
       clientSocket.on('connect', (): void => {
