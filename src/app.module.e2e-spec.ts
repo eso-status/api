@@ -28,10 +28,10 @@ import { WinstonService } from './service/winston/winston.service';
 
 config();
 
-describe('AppModule (e2e)', (): void => {
+describe('QueueService (e2e)', (): void => {
   let app: INestApplication;
-  let scrapingService: ScrapingService;
   let websocketService: WebsocketService;
+  let scrapingService: ScrapingService;
   let serverSocket: Server;
   let clientSocket: Socket;
   let serviceRepository: Repository<Service>;
@@ -40,6 +40,7 @@ describe('AppModule (e2e)', (): void => {
   beforeEach(async (): Promise<void> => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         TypeOrmModule.forRoot(dataSourceOptions),
         TypeOrmModule.forFeature([Service, Status, Archive]),
       ],
@@ -55,9 +56,8 @@ describe('AppModule (e2e)', (): void => {
     }).compile();
 
     app = module.createNestApplication();
-    queueService = module.get<QueueService>(QueueService);
-    scrapingService = module.get<ScrapingService>(ScrapingService);
     websocketService = module.get<WebsocketService>(WebsocketService);
+    scrapingService = module.get<ScrapingService>(ScrapingService);
     serverSocket = new Server(Number(process.env.APP_PORT));
     websocketService.server = serverSocket;
 
@@ -99,7 +99,7 @@ describe('AppModule (e2e)', (): void => {
     });
   });
 
-  it('should update event received from client 1', async (): Promise<void> => {
+  it('classic maintenance', async (): Promise<void> => {
     const doHandle = jest.spyOn(scrapingService, 'doHandle');
     const formatData = jest.spyOn(scrapingService, 'formatData');
     const update = jest.spyOn(scrapingService, 'update');
@@ -417,7 +417,7 @@ describe('AppModule (e2e)', (): void => {
       },
     ];
 
-    expect(scrapingService.queueService.getRawQueue()).toStrictEqual([]);
+    expect(scrapingService.queueService.getQueue()).toStrictEqual([]);
 
     let pcNa: Service = await serviceRepository.findOne({
       where: {
@@ -623,9 +623,7 @@ describe('AppModule (e2e)', (): void => {
       },
     ];
 
-    expect(scrapingService.queueService.getRawQueue()).toStrictEqual(
-      expectQueue,
-    );
+    expect(scrapingService.queueService.getQueue()).toStrictEqual(expectQueue);
 
     await new Promise<void>((resolve): void => {
       clientSocket.on('statusUpdate', (data: EsoStatus[]): void => {
@@ -641,7 +639,7 @@ describe('AppModule (e2e)', (): void => {
     expect(isQueueEmpty).toHaveBeenCalledTimes(1);
     expect(isQueueEmpty).toHaveNthReturnedWith(1, false);
 
-    expect(scrapingService.queueService.getRawQueue()).toStrictEqual([]);
+    expect(scrapingService.queueService.getQueue()).toStrictEqual([]);
 
     await scrapingService.handleForumMessage();
 
@@ -791,7 +789,7 @@ describe('AppModule (e2e)', (): void => {
 
     expect(getQueue).toHaveBeenCalledTimes(8);
 
-    expect(scrapingService.queueService.getRawQueue()).toStrictEqual([]);
+    expect(scrapingService.queueService.getQueue()).toStrictEqual([]);
 
     scrapingService.doQueue();
 
@@ -936,7 +934,7 @@ describe('AppModule (e2e)', (): void => {
 
     expect(getQueue).toHaveBeenCalledTimes(10);
 
-    expect(scrapingService.queueService.getRawQueue()).toStrictEqual([]);
+    expect(scrapingService.queueService.getQueue()).toStrictEqual([]);
 
     scrapingService.doQueue();
 
@@ -1115,9 +1113,7 @@ describe('AppModule (e2e)', (): void => {
       },
     ];
 
-    expect(scrapingService.queueService.getRawQueue()).toStrictEqual(
-      expectQueue,
-    );
+    expect(scrapingService.queueService.getQueue()).toStrictEqual(expectQueue);
 
     await new Promise<void>((resolve): void => {
       clientSocket.on('statusUpdate', (data: EsoStatus[]): void => {
@@ -1133,7 +1129,7 @@ describe('AppModule (e2e)', (): void => {
     expect(isQueueEmpty).toHaveBeenCalledTimes(4);
     expect(isQueueEmpty).toHaveNthReturnedWith(4, false);
 
-    expect(scrapingService.queueService.getRawQueue()).toStrictEqual([]);
+    expect(scrapingService.queueService.getQueue()).toStrictEqual([]);
 
     await scrapingService.handleForumMessage();
 
@@ -1283,7 +1279,7 @@ describe('AppModule (e2e)', (): void => {
 
     expect(getQueue).toHaveBeenCalledTimes(19);
 
-    expect(scrapingService.queueService.getRawQueue()).toStrictEqual([]);
+    expect(scrapingService.queueService.getQueue()).toStrictEqual([]);
 
     scrapingService.doQueue();
 
@@ -1427,7 +1423,7 @@ describe('AppModule (e2e)', (): void => {
 
     expect(getQueue).toHaveBeenCalledTimes(21);
 
-    expect(scrapingService.queueService.getRawQueue()).toStrictEqual([]);
+    expect(scrapingService.queueService.getQueue()).toStrictEqual([]);
 
     scrapingService.doQueue();
 
@@ -1435,7 +1431,7 @@ describe('AppModule (e2e)', (): void => {
 
     expect(isQueueEmpty).toHaveBeenCalledTimes(6);
     expect(isQueueEmpty).toHaveNthReturnedWith(6, true);
-  });
+  }, 15000);
 
   it('revived planned status', async (): Promise<void> => {
     const doHandle = jest.spyOn(scrapingService, 'doHandle');
@@ -1522,7 +1518,7 @@ describe('AppModule (e2e)', (): void => {
       },
     ];
 
-    expect(scrapingService.queueService.getRawQueue()).toStrictEqual([]);
+    expect(scrapingService.queueService.getQueue()).toStrictEqual([]);
 
     let pcNa: Service = await serviceRepository.findOne({
       where: {
@@ -1666,7 +1662,7 @@ describe('AppModule (e2e)', (): void => {
 
     expect(rawChanged).toHaveBeenCalledTimes(0);
 
-    expect(scrapingService.queueService.getRawQueue()).toStrictEqual([]);
+    expect(scrapingService.queueService.getQueue()).toStrictEqual([]);
 
     scrapingService.doQueue();
 

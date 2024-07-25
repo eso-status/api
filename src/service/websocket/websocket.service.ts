@@ -1,5 +1,8 @@
 import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { config } from 'dotenv';
 import { Server } from 'socket.io';
+
+config();
 
 @WebSocketGateway({
   cors: {
