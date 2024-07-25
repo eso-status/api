@@ -44,12 +44,12 @@ jobs:
           sed -i -e "s/__SSL_PRIVATE__/$SSL_PRIVATE/g" ./.env
           sed -i -e "s/__SSL_CERTIFICATE__/$SSL_CERTIFICATE/g" ./.env
           sed -i -e "s/__SSL_CA_BUNDLE__/$SSL_CA_BUNDLE/g" ./.env
-          sed -i -e "s/__DB_TYPE__/mysql/g" ./.env
-          sed -i -e "s/__DB_HOST__/localhost/g" ./.env
-          sed -i -e "s/__DB_PORT__/3306/g" ./.env
-          sed -i -e "s/__DB_NAME__/test_db/g" ./.env
-          sed -i -e "s/__DB_USER__/root/g" ./.env
-          sed -i -e "s/__DB_PASSWORD__/root/g" ./.env
+          sed -i -e "s/__DB_TYPE__/sqlite/g" ./.env
+          sed -i -e "s/__DB_HOST__//g" ./.env
+          sed -i -e "s/__DB_PORT__//g" ./.env
+          sed -i -e "s#__DB_NAME__#src/database/dev#g" ./.env
+          sed -i -e "s/__DB_USER__//g" ./.env
+          sed -i -e "s/__DB_PASSWORD__//g" ./.env
           sed -i -e "s/__DB_DEBUG__/$DB_DEBUG/g" ./.env
           sed -i -e "s/__FORUM_MESSAGE_UPDATE_INTERVAL__/1000/g" ./.env
           sed -i -e "s/__LIVE_SERVICES_UPDATE_INTERVAL__/1000/g" ./.env
