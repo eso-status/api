@@ -624,7 +624,9 @@ describe('AppModule (e2e)', (): void => {
       },
     ];
 
-    expect(scrapingService.queueService.getRawQueue()).toStrictEqual(expectQueue);
+    expect(scrapingService.queueService.getRawQueue()).toStrictEqual(
+      expectQueue,
+    );
 
     await new Promise<void>((resolve): void => {
       clientSocket.on('statusUpdate', (data: EsoStatus[]): void => {
@@ -1114,7 +1116,9 @@ describe('AppModule (e2e)', (): void => {
       },
     ];
 
-    expect(scrapingService.queueService.getRawQueue()).toStrictEqual(expectQueue);
+    expect(scrapingService.queueService.getRawQueue()).toStrictEqual(
+      expectQueue,
+    );
 
     await new Promise<void>((resolve): void => {
       clientSocket.on('statusUpdate', (data: EsoStatus[]): void => {
