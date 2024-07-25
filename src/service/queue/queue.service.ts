@@ -17,6 +17,10 @@ export class QueueService {
 
   private queue: EsoStatus[] = [];
 
+  public getRawQueue(): EsoStatus[] {
+    return Object.values(this.getQueue());
+  }
+
   public getQueue(): EsoStatus[] {
     return this.queue;
   }
