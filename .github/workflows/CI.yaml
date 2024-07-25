@@ -38,7 +38,7 @@ jobs:
           sed -i -e "s/__NODE_ENV__/testing/g" ./.env
           sed -i -e "s/__APP_NAME__/eso-status/g" ./.env
           sed -i -e "s/__APP_PROTOCOL__/http/g" ./.env
-          sed -i -e "s/__APP_HOST__/localhost/g" ./.env
+          sed -i -e "s/__APP_HOST__/api.eso-status.local/g" ./.env
           sed -i -e "s/__APP_PORT__/3000/g" ./.env
           sed -i -e "s/__SSL_PRIVATE__//g" ./.env
           sed -i -e "s/__SSL_CERTIFICATE__//g" ./.env
