@@ -2,6 +2,7 @@ import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from 'dotenv';
+import { runSeeders } from 'typeorm-extension';
 
 import { dataSource, dataSourceOptions } from '../../config/typeorm.config';
 import { statusData } from '../../database/data/status.data';
@@ -26,13 +27,14 @@ describe('StatusService (e2e)', (): void => {
       providers: [StatusService],
     }).compile();
 
-    await dataSource.initialize();
-    await dataSource.dropDatabase();
-    await dataSource.runMigrations();
-
     app = module.createNestApplication();
     service = module.get<StatusService>(StatusService);
     await app.init();
+
+    await dataSource.initialize();
+    await dataSource.dropDatabase();
+    await dataSource.runMigrations();
+    await runSeeders(dataSource);
   });
 
   afterEach(async (): Promise<void> => {

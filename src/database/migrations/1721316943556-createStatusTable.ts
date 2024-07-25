@@ -1,10 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 import { Table } from 'typeorm/schema-builder/table/Table';
 
-import { dataSource } from '../../config/typeorm.config';
-import { Status } from '../../resource/status/entities/status.entity';
-import { statusData } from '../data/status.data';
-
 export class CreateStatusTable1721316943556 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
@@ -28,21 +24,6 @@ export class CreateStatusTable1721316943556 implements MigrationInterface {
       }),
       true,
     );
-
-    await dataSource.initialize();
-
-    await Promise.all(
-      statusData.map((status: Status): Promise<Status> => {
-        return dataSource.getRepository(Status).save(
-          dataSource.getRepository(Status).create({
-            id: status.id,
-            status: status.status,
-          }),
-        );
-      }),
-    );
-
-    await dataSource.destroy();
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

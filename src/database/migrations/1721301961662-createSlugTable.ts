@@ -1,10 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 import { Table } from 'typeorm/schema-builder/table/Table';
 
-import { dataSource } from '../../config/typeorm.config';
-import { Slug } from '../../resource/slug/entities/slug.entity';
-import { slugData } from '../data/slug.data';
-
 export class CreateSlugTable1721301961662 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
@@ -72,24 +68,6 @@ export class CreateSlugTable1721301961662 implements MigrationInterface {
       }),
       true,
     );
-
-    await dataSource.initialize();
-
-    await Promise.all(
-      slugData.map((slug: Slug): Promise<Slug> => {
-        return dataSource.getRepository(Slug).save(
-          dataSource.getRepository(Slug).create({
-            id: slug.id,
-            slug: slug.slug,
-            typeId: slug.typeId,
-            supportId: slug.supportId,
-            zoneId: slug.zoneId,
-          }),
-        );
-      }),
-    );
-
-    await dataSource.destroy();
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

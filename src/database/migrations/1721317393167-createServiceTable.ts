@@ -1,10 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 import { Table } from 'typeorm/schema-builder/table/Table';
 
-import { dataSource } from '../../config/typeorm.config';
-import { Service } from '../../resource/service/entities/service.entity';
-import { serviceData } from '../data/service.data';
-
 export class CreateServiceTable1721317393167 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
@@ -105,26 +101,6 @@ export class CreateServiceTable1721317393167 implements MigrationInterface {
       }),
       true,
     );
-
-    await dataSource.initialize();
-
-    await Promise.all(
-      serviceData.map((service: Service): Promise<Service> => {
-        return dataSource.getRepository(Service).save(
-          dataSource.getRepository(Service).create({
-            id: service.id,
-            slugId: service.slugId,
-            typeId: service.typeId,
-            supportId: service.supportId,
-            zoneId: service.zoneId,
-            statusId: service.statusId,
-            rawData: service.rawData,
-          }),
-        );
-      }),
-    );
-
-    await dataSource.destroy();
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

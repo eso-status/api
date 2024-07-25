@@ -3,6 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from 'dotenv';
+import { runSeeders } from 'typeorm-extension';
 
 import { dataSource, dataSourceOptions } from '../../config/typeorm.config';
 
@@ -31,13 +32,14 @@ describe('ServiceService (e2e)', () => {
       providers: [ServiceService],
     }).compile();
 
-    await dataSource.initialize();
-    await dataSource.dropDatabase();
-    await dataSource.runMigrations();
-
     app = module.createNestApplication();
     service = module.get<ServiceService>(ServiceService);
     await app.init();
+
+    await dataSource.initialize();
+    await dataSource.dropDatabase();
+    await dataSource.runMigrations();
+    await runSeeders(dataSource);
   });
 
   afterEach(async (): Promise<void> => {
@@ -47,7 +49,6 @@ describe('ServiceService (e2e)', () => {
 
   it('should findBySlug return correct data for server_xbox_na', async (): Promise<void> => {
     const result: Service = await service.findBySlug('server_xbox_na');
-    delete result.updatedAt;
     delete result.archives;
 
     expect(result).toEqual(serviceData[0]);
@@ -55,7 +56,6 @@ describe('ServiceService (e2e)', () => {
 
   it('should findBySlug return correct data for server_xbox_eu', async (): Promise<void> => {
     const result: Service = await service.findBySlug('server_xbox_eu');
-    delete result.updatedAt;
     delete result.archives;
 
     expect(result).toEqual(serviceData[1]);
@@ -63,7 +63,6 @@ describe('ServiceService (e2e)', () => {
 
   it('should findBySlug return correct data for server_ps_na', async (): Promise<void> => {
     const result: Service = await service.findBySlug('server_ps_na');
-    delete result.updatedAt;
     delete result.archives;
 
     expect(result).toEqual(serviceData[2]);
@@ -71,7 +70,6 @@ describe('ServiceService (e2e)', () => {
 
   it('should findBySlug return correct data for server_ps_eu', async (): Promise<void> => {
     const result: Service = await service.findBySlug('server_ps_eu');
-    delete result.updatedAt;
     delete result.archives;
 
     expect(result).toEqual(serviceData[3]);
@@ -79,7 +77,6 @@ describe('ServiceService (e2e)', () => {
 
   it('should findBySlug return correct data for server_pc_na', async (): Promise<void> => {
     const result: Service = await service.findBySlug('server_pc_na');
-    delete result.updatedAt;
     delete result.archives;
 
     expect(result).toEqual(serviceData[4]);
@@ -87,7 +84,6 @@ describe('ServiceService (e2e)', () => {
 
   it('should findBySlug return correct data for server_pc_eu', async (): Promise<void> => {
     const result: Service = await service.findBySlug('server_pc_eu');
-    delete result.updatedAt;
     delete result.archives;
 
     expect(result).toEqual(serviceData[5]);
@@ -95,7 +91,6 @@ describe('ServiceService (e2e)', () => {
 
   it('should findBySlug return correct data for server_pc_pts', async (): Promise<void> => {
     const result: Service = await service.findBySlug('server_pc_pts');
-    delete result.updatedAt;
     delete result.archives;
 
     expect(result).toEqual(serviceData[6]);
@@ -103,7 +98,6 @@ describe('ServiceService (e2e)', () => {
 
   it('should findBySlug return correct data for service_web_site', async (): Promise<void> => {
     const result: Service = await service.findBySlug('service_web_site');
-    delete result.updatedAt;
     delete result.archives;
 
     expect(result).toEqual(serviceData[7]);
@@ -111,7 +105,6 @@ describe('ServiceService (e2e)', () => {
 
   it('should findBySlug return correct data for service_web_forum', async (): Promise<void> => {
     const result: Service = await service.findBySlug('service_web_forum');
-    delete result.updatedAt;
     delete result.archives;
 
     expect(result).toEqual(serviceData[8]);
@@ -119,7 +112,6 @@ describe('ServiceService (e2e)', () => {
 
   it('should findBySlug return correct data for service_store_crown', async (): Promise<void> => {
     const result: Service = await service.findBySlug('service_store_crown');
-    delete result.updatedAt;
     delete result.archives;
 
     expect(result).toEqual(serviceData[9]);
@@ -127,7 +119,6 @@ describe('ServiceService (e2e)', () => {
 
   it('should findBySlug return correct data for service_store_eso', async (): Promise<void> => {
     const result: Service = await service.findBySlug('service_store_eso');
-    delete result.updatedAt;
     delete result.archives;
 
     expect(result).toEqual(serviceData[10]);
@@ -135,7 +126,6 @@ describe('ServiceService (e2e)', () => {
 
   it('should findBySlug return correct data for service_system_account', async (): Promise<void> => {
     const result: Service = await service.findBySlug('service_system_account');
-    delete result.updatedAt;
     delete result.archives;
 
     expect(result).toEqual(serviceData[11]);
