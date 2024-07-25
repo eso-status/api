@@ -30,7 +30,6 @@ config();
 
 describe('AppModule (e2e)', (): void => {
   let app: INestApplication;
-  let queueService: QueueService;
   let scrapingService: ScrapingService;
   let websocketService: WebsocketService;
   let serverSocket: Server;
@@ -82,6 +81,11 @@ describe('AppModule (e2e)', (): void => {
         resolve();
       });
     });
+
+    await dataSource.initialize();
+    await dataSource.dropDatabase();
+    await dataSource.runMigrations();
+    await runSeeders(dataSource);
   }, 15000);
 
   afterEach(async (): Promise<void> => {
@@ -96,11 +100,6 @@ describe('AppModule (e2e)', (): void => {
   });
 
   it('should update event received from client 1', async (): Promise<void> => {
-    await dataSource.initialize();
-    await dataSource.dropDatabase();
-    await dataSource.runMigrations();
-    await runSeeders(dataSource);
-
     const doHandle = jest.spyOn(scrapingService, 'doHandle');
     const formatData = jest.spyOn(scrapingService, 'formatData');
     const update = jest.spyOn(scrapingService, 'update');
@@ -1438,59 +1437,242 @@ describe('AppModule (e2e)', (): void => {
     expect(isQueueEmpty).toHaveNthReturnedWith(6, true);
   });
 
-  it('should update event received from client 2', async (): Promise<void> => {
-    await dataSource.initialize();
-    await dataSource.dropDatabase();
-    await dataSource.runMigrations();
-    await runSeeders(dataSource);
+  it('revived planned status', async (): Promise<void> => {
+    const doHandle = jest.spyOn(scrapingService, 'doHandle');
+    const formatData = jest.spyOn(scrapingService, 'formatData');
+    const update = jest.spyOn(scrapingService, 'update');
+    const isPlannedStatus = jest.spyOn(scrapingService, 'isPlannedStatus');
+    const changed = jest.spyOn(scrapingService, 'changed');
+    const slugChanged = jest.spyOn(scrapingService, 'slugChanged');
+    const rawChanged = jest.spyOn(scrapingService, 'rawChanged');
+    const isQueueEmpty = jest.spyOn(
+      scrapingService.queueService,
+      'isQueueEmpty',
+    );
+    const pushQueue = jest.spyOn(scrapingService.queueService, 'pushQueue');
 
-    await new Promise<void>((resolve): void => {
-      const queueItem: EsoStatus = {
-        slug: 'service_store_eso',
-        status: 'up',
-        type: 'service',
-        support: 'store',
-        zone: 'eso',
+    const forumMessage: RawEsoStatus[] = [
+      {
+        sources: ['https://forums.elderscrollsonline.com/en/categories/pts'],
+        raw: [
+          '• PC/Mac: NA and EU megaservers for patch maintenance – July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
+        ],
+        slugs: ['server_pc_eu'],
+        rawDate: 'July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
+        dates: [
+          moment()
+            .utc()
+            .set('years', 2023)
+            .set('months', 7)
+            .set('date', 26)
+            .set('hours', 8)
+            .set('minutes', 0)
+            .set('seconds', 0)
+            .set('milliseconds', 0)
+            .utcOffset(0),
+          moment()
+            .utc()
+            .set('years', 2023)
+            .set('months', 7)
+            .set('date', 26)
+            .set('hours', 12)
+            .set('minutes', 0)
+            .set('seconds', 0)
+            .set('milliseconds', 0)
+            .utcOffset(0),
+        ],
+        type: 'server',
+        support: 'pc',
+        zone: 'eu',
+        status: 'planned',
+      },
+      {
+        sources: ['https://forums.elderscrollsonline.com/en/categories/pts'],
+        raw: [
+          '• PC/Mac: NA and EU megaservers for patch maintenance – July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
+        ],
+        slugs: ['server_pc_na'],
+        rawDate: 'July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
+        dates: [
+          moment()
+            .utc()
+            .set('years', 2023)
+            .set('months', 7)
+            .set('date', 26)
+            .set('hours', 8)
+            .set('minutes', 0)
+            .set('seconds', 0)
+            .set('milliseconds', 0)
+            .utcOffset(0),
+          moment()
+            .utc()
+            .set('years', 2023)
+            .set('months', 7)
+            .set('date', 26)
+            .set('hours', 12)
+            .set('minutes', 0)
+            .set('seconds', 0)
+            .set('milliseconds', 0)
+            .utcOffset(0),
+        ],
+        type: 'server',
+        support: 'pc',
+        zone: 'na',
+        status: 'planned',
+      },
+    ];
+
+    expect(scrapingService.queueService.getRawQueue()).toStrictEqual([]);
+
+    let pcNa: Service = await serviceRepository.findOne({
+      where: {
+        id: 5,
+      },
+    });
+    let pcEu: Service = await serviceRepository.findOne({
+      where: {
+        id: 6,
+      },
+    });
+
+    expect(pcNa.statusId).toEqual(2);
+    expect(pcEu.statusId).toEqual(2);
+
+    pcEu.statusId = 1;
+    pcNa.statusId = 1;
+
+    await serviceRepository.save(pcEu);
+    await serviceRepository.save(pcNa);
+
+    pcNa = await serviceRepository.findOne({
+      where: {
+        id: 5,
+      },
+    });
+    pcEu = await serviceRepository.findOne({
+      where: {
+        id: 6,
+      },
+    });
+
+    expect(pcNa.statusId).toEqual(1);
+    expect(pcEu.statusId).toEqual(1);
+
+    jest
+      .spyOn(ForumMessage, 'getData')
+      .mockImplementation(async (): Promise<RawEsoStatus[]> => {
+        return Promise.resolve(forumMessage);
+      });
+
+    await scrapingService.handleForumMessage();
+
+    expect(doHandle).toHaveBeenCalledTimes(1);
+
+    expect(formatData).toHaveBeenCalledTimes(1);
+    expect(formatData).toHaveNthReturnedWith(1, [
+      {
+        slug: 'server_pc_eu',
+        status: 'planned',
+        type: 'server',
+        support: 'pc',
+        zone: 'eu',
         raw: {
-          sources: [
-            'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
-          ],
+          sources: ['https://forums.elderscrollsonline.com/en/categories/pts'],
           raw: [
-            ' />\n<p>2024.07.01 - 12:00 UTC (08:00 EDT)</p>\n\n<p>The North American megaservers are currently available.</p>\n\n<p>The ESO store and account system are currently available.</p>\n\n',
+            '• PC/Mac: NA and EU megaservers for patch maintenance – July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
           ],
-          rawDate: ' />2024.07.01 - 12:00 UTC (08:00 EDT)',
-          rawData: 'The ESO store and account system are currently available.',
-          slugs: ['service_store_eso'],
+          slugs: ['server_pc_eu'],
+          rawDate: 'July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
           dates: [
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
             moment()
               .utc()
-              .set('years', 2024)
-              .set('months', 9)
-              .set('date', 1)
+              .set('years', 2023)
+              .set('months', 7)
+              .set('date', 26)
+              .set('hours', 8)
+              .set('minutes', 0)
+              .set('seconds', 0)
+              .set('milliseconds', 0)
+              .utcOffset(0),
+            moment()
+              .utc()
+              .set('years', 2023)
+              .set('months', 7)
+              .set('date', 26)
               .set('hours', 12)
               .set('minutes', 0)
               .set('seconds', 0)
               .set('milliseconds', 0)
-              .utcOffset(0)
-              .toISOString(),
+              .utcOffset(0),
           ],
-          type: 'service',
-          support: 'store',
-          zone: 'eso',
-          status: 'up',
+          type: 'server',
+          support: 'pc',
+          zone: 'eu',
+          status: 'planned',
         },
-      };
-      jest.spyOn(queueService, 'setQueue').mockImplementation((): [] => []);
-      queueService.updateQueue(queueItem);
+      },
+      {
+        slug: 'server_pc_na',
+        status: 'planned',
+        type: 'server',
+        support: 'pc',
+        zone: 'na',
+        raw: {
+          sources: ['https://forums.elderscrollsonline.com/en/categories/pts'],
+          raw: [
+            '• PC/Mac: NA and EU megaservers for patch maintenance – July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
+          ],
+          slugs: ['server_pc_na'],
+          rawDate: 'July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
+          dates: [
+            moment()
+              .utc()
+              .set('years', 2023)
+              .set('months', 7)
+              .set('date', 26)
+              .set('hours', 8)
+              .set('minutes', 0)
+              .set('seconds', 0)
+              .set('milliseconds', 0)
+              .utcOffset(0),
+            moment()
+              .utc()
+              .set('years', 2023)
+              .set('months', 7)
+              .set('date', 26)
+              .set('hours', 12)
+              .set('minutes', 0)
+              .set('seconds', 0)
+              .set('milliseconds', 0)
+              .utcOffset(0),
+          ],
+          type: 'server',
+          support: 'pc',
+          zone: 'na',
+          status: 'planned',
+        },
+      },
+    ]);
 
-      clientSocket.on('statusUpdate', (data: EsoStatus[]): void => {
-        expect(data).toEqual([queueItem]);
-        resolve();
-      });
+    expect(update).toHaveBeenCalledTimes(2);
 
-      scrapingService.doQueue();
-    });
-  });
+    expect(isPlannedStatus).toHaveBeenCalledTimes(2);
+    expect(isPlannedStatus).toHaveNthReturnedWith(1, true);
+    expect(isPlannedStatus).toHaveNthReturnedWith(2, true);
+
+    expect(changed).toHaveBeenCalledTimes(0);
+
+    expect(slugChanged).toHaveBeenCalledTimes(0);
+
+    expect(rawChanged).toHaveBeenCalledTimes(0);
+
+    expect(scrapingService.queueService.getRawQueue()).toStrictEqual([]);
+
+    scrapingService.doQueue();
+
+    expect(pushQueue).toHaveBeenCalledTimes(1);
+
+    expect(isQueueEmpty).toHaveBeenCalledTimes(1);
+    expect(isQueueEmpty).toHaveNthReturnedWith(1, true);
+  }, 15000);
 });
