@@ -24,7 +24,7 @@ config();
 @Injectable()
 export class ScrapingService {
   constructor(
-    public readonly queueService: QueueService,
+    private readonly queueService: QueueService,
     private readonly serviceService: ServiceService,
     private readonly archiveService: ArchiveService,
     private readonly statusService: StatusService,
@@ -39,14 +39,14 @@ export class ScrapingService {
    * @private
    * @return true => if EsoStatus status is different in this.old list
    */
-  public slugChanged(
+  private slugChanged(
     esoStatusFromScraping: EsoStatus,
     esoStatusFromDatabase: Service,
   ): boolean {
     return esoStatusFromScraping.status !== esoStatusFromDatabase.status.status;
   }
 
-  public rawChanged(
+  private rawChanged(
     esoStatusFromScraping: EsoStatus,
     esoStatusFromDatabase: Service,
   ): boolean {
@@ -68,7 +68,7 @@ export class ScrapingService {
    * @private
    * @return true => if EsoStatus status is different in this.old list
    */
-  public changed(
+  private changed(
     esoStatusFromScraping: EsoStatus,
     esoStatusFromDatabase: Service,
   ): boolean {
@@ -85,7 +85,7 @@ export class ScrapingService {
    * @private
    * @return true => if EsoStatus status is planned
    */
-  public isPlannedStatus(status: EsoStatusStatus): boolean {
+  private isPlannedStatus(status: EsoStatusStatus): boolean {
     return status === 'planned';
   }
 
@@ -149,7 +149,7 @@ export class ScrapingService {
     );
   }
 
-  public async doHandle(rawEsoStatus: RawEsoStatus[]): Promise<void> {
+  private async doHandle(rawEsoStatus: RawEsoStatus[]): Promise<void> {
     await Promise.all(
       this.formatData(rawEsoStatus).map(
         (esoStatus: EsoStatus): Promise<void> => {

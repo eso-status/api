@@ -3,8 +3,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { dataSourceOptions } from './config/typeorm.config';
-import { ArchiveService } from './resource/archive/archive.service';
-import { Archive } from './resource/archive/entities/archive.entity';
+import { ArchiveModule } from './resource/archive/archive.module';
 import { ServiceModule } from './resource/service/service.module';
 import { Slug } from './resource/slug/entities/slug.entity';
 import { StatusModule } from './resource/status/status.module';
@@ -19,25 +18,14 @@ import { WinstonService } from './service/winston/winston.service';
 @Module({
   imports: [
     TypeOrmModule.forRoot(dataSourceOptions),
-    TypeOrmModule.forFeature([Zone, Type, Support, Slug, Archive]),
+    TypeOrmModule.forFeature([Zone, Type, Support, Slug]),
     StatusModule,
     ServiceModule,
+    ArchiveModule,
     ScheduleModule.forRoot(),
   ],
   controllers: [],
-  providers: [
-    ArchiveService,
-    WebsocketService,
-    WinstonService,
-    ScrapingService,
-    QueueService,
-  ],
-  exports: [
-    ArchiveService,
-    WebsocketService,
-    WinstonService,
-    QueueService,
-    ScrapingService,
-  ],
+  providers: [WebsocketService, WinstonService, ScrapingService, QueueService],
+  exports: [WebsocketService, WinstonService, QueueService, ScrapingService],
 })
 export class AppModule {}
