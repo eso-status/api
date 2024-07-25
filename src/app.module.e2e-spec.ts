@@ -7,7 +7,11 @@ import * as moment from 'moment';
 import { Server } from 'socket.io';
 import { Socket, io } from 'socket.io-client';
 
-import { dataSourceOptions } from './config/typeorm.config';
+import { Repository } from 'typeorm';
+
+import { runSeeders } from 'typeorm-extension';
+
+import { dataSource, dataSourceOptions } from './config/typeorm.config';
 import { ArchiveService } from './resource/archive/archive.service';
 import { Archive } from './resource/archive/entities/archive.entity';
 import { Service } from './resource/service/entities/service.entity';
@@ -28,6 +32,8 @@ describe('AppModule (e2e)', (): void => {
   let websocketService: WebsocketService;
   let serverSocket: Server;
   let clientSocket: Socket;
+  let serviceRepository: Repository<Service>;
+  let archiveRepository: Repository<Archive>;
 
   beforeEach(async (): Promise<void> => {
     const module: TestingModule = await Test.createTestingModule({
@@ -65,6 +71,14 @@ describe('AppModule (e2e)', (): void => {
 
     await app.init();
 
+    await dataSource.initialize();
+    await dataSource.dropDatabase();
+    await dataSource.runMigrations();
+    await runSeeders(dataSource);
+
+    serviceRepository = dataSource.getRepository(Service);
+    archiveRepository = dataSource.getRepository(Archive);
+
     await new Promise<void>((resolve): void => {
       clientSocket.on('connect', (): void => {
         resolve();
@@ -74,6 +88,7 @@ describe('AppModule (e2e)', (): void => {
 
   afterEach(async (): Promise<void> => {
     await app.close();
+    await dataSource.destroy();
     clientSocket.disconnect();
     await new Promise<void>((resolve): void => {
       serverSocket.close((): void => {
