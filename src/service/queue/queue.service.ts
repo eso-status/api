@@ -44,6 +44,10 @@ export class QueueService {
     return this.getQueue().length === 0;
   }
 
+  public emptyQueue(): void {
+    this.setQueue([]);
+  }
+
   /**
    * Method used to push queue data with interval
    */
@@ -69,6 +73,6 @@ export class QueueService {
     );
 
     // Empty queue
-    this.setQueue([]);
+    this.emptyQueue();
   }
 }

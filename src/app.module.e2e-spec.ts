@@ -18,6 +18,7 @@ import { dataSource, dataSourceOptions } from './config/typeorm.config';
 import { ArchiveService } from './resource/archive/archive.service';
 import { Archive } from './resource/archive/entities/archive.entity';
 import { Service } from './resource/service/entities/service.entity';
+import { ServiceController } from './resource/service/service.controller';
 import { ServiceService } from './resource/service/service.service';
 import { Status } from './resource/status/entities/status.entity';
 import { StatusService } from './resource/status/status.service';
@@ -36,6 +37,7 @@ describe('QueueService (e2e)', (): void => {
   let clientSocket: Socket;
   let serviceRepository: Repository<Service>;
   let archiveRepository: Repository<Archive>;
+  let serviceController: ServiceController;
 
   beforeEach(async (): Promise<void> => {
     const module: TestingModule = await Test.createTestingModule({
@@ -52,12 +54,14 @@ describe('QueueService (e2e)', (): void => {
         ServiceService,
         ArchiveService,
         StatusService,
+        ServiceController,
       ],
     }).compile();
 
     app = module.createNestApplication();
     websocketService = module.get<WebsocketService>(WebsocketService);
     scrapingService = module.get<ScrapingService>(ScrapingService);
+    serviceController = module.get<ServiceController>(ServiceController);
     serverSocket = new Server(Number(process.env.APP_PORT));
     websocketService.server = serverSocket;
 
@@ -116,6 +120,7 @@ describe('QueueService (e2e)', (): void => {
       'isQueueEmpty',
     );
     const pushQueue = jest.spyOn(scrapingService.queueService, 'pushQueue');
+    const emptyQueue = jest.spyOn(scrapingService.queueService, 'emptyQueue');
 
     const liveServices1: RawEsoStatus[] = [
       {
@@ -434,7 +439,27 @@ describe('QueueService (e2e)', (): void => {
     expect(pcEu.statusId).toEqual(2);
 
     pcEu.statusId = 1;
+    pcEu.rawData = JSON.stringify({
+      raw: ['The Elder Scrolls Online (EU)', 'UP'],
+      rawSlug: 'The Elder Scrolls Online (EU)',
+      rawStatus: 'UP',
+      slugs: ['server_pc_eu'],
+      sources: ['https://live-services.elderscrollsonline.com/status/realms'],
+      status: 'up',
+      support: 'pc',
+      zone: 'eu',
+    });
     pcNa.statusId = 1;
+    pcNa.rawData = JSON.stringify({
+      raw: ['The Elder Scrolls Online (NA)', 'UP'],
+      rawSlug: 'The Elder Scrolls Online (NA)',
+      rawStatus: 'UP',
+      slugs: ['server_pc_na'],
+      sources: ['https://live-services.elderscrollsonline.com/status/realms'],
+      status: 'up',
+      support: 'pc',
+      zone: 'na',
+    });
 
     await serviceRepository.save(pcEu);
     await serviceRepository.save(pcNa);
@@ -452,6 +477,48 @@ describe('QueueService (e2e)', (): void => {
 
     expect(pcNa.statusId).toEqual(1);
     expect(pcEu.statusId).toEqual(1);
+
+    let findOnePcEu: EsoStatus =
+      await serviceController.findOne('server_pc_eu');
+
+    let findOnePcNa: EsoStatus =
+      await serviceController.findOne('server_pc_na');
+
+    expect(findOnePcEu).toStrictEqual({
+      raw: {
+        raw: ['The Elder Scrolls Online (EU)', 'UP'],
+        rawSlug: 'The Elder Scrolls Online (EU)',
+        rawStatus: 'UP',
+        slugs: ['server_pc_eu'],
+        sources: ['https://live-services.elderscrollsonline.com/status/realms'],
+        status: 'up',
+        support: 'pc',
+        zone: 'eu',
+      },
+      slug: 'server_pc_eu',
+      status: 'up',
+      support: 'pc',
+      type: 'server',
+      zone: 'eu',
+    });
+
+    expect(findOnePcNa).toStrictEqual({
+      raw: {
+        raw: ['The Elder Scrolls Online (NA)', 'UP'],
+        rawSlug: 'The Elder Scrolls Online (NA)',
+        rawStatus: 'UP',
+        slugs: ['server_pc_na'],
+        sources: ['https://live-services.elderscrollsonline.com/status/realms'],
+        status: 'up',
+        support: 'pc',
+        zone: 'na',
+      },
+      slug: 'server_pc_na',
+      status: 'up',
+      support: 'pc',
+      type: 'server',
+      zone: 'na',
+    });
 
     jest
       .spyOn(LiveServices, 'getData')
@@ -578,6 +645,45 @@ describe('QueueService (e2e)', (): void => {
     expect(pcNa.statusId).toEqual(2);
     expect(pcEu.statusId).toEqual(2);
 
+    findOnePcEu = await serviceController.findOne('server_pc_eu');
+    findOnePcNa = await serviceController.findOne('server_pc_na');
+
+    expect(findOnePcEu).toStrictEqual({
+      raw: {
+        raw: ['The Elder Scrolls Online (EU)', 'DOWN'],
+        rawSlug: 'The Elder Scrolls Online (EU)',
+        rawStatus: 'DOWN',
+        slugs: ['server_pc_eu'],
+        sources: ['https://live-services.elderscrollsonline.com/status/realms'],
+        status: 'down',
+        support: 'pc',
+        zone: 'eu',
+      },
+      slug: 'server_pc_eu',
+      status: 'down',
+      support: 'pc',
+      type: 'server',
+      zone: 'eu',
+    });
+
+    expect(findOnePcNa).toStrictEqual({
+      raw: {
+        raw: ['The Elder Scrolls Online (NA)', 'DOWN'],
+        rawSlug: 'The Elder Scrolls Online (NA)',
+        rawStatus: 'DOWN',
+        slugs: ['server_pc_na'],
+        sources: ['https://live-services.elderscrollsonline.com/status/realms'],
+        status: 'down',
+        support: 'pc',
+        zone: 'na',
+      },
+      slug: 'server_pc_na',
+      status: 'down',
+      support: 'pc',
+      type: 'server',
+      zone: 'na',
+    });
+
     expect(updateQueue).toHaveBeenCalledTimes(2);
     expect(getQueue).toHaveBeenCalledTimes(3);
     expect(setQueue).toHaveBeenCalledTimes(2);
@@ -639,6 +745,7 @@ describe('QueueService (e2e)', (): void => {
     expect(isQueueEmpty).toHaveBeenCalledTimes(1);
     expect(isQueueEmpty).toHaveNthReturnedWith(1, false);
 
+    expect(emptyQueue).toHaveBeenCalledTimes(1);
     expect(scrapingService.queueService.getQueue()).toStrictEqual([]);
 
     await scrapingService.handleForumMessage();
@@ -798,6 +905,45 @@ describe('QueueService (e2e)', (): void => {
     expect(isQueueEmpty).toHaveBeenCalledTimes(2);
     expect(isQueueEmpty).toHaveNthReturnedWith(2, true);
 
+    findOnePcEu = await serviceController.findOne('server_pc_eu');
+    findOnePcNa = await serviceController.findOne('server_pc_na');
+
+    expect(findOnePcEu).toStrictEqual({
+      raw: {
+        raw: ['The Elder Scrolls Online (EU)', 'DOWN'],
+        rawSlug: 'The Elder Scrolls Online (EU)',
+        rawStatus: 'DOWN',
+        slugs: ['server_pc_eu'],
+        sources: ['https://live-services.elderscrollsonline.com/status/realms'],
+        status: 'down',
+        support: 'pc',
+        zone: 'eu',
+      },
+      slug: 'server_pc_eu',
+      status: 'down',
+      support: 'pc',
+      type: 'server',
+      zone: 'eu',
+    });
+
+    expect(findOnePcNa).toStrictEqual({
+      raw: {
+        raw: ['The Elder Scrolls Online (NA)', 'DOWN'],
+        rawSlug: 'The Elder Scrolls Online (NA)',
+        rawStatus: 'DOWN',
+        slugs: ['server_pc_na'],
+        sources: ['https://live-services.elderscrollsonline.com/status/realms'],
+        status: 'down',
+        support: 'pc',
+        zone: 'na',
+      },
+      slug: 'server_pc_na',
+      status: 'down',
+      support: 'pc',
+      type: 'server',
+      zone: 'na',
+    });
+
     await scrapingService.handleServiceAlerts();
 
     expect(doHandle).toHaveBeenCalledTimes(3);
@@ -943,6 +1089,45 @@ describe('QueueService (e2e)', (): void => {
     expect(isQueueEmpty).toHaveBeenCalledTimes(3);
     expect(isQueueEmpty).toHaveNthReturnedWith(3, true);
 
+    findOnePcEu = await serviceController.findOne('server_pc_eu');
+    findOnePcNa = await serviceController.findOne('server_pc_na');
+
+    expect(findOnePcEu).toStrictEqual({
+      raw: {
+        raw: ['The Elder Scrolls Online (EU)', 'DOWN'],
+        rawSlug: 'The Elder Scrolls Online (EU)',
+        rawStatus: 'DOWN',
+        slugs: ['server_pc_eu'],
+        sources: ['https://live-services.elderscrollsonline.com/status/realms'],
+        status: 'down',
+        support: 'pc',
+        zone: 'eu',
+      },
+      slug: 'server_pc_eu',
+      status: 'down',
+      support: 'pc',
+      type: 'server',
+      zone: 'eu',
+    });
+
+    expect(findOnePcNa).toStrictEqual({
+      raw: {
+        raw: ['The Elder Scrolls Online (NA)', 'DOWN'],
+        rawSlug: 'The Elder Scrolls Online (NA)',
+        rawStatus: 'DOWN',
+        slugs: ['server_pc_na'],
+        sources: ['https://live-services.elderscrollsonline.com/status/realms'],
+        status: 'down',
+        support: 'pc',
+        zone: 'na',
+      },
+      slug: 'server_pc_na',
+      status: 'down',
+      support: 'pc',
+      type: 'server',
+      zone: 'na',
+    });
+
     jest
       .spyOn(LiveServices, 'getData')
       .mockImplementation(async (): Promise<RawEsoStatus[]> => {
@@ -1068,6 +1253,45 @@ describe('QueueService (e2e)', (): void => {
     expect(pcNa.statusId).toEqual(1);
     expect(pcEu.statusId).toEqual(1);
 
+    findOnePcEu = await serviceController.findOne('server_pc_eu');
+    findOnePcNa = await serviceController.findOne('server_pc_na');
+
+    expect(findOnePcEu).toStrictEqual({
+      raw: {
+        raw: ['The Elder Scrolls Online (EU)', 'UP'],
+        rawSlug: 'The Elder Scrolls Online (EU)',
+        rawStatus: 'UP',
+        slugs: ['server_pc_eu'],
+        sources: ['https://live-services.elderscrollsonline.com/status/realms'],
+        status: 'up',
+        support: 'pc',
+        zone: 'eu',
+      },
+      slug: 'server_pc_eu',
+      status: 'up',
+      support: 'pc',
+      type: 'server',
+      zone: 'eu',
+    });
+
+    expect(findOnePcNa).toStrictEqual({
+      raw: {
+        raw: ['The Elder Scrolls Online (NA)', 'UP'],
+        rawSlug: 'The Elder Scrolls Online (NA)',
+        rawStatus: 'UP',
+        slugs: ['server_pc_na'],
+        sources: ['https://live-services.elderscrollsonline.com/status/realms'],
+        status: 'up',
+        support: 'pc',
+        zone: 'na',
+      },
+      slug: 'server_pc_na',
+      status: 'up',
+      support: 'pc',
+      type: 'server',
+      zone: 'na',
+    });
+
     expect(updateQueue).toHaveBeenCalledTimes(4);
     expect(getQueue).toHaveBeenCalledTimes(14);
     expect(setQueue).toHaveBeenCalledTimes(5);
@@ -1129,6 +1353,7 @@ describe('QueueService (e2e)', (): void => {
     expect(isQueueEmpty).toHaveBeenCalledTimes(4);
     expect(isQueueEmpty).toHaveNthReturnedWith(4, false);
 
+    expect(emptyQueue).toHaveBeenCalledTimes(2);
     expect(scrapingService.queueService.getQueue()).toStrictEqual([]);
 
     await scrapingService.handleForumMessage();
@@ -1288,6 +1513,45 @@ describe('QueueService (e2e)', (): void => {
     expect(isQueueEmpty).toHaveBeenCalledTimes(5);
     expect(isQueueEmpty).toHaveNthReturnedWith(5, true);
 
+    findOnePcEu = await serviceController.findOne('server_pc_eu');
+    findOnePcNa = await serviceController.findOne('server_pc_na');
+
+    expect(findOnePcEu).toStrictEqual({
+      raw: {
+        raw: ['The Elder Scrolls Online (EU)', 'UP'],
+        rawSlug: 'The Elder Scrolls Online (EU)',
+        rawStatus: 'UP',
+        slugs: ['server_pc_eu'],
+        sources: ['https://live-services.elderscrollsonline.com/status/realms'],
+        status: 'up',
+        support: 'pc',
+        zone: 'eu',
+      },
+      slug: 'server_pc_eu',
+      status: 'up',
+      support: 'pc',
+      type: 'server',
+      zone: 'eu',
+    });
+
+    expect(findOnePcNa).toStrictEqual({
+      raw: {
+        raw: ['The Elder Scrolls Online (NA)', 'UP'],
+        rawSlug: 'The Elder Scrolls Online (NA)',
+        rawStatus: 'UP',
+        slugs: ['server_pc_na'],
+        sources: ['https://live-services.elderscrollsonline.com/status/realms'],
+        status: 'up',
+        support: 'pc',
+        zone: 'na',
+      },
+      slug: 'server_pc_na',
+      status: 'up',
+      support: 'pc',
+      type: 'server',
+      zone: 'na',
+    });
+
     await scrapingService.handleServiceAlerts();
 
     expect(doHandle).toHaveBeenCalledTimes(6);
@@ -1431,6 +1695,45 @@ describe('QueueService (e2e)', (): void => {
 
     expect(isQueueEmpty).toHaveBeenCalledTimes(6);
     expect(isQueueEmpty).toHaveNthReturnedWith(6, true);
+
+    findOnePcEu = await serviceController.findOne('server_pc_eu');
+    findOnePcNa = await serviceController.findOne('server_pc_na');
+
+    expect(findOnePcEu).toStrictEqual({
+      raw: {
+        raw: ['The Elder Scrolls Online (EU)', 'UP'],
+        rawSlug: 'The Elder Scrolls Online (EU)',
+        rawStatus: 'UP',
+        slugs: ['server_pc_eu'],
+        sources: ['https://live-services.elderscrollsonline.com/status/realms'],
+        status: 'up',
+        support: 'pc',
+        zone: 'eu',
+      },
+      slug: 'server_pc_eu',
+      status: 'up',
+      support: 'pc',
+      type: 'server',
+      zone: 'eu',
+    });
+
+    expect(findOnePcNa).toStrictEqual({
+      raw: {
+        raw: ['The Elder Scrolls Online (NA)', 'UP'],
+        rawSlug: 'The Elder Scrolls Online (NA)',
+        rawStatus: 'UP',
+        slugs: ['server_pc_na'],
+        sources: ['https://live-services.elderscrollsonline.com/status/realms'],
+        status: 'up',
+        support: 'pc',
+        zone: 'na',
+      },
+      slug: 'server_pc_na',
+      status: 'up',
+      support: 'pc',
+      type: 'server',
+      zone: 'na',
+    });
   }, 15000);
 
   it('revived planned status', async (): Promise<void> => {
@@ -1535,7 +1838,27 @@ describe('QueueService (e2e)', (): void => {
     expect(pcEu.statusId).toEqual(2);
 
     pcEu.statusId = 1;
+    pcEu.rawData = JSON.stringify({
+      raw: ['The Elder Scrolls Online (EU)', 'UP'],
+      rawSlug: 'The Elder Scrolls Online (EU)',
+      rawStatus: 'UP',
+      slugs: ['server_pc_eu'],
+      sources: ['https://live-services.elderscrollsonline.com/status/realms'],
+      status: 'up',
+      support: 'pc',
+      zone: 'eu',
+    });
     pcNa.statusId = 1;
+    pcNa.rawData = JSON.stringify({
+      raw: ['The Elder Scrolls Online (NA)', 'UP'],
+      rawSlug: 'The Elder Scrolls Online (NA)',
+      rawStatus: 'UP',
+      slugs: ['server_pc_na'],
+      sources: ['https://live-services.elderscrollsonline.com/status/realms'],
+      status: 'up',
+      support: 'pc',
+      zone: 'na',
+    });
 
     await serviceRepository.save(pcEu);
     await serviceRepository.save(pcNa);
@@ -1553,6 +1876,47 @@ describe('QueueService (e2e)', (): void => {
 
     expect(pcNa.statusId).toEqual(1);
     expect(pcEu.statusId).toEqual(1);
+
+    let findOnePcEu: EsoStatus =
+      await serviceController.findOne('server_pc_eu');
+    let findOnePcNa: EsoStatus =
+      await serviceController.findOne('server_pc_na');
+
+    expect(findOnePcEu).toStrictEqual({
+      raw: {
+        raw: ['The Elder Scrolls Online (EU)', 'UP'],
+        rawSlug: 'The Elder Scrolls Online (EU)',
+        rawStatus: 'UP',
+        slugs: ['server_pc_eu'],
+        sources: ['https://live-services.elderscrollsonline.com/status/realms'],
+        status: 'up',
+        support: 'pc',
+        zone: 'eu',
+      },
+      slug: 'server_pc_eu',
+      status: 'up',
+      support: 'pc',
+      type: 'server',
+      zone: 'eu',
+    });
+
+    expect(findOnePcNa).toStrictEqual({
+      raw: {
+        raw: ['The Elder Scrolls Online (NA)', 'UP'],
+        rawSlug: 'The Elder Scrolls Online (NA)',
+        rawStatus: 'UP',
+        slugs: ['server_pc_na'],
+        sources: ['https://live-services.elderscrollsonline.com/status/realms'],
+        status: 'up',
+        support: 'pc',
+        zone: 'na',
+      },
+      slug: 'server_pc_na',
+      status: 'up',
+      support: 'pc',
+      type: 'server',
+      zone: 'na',
+    });
 
     jest
       .spyOn(ForumMessage, 'getData')
@@ -1670,5 +2034,44 @@ describe('QueueService (e2e)', (): void => {
 
     expect(isQueueEmpty).toHaveBeenCalledTimes(1);
     expect(isQueueEmpty).toHaveNthReturnedWith(1, true);
+
+    findOnePcEu = await serviceController.findOne('server_pc_eu');
+    findOnePcNa = await serviceController.findOne('server_pc_na');
+
+    expect(findOnePcEu).toStrictEqual({
+      raw: {
+        raw: ['The Elder Scrolls Online (EU)', 'UP'],
+        rawSlug: 'The Elder Scrolls Online (EU)',
+        rawStatus: 'UP',
+        slugs: ['server_pc_eu'],
+        sources: ['https://live-services.elderscrollsonline.com/status/realms'],
+        status: 'up',
+        support: 'pc',
+        zone: 'eu',
+      },
+      slug: 'server_pc_eu',
+      status: 'up',
+      support: 'pc',
+      type: 'server',
+      zone: 'eu',
+    });
+
+    expect(findOnePcNa).toStrictEqual({
+      raw: {
+        raw: ['The Elder Scrolls Online (NA)', 'UP'],
+        rawSlug: 'The Elder Scrolls Online (NA)',
+        rawStatus: 'UP',
+        slugs: ['server_pc_na'],
+        sources: ['https://live-services.elderscrollsonline.com/status/realms'],
+        status: 'up',
+        support: 'pc',
+        zone: 'na',
+      },
+      slug: 'server_pc_na',
+      status: 'up',
+      support: 'pc',
+      type: 'server',
+      zone: 'na',
+    });
   }, 15000);
 });
