@@ -1,13 +1,21 @@
 {
   "name": "@eso-status/api",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Eso-status api sources code",
+  "author": "@dov118 <contact@dov118.dev> (https://dov118.dev)",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "engineStrict": true,
   "engines": {
     "node": "20.16.0"
+  },
+  "bugs": {
+    "url": "https://github.com/eso-status/api/issues"
+  },
+  "homepage": "https://github.com/eso-status/api#readme",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:eso-status/api.git"
   },
   "scripts": {
     "build": "nest build",
@@ -41,7 +49,7 @@
     "@nestjs/testing": "10.3.10",
     "@nestjs/typeorm": "10.0.2",
     "@nestjs/websockets": "10.3.10",
-    "aws-sdk": "2.1664.0",
+    "aws-sdk": "2.1665.0",
     "dotenv": "16.4.5",
     "moment": "2.30.1",
     "mysql2": "3.11.0",
@@ -62,8 +70,8 @@
     "@types/jest": "29.5.12",
     "@types/node": "22.0.0",
     "@types/supertest": "6.0.2",
-    "@typescript-eslint/eslint-plugin": "7.17.0",
-    "@typescript-eslint/parser": "7.17.0",
+    "@typescript-eslint/eslint-plugin": "7.18.0",
+    "@typescript-eslint/parser": "7.18.0",
     "eslint": "8.57.0",
     "eslint-config-airbnb-base": "15.0.0",
     "eslint-config-airbnb-typescript": "18.0.0",
