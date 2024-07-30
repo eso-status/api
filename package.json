@@ -89,7 +89,7 @@
       "json",
       "ts"
     ],
-    "rootDir": ".",
+    "rootDir": "./",
     "testRegex": ".*\\.e2e-spec\\.ts|.*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
@@ -97,10 +97,15 @@
     "collectCoverageFrom": [
       "src/**/*.(t|j)s"
     ],
-    "coverageDirectory": "../coverage",
+    "coverageDirectory": "./coverage",
     "testEnvironment": "node",
     "setupFiles": [
       "dotenv/config"
-    ]
+    ],
+    "moduleDirectories": [
+      "node_modules",
+      "src"
+    ],
+    "modulePaths": ["<rootDir>"]
   }
 }
