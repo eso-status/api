@@ -12,8 +12,7 @@ export class CreateArchiveTable1721839547958 implements MigrationInterface {
             type: 'integer',
             length: '2',
             isPrimary: true,
-            isGenerated: true,
-            generationStrategy: 'increment',
+            isGenerated: false,
           },
           {
             name: 'connector',

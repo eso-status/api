@@ -2,7 +2,7 @@ import {
   Column,
   Entity,
   ManyToOne,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
@@ -12,7 +12,7 @@ import { Status } from '../../status/entities/status.entity';
 
 @Entity({ synchronize: false })
 export class Archive {
-  @PrimaryGeneratedColumn({
+  @PrimaryColumn({
     type: 'int',
   })
   id: number;
