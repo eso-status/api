@@ -457,7 +457,7 @@ describe('QueueService (e2e)', (): void => {
     let pcNaServiceAlertsArchive: Archive;
     let pcEuServiceAlertsArchive: Archive;
 
-    let firstUpdateDate: Date;
+    let updateDate: Date;
 
     let expectQueue: EsoStatus[];
 
@@ -1055,6 +1055,9 @@ describe('QueueService (e2e)', (): void => {
 
         await scrapingService.handleLiveServices();
 
+        updateDate = new Date();
+        updateDate.setMilliseconds(0);
+
         expect(true).toEqual(true);
       });
 
@@ -1120,9 +1123,6 @@ describe('QueueService (e2e)', (): void => {
       });
 
       it('should archive updated', async (): Promise<void> => {
-        firstUpdateDate = new Date();
-        firstUpdateDate.setMilliseconds(0);
-
         expect(updateArchive).toHaveBeenCalledTimes(2);
         pcNaLiveServiceArchive = await archiveRepository.findOne({
           where: {
@@ -1150,7 +1150,7 @@ describe('QueueService (e2e)', (): void => {
             status: 'down',
           }),
         );
-        expect(pcNaLiveServiceArchive.updatedAt).toStrictEqual(firstUpdateDate);
+        expect(pcNaLiveServiceArchive.updatedAt).toStrictEqual(updateDate);
         expect(pcNaLiveServiceArchive.statusId).toEqual(2);
         expect(pcEuLiveServiceArchive.rawData).toEqual(
           JSON.stringify(<RawEsoStatus>{
@@ -1166,7 +1166,7 @@ describe('QueueService (e2e)', (): void => {
             status: 'down',
           }),
         );
-        expect(pcEuLiveServiceArchive.updatedAt).toStrictEqual(firstUpdateDate);
+        expect(pcEuLiveServiceArchive.updatedAt).toStrictEqual(updateDate);
         expect(pcEuLiveServiceArchive.statusId).toEqual(2);
       });
 
@@ -1333,6 +1333,9 @@ describe('QueueService (e2e)', (): void => {
       it('handle', async (): Promise<void> => {
         await scrapingService.handleForumMessage();
 
+        updateDate = new Date();
+        updateDate.setMilliseconds(0);
+
         expect(true).toEqual(true);
       });
 
@@ -1448,9 +1451,6 @@ describe('QueueService (e2e)', (): void => {
       });
 
       it('should archive updated', async (): Promise<void> => {
-        firstUpdateDate = new Date();
-        firstUpdateDate.setMilliseconds(0);
-
         expect(updateArchive).toHaveBeenCalledTimes(4);
         pcNaForumMessageArchive = await archiveRepository.findOne({
           where: {
@@ -1502,9 +1502,7 @@ describe('QueueService (e2e)', (): void => {
             status: 'down',
           }),
         );
-        expect(pcNaForumMessageArchive.updatedAt).toStrictEqual(
-          firstUpdateDate,
-        );
+        expect(pcNaForumMessageArchive.updatedAt).toStrictEqual(updateDate);
         expect(pcNaForumMessageArchive.statusId).toEqual(2);
         expect(pcEuForumMessageArchive.rawData).toEqual(
           JSON.stringify(<RawEsoStatus>{
@@ -1544,9 +1542,7 @@ describe('QueueService (e2e)', (): void => {
             status: 'down',
           }),
         );
-        expect(pcEuForumMessageArchive.updatedAt).toStrictEqual(
-          firstUpdateDate,
-        );
+        expect(pcEuForumMessageArchive.updatedAt).toStrictEqual(updateDate);
         expect(pcEuForumMessageArchive.statusId).toEqual(2);
       });
 
@@ -1593,6 +1589,9 @@ describe('QueueService (e2e)', (): void => {
     describe('handle service alerts (down)', (): void => {
       it('handle', async (): Promise<void> => {
         await scrapingService.handleServiceAlerts();
+
+        updateDate = new Date();
+        updateDate.setMilliseconds(0);
 
         expect(true).toEqual(true);
       });
@@ -1691,9 +1690,6 @@ describe('QueueService (e2e)', (): void => {
       });
 
       it('should archive updated', async (): Promise<void> => {
-        firstUpdateDate = new Date();
-        firstUpdateDate.setMilliseconds(0);
-
         expect(updateArchive).toHaveBeenCalledTimes(6);
         pcNaServiceAlertsArchive = await archiveRepository.findOne({
           where: {
@@ -1737,9 +1733,7 @@ describe('QueueService (e2e)', (): void => {
             status: 'down',
           }),
         );
-        expect(pcNaServiceAlertsArchive.updatedAt).toStrictEqual(
-          firstUpdateDate,
-        );
+        expect(pcNaServiceAlertsArchive.updatedAt).toStrictEqual(updateDate);
         expect(pcNaServiceAlertsArchive.statusId).toEqual(2);
         expect(pcEuServiceAlertsArchive.rawData).toEqual(
           JSON.stringify(<RawEsoStatus>{
@@ -1771,9 +1765,7 @@ describe('QueueService (e2e)', (): void => {
             status: 'down',
           }),
         );
-        expect(pcEuServiceAlertsArchive.updatedAt).toStrictEqual(
-          firstUpdateDate,
-        );
+        expect(pcEuServiceAlertsArchive.updatedAt).toStrictEqual(updateDate);
         expect(pcEuServiceAlertsArchive.statusId).toEqual(2);
       });
 
@@ -1838,6 +1830,9 @@ describe('QueueService (e2e)', (): void => {
           });
 
         await scrapingService.handleLiveServices();
+
+        updateDate = new Date();
+        updateDate.setMilliseconds(0);
 
         expect(true).toEqual(true);
       });
@@ -1904,9 +1899,6 @@ describe('QueueService (e2e)', (): void => {
       });
 
       it('should archive updated', async (): Promise<void> => {
-        firstUpdateDate = new Date();
-        firstUpdateDate.setMilliseconds(0);
-
         expect(updateArchive).toHaveBeenCalledTimes(8);
         pcNaLiveServiceArchive = await archiveRepository.findOne({
           where: {
@@ -1934,7 +1926,7 @@ describe('QueueService (e2e)', (): void => {
             status: 'up',
           }),
         );
-        expect(pcNaLiveServiceArchive.updatedAt).toStrictEqual(firstUpdateDate);
+        expect(pcNaLiveServiceArchive.updatedAt).toStrictEqual(updateDate);
         expect(pcNaLiveServiceArchive.statusId).toEqual(1);
         expect(pcEuLiveServiceArchive.rawData).toEqual(
           JSON.stringify(<RawEsoStatus>{
@@ -1950,7 +1942,7 @@ describe('QueueService (e2e)', (): void => {
             status: 'up',
           }),
         );
-        expect(pcEuLiveServiceArchive.updatedAt).toStrictEqual(firstUpdateDate);
+        expect(pcEuLiveServiceArchive.updatedAt).toStrictEqual(updateDate);
         expect(pcEuLiveServiceArchive.statusId).toEqual(1);
       });
 
@@ -2117,6 +2109,9 @@ describe('QueueService (e2e)', (): void => {
       it('handle', async (): Promise<void> => {
         await scrapingService.handleForumMessage();
 
+        updateDate = new Date();
+        updateDate.setMilliseconds(0);
+
         expect(true).toEqual(true);
       });
 
@@ -2232,9 +2227,6 @@ describe('QueueService (e2e)', (): void => {
       });
 
       it('should archive updated', async (): Promise<void> => {
-        firstUpdateDate = new Date();
-        firstUpdateDate.setMilliseconds(0);
-
         expect(updateArchive).toHaveBeenCalledTimes(10);
         pcNaForumMessageArchive = await archiveRepository.findOne({
           where: {
@@ -2286,9 +2278,7 @@ describe('QueueService (e2e)', (): void => {
             status: 'up',
           }),
         );
-        expect(pcNaForumMessageArchive.updatedAt).toStrictEqual(
-          firstUpdateDate,
-        );
+        expect(pcNaForumMessageArchive.updatedAt).toStrictEqual(updateDate);
         expect(pcNaForumMessageArchive.statusId).toEqual(1);
         expect(pcEuForumMessageArchive.rawData).toEqual(
           JSON.stringify(<RawEsoStatus>{
@@ -2328,9 +2318,7 @@ describe('QueueService (e2e)', (): void => {
             status: 'up',
           }),
         );
-        expect(pcEuForumMessageArchive.updatedAt).toStrictEqual(
-          firstUpdateDate,
-        );
+        expect(pcEuForumMessageArchive.updatedAt).toStrictEqual(updateDate);
         expect(pcEuForumMessageArchive.statusId).toEqual(1);
       });
 
@@ -2377,6 +2365,9 @@ describe('QueueService (e2e)', (): void => {
     describe('handle service alerts (up)', (): void => {
       it('handle', async (): Promise<void> => {
         await scrapingService.handleServiceAlerts();
+
+        updateDate = new Date();
+        updateDate.setMilliseconds(0);
 
         expect(true).toEqual(true);
       });
@@ -2474,9 +2465,6 @@ describe('QueueService (e2e)', (): void => {
       });
 
       it('should archive updated', async (): Promise<void> => {
-        firstUpdateDate = new Date();
-        firstUpdateDate.setMilliseconds(0);
-
         expect(updateArchive).toHaveBeenCalledTimes(12);
         pcNaServiceAlertsArchive = await archiveRepository.findOne({
           where: {
@@ -2520,9 +2508,7 @@ describe('QueueService (e2e)', (): void => {
             status: 'up',
           }),
         );
-        expect(pcNaServiceAlertsArchive.updatedAt).toStrictEqual(
-          firstUpdateDate,
-        );
+        expect(pcNaServiceAlertsArchive.updatedAt).toStrictEqual(updateDate);
         expect(pcNaServiceAlertsArchive.statusId).toEqual(1);
         expect(pcEuServiceAlertsArchive.rawData).toEqual(
           JSON.stringify(<RawEsoStatus>{
@@ -2553,9 +2539,7 @@ describe('QueueService (e2e)', (): void => {
             status: 'up',
           }),
         );
-        expect(pcEuServiceAlertsArchive.updatedAt).toStrictEqual(
-          firstUpdateDate,
-        );
+        expect(pcEuServiceAlertsArchive.updatedAt).toStrictEqual(updateDate);
         expect(pcEuServiceAlertsArchive.statusId).toEqual(1);
       });
 
@@ -2683,7 +2667,7 @@ describe('QueueService (e2e)', (): void => {
     let pcNaForumMessageArchive: Archive;
     let pcEuForumMessageArchive: Archive;
 
-    let firstUpdateDate: Date;
+    let updateDate: Date;
 
     let expectQueue: EsoStatus[];
 
@@ -3037,6 +3021,9 @@ describe('QueueService (e2e)', (): void => {
 
         await scrapingService.handleForumMessage();
 
+        updateDate = new Date();
+        updateDate.setMilliseconds(0);
+
         expect(true).toEqual(true);
       });
 
@@ -3152,9 +3139,6 @@ describe('QueueService (e2e)', (): void => {
       });
 
       it('should archive updated', async (): Promise<void> => {
-        firstUpdateDate = new Date();
-        firstUpdateDate.setMilliseconds(0);
-
         expect(updateArchive).toHaveBeenCalledTimes(2);
         pcNaForumMessageArchive = await archiveRepository.findOne({
           where: {
@@ -3206,9 +3190,7 @@ describe('QueueService (e2e)', (): void => {
             status: 'planned',
           }),
         );
-        expect(pcNaForumMessageArchive.updatedAt).toStrictEqual(
-          firstUpdateDate,
-        );
+        expect(pcNaForumMessageArchive.updatedAt).toStrictEqual(updateDate);
         expect(pcNaForumMessageArchive.statusId).toEqual(4);
         expect(pcEuForumMessageArchive.rawData).toEqual(
           JSON.stringify(<RawEsoStatus>{
@@ -3248,9 +3230,7 @@ describe('QueueService (e2e)', (): void => {
             status: 'planned',
           }),
         );
-        expect(pcEuForumMessageArchive.updatedAt).toStrictEqual(
-          firstUpdateDate,
-        );
+        expect(pcEuForumMessageArchive.updatedAt).toStrictEqual(updateDate);
         expect(pcEuForumMessageArchive.statusId).toEqual(4);
       });
 
