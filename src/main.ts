@@ -29,6 +29,8 @@ async function bootstrap() {
     },
   });
 
+  app.setGlobalPrefix(process.env.APP_PREFIX);
+
   await app.listen(process.env.APP_PORT);
 }
 bootstrap()

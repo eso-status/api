@@ -36,6 +36,7 @@ echo "-----END CERTIFICATE-----" >> ./ca_bundle.crt
 cat ./.env.example > ./.env
 sed -i -e "s/__NODE_ENV__/$NODE_ENV/g" ./.env
 sed -i -e "s/__APP_NAME__/$APP_NAME/g" ./.env
+sed -i -e "s/__APP_PREFIX__/$APP_PREFIX/g" ./.env
 sed -i -e "s/__APP_PROTOCOL__/$APP_PROTOCOL/g" ./.env
 sed -i -e "s/__APP_HOST__/$APP_HOST/g" ./.env
 sed -i -e "s/__APP_PORT__/$APP_PORT/g" ./.env
