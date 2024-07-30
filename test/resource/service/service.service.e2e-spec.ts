@@ -5,16 +5,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from 'dotenv';
 import { runSeeders } from 'typeorm-extension';
 
-import { dataSource, dataSourceOptions } from '../../config/typeorm.config';
-
-import { serviceData } from '../../database/data/service.data';
-
-import { statusData } from '../../database/data/status.data';
-
-import { Service } from './entities/service.entity';
-import { ServiceModule } from './service.module';
-
-import { ServiceService } from './service.service';
+import {
+  dataSource,
+  dataSourceOptions,
+} from '../../../src/config/typeorm.config';
+import { serviceData } from '../../../src/database/data/service.data';
+import { statusData } from '../../../src/database/data/status.data';
+import { Service } from '../../../src/resource/service/entities/service.entity';
+import { ServiceModule } from '../../../src/resource/service/service.module';
+import { ServiceService } from '../../../src/resource/service/service.service';
 
 config();
 

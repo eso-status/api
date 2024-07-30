@@ -6,7 +6,6 @@ import { zoneData } from '../data/zone.data';
 
 export class ZoneSeeder implements Seeder {
   public async run(dataSource: DataSource): Promise<any> {
-    dataSource.getRepository(Zone);
     const repository: Repository<Zone> = dataSource.getRepository(Zone);
     await Promise.all(
       zoneData.map((zone: Zone): Promise<InsertResult> => {

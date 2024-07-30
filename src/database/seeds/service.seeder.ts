@@ -6,7 +6,6 @@ import { serviceData } from '../data/service.data';
 
 export class ServiceSeeder implements Seeder {
   public async run(dataSource: DataSource): Promise<any> {
-    dataSource.getRepository(Service);
     const repository: Repository<Service> = dataSource.getRepository(Service);
     await Promise.all(
       serviceData.map((service: Service): Promise<InsertResult> => {

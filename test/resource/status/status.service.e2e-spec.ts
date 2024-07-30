@@ -4,12 +4,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from 'dotenv';
 import { runSeeders } from 'typeorm-extension';
 
-import { dataSource, dataSourceOptions } from '../../config/typeorm.config';
-import { statusData } from '../../database/data/status.data';
-
-import { Status } from './entities/status.entity';
-import { StatusModule } from './status.module';
-import { StatusService } from './status.service';
+import {
+  dataSource,
+  dataSourceOptions,
+} from '../../../src/config/typeorm.config';
+import { statusData } from '../../../src/database/data/status.data';
+import { Status } from '../../../src/resource/status/entities/status.entity';
+import { StatusModule } from '../../../src/resource/status/status.module';
+import { StatusService } from '../../../src/resource/status/status.service';
 
 config();
 

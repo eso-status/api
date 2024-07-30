@@ -7,11 +7,12 @@ import supertest from 'supertest';
 import { App } from 'supertest/types';
 import { runSeeders } from 'typeorm-extension';
 
-import { dataSource, dataSourceOptions } from '../../config/typeorm.config';
-
-import { serviceData } from '../../database/data/service.data';
-
-import { ServiceModule } from './service.module';
+import {
+  dataSource,
+  dataSourceOptions,
+} from '../../../src/config/typeorm.config';
+import { serviceData } from '../../../src/database/data/service.data';
+import { ServiceModule } from '../../../src/resource/service/service.module';
 
 describe('ServiceController (e2e)', () => {
   let app: INestApplication;

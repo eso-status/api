@@ -6,32 +6,29 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from 'dotenv';
 
-import { dataSourceOptions } from '../../config/typeorm.config';
+import { dataSourceOptions } from '../../../src/config/typeorm.config';
 import {
   forumMessageEsoStatusList,
   rawForumMessageEsoStatusList,
-} from '../../database/data/forumMessage.data';
-
+} from '../../../src/database/data/forumMessage.data';
 import {
   liveServiceEsoStatusList,
   rawLiveServiceEsoStatusList,
-} from '../../database/data/liveServices.data';
+} from '../../../src/database/data/liveServices.data';
 import {
   rawServiceAlertEsoStatusList,
   serviceAlertEsoStatusList,
-} from '../../database/data/serviceAlerts.data';
-
-import { ArchiveService } from '../../resource/archive/archive.service';
-import { Archive } from '../../resource/archive/entities/archive.entity';
-import { Service } from '../../resource/service/entities/service.entity';
-import { ServiceService } from '../../resource/service/service.service';
-import { Status } from '../../resource/status/entities/status.entity';
-import { StatusService } from '../../resource/status/status.service';
-import { QueueService } from '../queue/queue.service';
-import { WebsocketService } from '../websocket/websocket.service';
-import { WinstonService } from '../winston/winston.service';
-
-import { ScrapingService } from './scraping.service';
+} from '../../../src/database/data/serviceAlerts.data';
+import { ArchiveService } from '../../../src/resource/archive/archive.service';
+import { Archive } from '../../../src/resource/archive/entities/archive.entity';
+import { Service } from '../../../src/resource/service/entities/service.entity';
+import { ServiceService } from '../../../src/resource/service/service.service';
+import { Status } from '../../../src/resource/status/entities/status.entity';
+import { StatusService } from '../../../src/resource/status/status.service';
+import { QueueService } from '../../../src/service/queue/queue.service';
+import { ScrapingService } from '../../../src/service/scraping/scraping.service';
+import { WebsocketService } from '../../../src/service/websocket/websocket.service';
+import { WinstonService } from '../../../src/service/winston/winston.service';
 
 config();
 

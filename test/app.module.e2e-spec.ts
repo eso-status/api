@@ -14,18 +14,18 @@ import { Repository } from 'typeorm';
 
 import { runSeeders } from 'typeorm-extension';
 
-import { dataSource, dataSourceOptions } from './config/typeorm.config';
-import { ArchiveService } from './resource/archive/archive.service';
-import { Archive } from './resource/archive/entities/archive.entity';
-import { Service } from './resource/service/entities/service.entity';
-import { ServiceController } from './resource/service/service.controller';
-import { ServiceService } from './resource/service/service.service';
-import { Status } from './resource/status/entities/status.entity';
-import { StatusService } from './resource/status/status.service';
-import { QueueService } from './service/queue/queue.service';
-import { ScrapingService } from './service/scraping/scraping.service';
-import { WebsocketService } from './service/websocket/websocket.service';
-import { WinstonService } from './service/winston/winston.service';
+import { dataSource, dataSourceOptions } from '../src/config/typeorm.config';
+import { ArchiveService } from '../src/resource/archive/archive.service';
+import { Archive } from '../src/resource/archive/entities/archive.entity';
+import { Service } from '../src/resource/service/entities/service.entity';
+import { ServiceController } from '../src/resource/service/service.controller';
+import { ServiceService } from '../src/resource/service/service.service';
+import { Status } from '../src/resource/status/entities/status.entity';
+import { StatusService } from '../src/resource/status/status.service';
+import { QueueService } from '../src/service/queue/queue.service';
+import { ScrapingService } from '../src/service/scraping/scraping.service';
+import { WebsocketService } from '../src/service/websocket/websocket.service';
+import { WinstonService } from '../src/service/winston/winston.service';
 
 config();
 
