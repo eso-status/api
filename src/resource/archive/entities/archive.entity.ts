@@ -1,17 +1,14 @@
 import {
   Column,
-  CreateDateColumn,
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
+import { Connector } from '../../../type/connector.type';
 import { Service } from '../../service/entities/service.entity';
-import { Slug } from '../../slug/entities/slug.entity';
 import { Status } from '../../status/entities/status.entity';
-import { Support } from '../../support/entities/support.entity';
-import { Type } from '../../type/entities/type.entity';
-import { Zone } from '../../zone/entities/zone.entity';
 
 @Entity({ synchronize: false })
 export class Archive {
@@ -20,8 +17,12 @@ export class Archive {
   })
   id: number;
 
-  @Column({ type: 'int', nullable: false })
-  slugId?: number;
+  @Column({
+    type: 'varchar',
+    length: 7,
+    nullable: false,
+  })
+  connector: Connector;
 
   @Column({ type: 'int', nullable: false })
   serviceId?: number;
@@ -29,39 +30,19 @@ export class Archive {
   @Column({ type: 'int', nullable: false })
   statusId?: number;
 
-  @Column({ type: 'int', nullable: false })
-  typeId?: number;
-
-  @Column({ type: 'int', nullable: false })
-  supportId?: number;
-
-  @Column({ type: 'int', nullable: false })
-  zoneId?: number;
-
   @Column({ type: 'text', nullable: false })
   rawData: string;
 
-  @CreateDateColumn({
+  @UpdateDateColumn({
     type: 'datetime',
     default: (): string => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
   })
-  createdAt?: Date;
+  updatedAt?: Date;
 
-  @ManyToOne(() => Service)
+  @ManyToOne(() => Service, service => service.archives)
   service?: Service;
-
-  @ManyToOne(() => Slug)
-  slug?: Slug;
 
   @ManyToOne(() => Status)
   status?: Status;
-
-  @ManyToOne(() => Type)
-  type?: Type;
-
-  @ManyToOne(() => Support)
-  support?: Support;
-
-  @ManyToOne(() => Zone)
-  zone?: Zone;
 }

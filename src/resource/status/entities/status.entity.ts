@@ -21,6 +21,6 @@ export class Status {
   @OneToMany(() => Service, service => service.slug)
   services?: Service[];
 
-  @OneToMany(() => Archive, archive => archive.slug)
+  @OneToMany(() => Archive, archive => archive.status)
   archives?: Archive[];
 }

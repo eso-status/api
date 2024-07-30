@@ -2,6 +2,7 @@ import { config } from 'dotenv';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { SeederOptions } from 'typeorm-extension';
 
+import { ArchiveSeeder } from '../database/seeds/archive.seeder';
 import { ServiceSeeder } from '../database/seeds/service.seeder';
 import { SlugSeeder } from '../database/seeds/slug.seeder';
 import { StatusSeeder } from '../database/seeds/status.seeder';
@@ -31,6 +32,7 @@ const sqliteDataSourceOptions: DataSourceOptions & SeederOptions = {
     StatusSeeder,
     SlugSeeder,
     ServiceSeeder,
+    ArchiveSeeder,
   ],
   factories: [],
   migrationsRun: false,

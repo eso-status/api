@@ -12,10 +12,12 @@ import { Interval } from '@nestjs/schedule';
 import { config } from 'dotenv';
 
 import { ArchiveService } from '../../resource/archive/archive.service';
+import { Archive } from '../../resource/archive/entities/archive.entity';
 import { Service } from '../../resource/service/entities/service.entity';
 import { ServiceService } from '../../resource/service/service.service';
 import { Status } from '../../resource/status/entities/status.entity';
 import { StatusService } from '../../resource/status/status.service';
+import { Connector } from '../../type/connector.type';
 import { QueueService } from '../queue/queue.service';
 import { WinstonService } from '../winston/winston.service';
 
@@ -48,34 +50,13 @@ export class ScrapingService {
 
   public rawChanged(
     esoStatusFromScraping: EsoStatus,
-    esoStatusFromDatabase: Service,
+    archive?: Archive,
   ): boolean {
-    if (esoStatusFromDatabase.archives.length === 0) {
+    if (!archive) {
       return true;
     }
 
-    return (
-      esoStatusFromDatabase.archives[0].rawData !==
-      JSON.stringify(esoStatusFromScraping.raw)
-    );
-  }
-
-  /**
-   * Method used to check if status change of an EsoStatus
-   *
-   * @param esoStatusFromScraping
-   * @param esoStatusFromDatabase
-   * @private
-   * @return true => if EsoStatus status is different in this.old list
-   */
-  public changed(
-    esoStatusFromScraping: EsoStatus,
-    esoStatusFromDatabase: Service,
-  ): boolean {
-    return (
-      this.slugChanged(esoStatusFromScraping, esoStatusFromDatabase) &&
-      this.rawChanged(esoStatusFromScraping, esoStatusFromDatabase)
-    );
+    return archive.rawData !== JSON.stringify(esoStatusFromScraping.raw);
   }
 
   /**
@@ -89,23 +70,71 @@ export class ScrapingService {
     return status === 'planned';
   }
 
+  public async getService(esoStatus: EsoStatus): Promise<Service> {
+    return this.serviceService.findBySlug(esoStatus.slug);
+  }
+
+  public async getArchive(
+    service: Service,
+    connector: Connector,
+  ): Promise<Archive> {
+    return this.archiveService.findByServiceAndConnector(service, connector);
+  }
+
+  public async updateArchive(
+    service: Service,
+    rawData: RawEsoStatus,
+    connector: Connector,
+    statusId: number,
+  ): Promise<void> {
+    await this.archiveService.update(service.id, rawData, connector, statusId);
+  }
+
+  public async getStatus(status: EsoStatusStatus): Promise<Status> {
+    return this.statusService.findByStatus(status);
+  }
+
+  public async updateService(
+    serviceId: number,
+    statusId: number,
+    rawData: RawEsoStatus,
+  ): Promise<void> {
+    return this.serviceService.update(serviceId, statusId, rawData);
+  }
+
   /**
    * Method used to execute update process of a service
    * @param esoStatus
+   * @param connector
    */
-  public async update(esoStatus: EsoStatus): Promise<void> {
+  public async update(
+    esoStatus: EsoStatus,
+    connector: Connector,
+  ): Promise<void> {
+    // Get status in database by status
+    const newStatus: Status = await this.getStatus(esoStatus.status);
+
+    // Get service in database by slug
+    const service: Service = await this.getService(esoStatus);
+
+    // Get archive in database by service and connector
+    const archive: Archive = await this.getArchive(service, connector);
+
+    // Update archive
+    await this.updateArchive(service, esoStatus.raw, connector, newStatus.id);
+
     // Return function if new status is planned
     if (this.isPlannedStatus(esoStatus.status)) {
       return;
     }
 
-    // Get service in database by slug
-    const service: Service = await this.serviceService.findBySlug(
-      esoStatus.slug,
-    );
-
     // Return function if status not change between new data and database
-    if (!this.changed(esoStatus, service)) {
+    if (!this.slugChanged(esoStatus, service)) {
+      return;
+    }
+
+    // Return function if raw don't change
+    if (!this.rawChanged(esoStatus, archive)) {
       return;
     }
 
@@ -115,16 +144,8 @@ export class ScrapingService {
       'ScrapingService.update',
     );
 
-    // Get status in database by status
-    const newStatus: Status = await this.statusService.findByStatus(
-      esoStatus.status,
-    );
-
-    // Add old service in archive table
-    await this.archiveService.add(service);
-
     // Update service status in database
-    await this.serviceService.update(service.id, newStatus.id, esoStatus.raw);
+    await this.updateService(service.id, newStatus.id, esoStatus.raw);
 
     // Write log with detail (slug, old status and new status)
     this.winstonService.log(
@@ -149,11 +170,14 @@ export class ScrapingService {
     );
   }
 
-  public async doHandle(rawEsoStatus: RawEsoStatus[]): Promise<void> {
+  public async doHandle(
+    rawEsoStatus: RawEsoStatus[],
+    connector: Connector,
+  ): Promise<void> {
     await Promise.all(
       this.formatData(rawEsoStatus).map(
         (esoStatus: EsoStatus): Promise<void> => {
-          return this.update(esoStatus);
+          return this.update(esoStatus, connector);
         },
       ),
     );
@@ -161,17 +185,17 @@ export class ScrapingService {
 
   @Interval(Number(process.env.FORUM_MESSAGE_UPDATE_INTERVAL))
   public async handleForumMessage(): Promise<void> {
-    await this.doHandle(await ForumMessage.getData());
+    await this.doHandle(await ForumMessage.getData(), 'ForumMessage');
   }
 
   @Interval(Number(process.env.LIVE_SERVICES_UPDATE_INTERVAL))
   public async handleLiveServices(): Promise<void> {
-    await this.doHandle(await LiveServices.getData());
+    await this.doHandle(await LiveServices.getData(), 'LiveServices');
   }
 
   @Interval(Number(process.env.SERVICE_ALERTS_UPDATE_INTERVAL))
   public async handleServiceAlerts(): Promise<void> {
-    await this.doHandle(await ServiceAlerts.getData());
+    await this.doHandle(await ServiceAlerts.getData(), 'ServiceAlerts');
   }
 
   @Interval(Number(process.env.QUEUE_INTERVAL))

@@ -1,14 +1,6 @@
 import { Slug as EsoStatusSlug } from '@eso-status/types';
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  OneToOne,
-  PrimaryColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, OneToOne, PrimaryColumn } from 'typeorm';
 
-import { Archive } from '../../archive/entities/archive.entity';
 import { Service } from '../../service/entities/service.entity';
 import { Support } from '../../support/entities/support.entity';
 import { Type } from '../../type/entities/type.entity';
@@ -48,7 +40,4 @@ export class Slug {
 
   @OneToOne(() => Service, service => service.slug)
   service?: Service;
-
-  @OneToMany(() => Archive, archive => archive.slug)
-  archives?: Archive[];
 }

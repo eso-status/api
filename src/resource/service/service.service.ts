@@ -31,15 +31,10 @@ export class ServiceService {
 
   async findBySlug(slug: Slug): Promise<Service> {
     return this.serviceRepository.findOne({
-      relations: ['slug', 'status', 'type', 'zone', 'support', 'archives'],
+      relations: ['slug', 'status', 'type', 'zone', 'support'],
       where: {
         slug: {
           slug,
-        },
-      },
-      order: {
-        archives: {
-          createdAt: 'DESC',
         },
       },
     });

@@ -2,9 +2,9 @@ import {
   Column,
   Entity,
   ManyToOne,
-  OneToMany,
   PrimaryColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 
 import { Archive } from '../../archive/entities/archive.entity';
