@@ -48,15 +48,14 @@ export class ScrapingService {
     return esoStatusFromScraping.status !== esoStatusFromDatabase.status.status;
   }
 
-  public rawChanged(
+  public archiveChanged(
     esoStatusFromScraping: EsoStatus,
     archive?: Archive,
   ): boolean {
-    if (!archive) {
-      return true;
-    }
-
-    return archive.rawData !== JSON.stringify(esoStatusFromScraping.raw);
+    return (
+      archive.rawData !== JSON.stringify(esoStatusFromScraping.raw) &&
+      archive.status.status !== esoStatusFromScraping.status
+    );
   }
 
   /**
@@ -111,32 +110,32 @@ export class ScrapingService {
     esoStatus: EsoStatus,
     connector: Connector,
   ): Promise<void> {
-    // Get status in database by status
-    const newStatus: Status = await this.getStatus(esoStatus.status);
-
-    // Get service in database by slug
-    const service: Service = await this.getService(esoStatus);
-
-    // Get archive in database by service and connector
-    const archive: Archive = await this.getArchive(service, connector);
-
-    // Update archive
-    await this.updateArchive(service, esoStatus.raw, connector, newStatus.id);
-
     // Return function if new status is planned
     if (this.isPlannedStatus(esoStatus.status)) {
       return;
     }
+
+    // Get service in database by slug
+    const service: Service = await this.getService(esoStatus);
 
     // Return function if status not change between new data and database
     if (!this.slugChanged(esoStatus, service)) {
       return;
     }
 
+    // Get archive in database by service and connector
+    const archive: Archive = await this.getArchive(service, connector);
+
     // Return function if raw don't change
-    if (!this.rawChanged(esoStatus, archive)) {
+    if (!this.archiveChanged(esoStatus, archive)) {
       return;
     }
+
+    // Get status in database by status
+    const newStatus: Status = await this.getStatus(esoStatus.status);
+
+    // Update archive
+    await this.updateArchive(service, esoStatus.raw, connector, newStatus.id);
 
     // Write log with details (raw data)
     this.winstonService.log(

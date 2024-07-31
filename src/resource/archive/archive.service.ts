@@ -20,6 +20,7 @@ export class ArchiveService {
     connector: Connector,
   ): Promise<Archive> {
     return this.archiveRepository.findOne({
+      relations: ['status'],
       where: {
         serviceId: service.id,
         connector,
