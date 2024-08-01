@@ -506,6 +506,40 @@ export const ServiceAlertsInitialPcNa: EsoStatus = {
   status: 'up',
 };
 
+export const ServiceAlertsDownPcNaRaw: RawEsoStatus = {
+  sources: ['https://help.elderscrollsonline.com/app/answers/detail/a_id/4320'],
+  raw: [
+    ' />\n<p>2024.07.29 - 8:00 UTC (4:00 EDT)</p>\n<p>The North American PC/Mac megaserver is currently unavailable while we perform maintenance.</p>\n<p>The European PC/Mac megaserver is currently unavailable while we perform maintenance.</p>\n',
+  ],
+  rawDate: ' />2024.07.29 - 8:00 UTC (4:00 EDT)',
+  rawData: 'The North American PC/Mac megaserver is currently available.',
+  slugs: ['server_pc_na'],
+  dates: [
+    moment()
+      .utc()
+      .set('years', 2024)
+      .set('months', 7)
+      .set('date', 29)
+      .set('hours', 8)
+      .set('minutes', 10)
+      .set('seconds', 0)
+      .set('milliseconds', 0)
+      .utcOffset(0),
+  ],
+  type: 'server',
+  support: 'pc',
+  zone: 'na',
+  status: 'down',
+};
+export const ServiceAlertsDownPcNa: EsoStatus = {
+  raw: ServiceAlertsDownPcNaRaw,
+  slug: 'server_pc_na',
+  type: 'server',
+  support: 'pc',
+  zone: 'na',
+  status: 'down',
+};
+
 export const ServiceAlertsInitialPcEuRaw: RawEsoStatus = {
   sources: ['https://help.elderscrollsonline.com/app/answers/detail/a_id/4320'],
   raw: [
@@ -538,6 +572,41 @@ export const ServiceAlertsInitialPcEu: EsoStatus = {
   support: 'pc',
   zone: 'eu',
   status: 'up',
+};
+
+export const ServiceAlertsDownPcEuRaw: RawEsoStatus = {
+  sources: ['https://help.elderscrollsonline.com/app/answers/detail/a_id/4320'],
+  raw: [
+    ' />\n<p>2024.07.29 - 8:00 UTC (4:00 EDT)</p>\n<p>The North American PC/Mac megaserver is currently unavailable while we perform maintenance.</p>\n<p>The European PC/Mac megaserver is currently unavailable while we perform maintenance.</p>\n',
+  ],
+  rawDate: ' />2024.07.29 - 8:00 UTC (4:00 EDT)',
+  rawData:
+    'The European PC/Mac megaserver is currently unavailable while we perform maintenance.',
+  slugs: ['server_pc_eu'],
+  dates: [
+    moment()
+      .utc()
+      .set('years', 2024)
+      .set('months', 7)
+      .set('date', 29)
+      .set('hours', 8)
+      .set('minutes', 10)
+      .set('seconds', 0)
+      .set('milliseconds', 0)
+      .utcOffset(0),
+  ],
+  type: 'server',
+  support: 'pc',
+  zone: 'eu',
+  status: 'down',
+};
+export const ServiceAlertsDownEuNa: EsoStatus = {
+  raw: ServiceAlertsDownPcEuRaw,
+  slug: 'server_pc_eu',
+  type: 'server',
+  support: 'pc',
+  zone: 'eu',
+  status: 'down',
 };
 
 export const ServiceAlertsInitialStoreEsoRaw: RawEsoStatus = {
@@ -629,6 +698,18 @@ export const ServiceAlertsInitialFormatted: EsoStatus[] = [
   ServiceAlertsInitialPcEu,
   ServiceAlertsInitialStoreEso,
   ServiceAlertsInitialSystemAccount,
+];
+
+export const ServiceAlertsDown: RawEsoStatus[] = [
+  ServiceAlertsInitialPcPtsRaw,
+  ServiceAlertsInitialXboxNaRaw,
+  ServiceAlertsInitialXboxEuRaw,
+  ServiceAlertsInitialPsNaRaw,
+  ServiceAlertsInitialPsEuRaw,
+  ServiceAlertsDownPcNaRaw,
+  ServiceAlertsDownPcEuRaw,
+  ServiceAlertsInitialStoreEsoRaw,
+  ServiceAlertsInitialSystemAccountRaw,
 ];
 
 export const ForumMessagePlannedPcEuRaw: RawEsoStatus = {
