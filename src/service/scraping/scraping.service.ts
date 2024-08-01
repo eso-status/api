@@ -118,11 +118,6 @@ export class ScrapingService {
     // Get service in database by slug
     const service: Service = await this.getService(esoStatus);
 
-    // Return function if status not change between new data and database
-    if (!this.slugChanged(esoStatus, service)) {
-      return;
-    }
-
     // Get archive in database by service and connector
     const archive: Archive = await this.getArchive(service, connector);
 
@@ -136,6 +131,11 @@ export class ScrapingService {
 
     // Update archive
     await this.updateArchive(service, esoStatus.raw, connector, newStatus.id);
+
+    // Return function if status not change between new data and database
+    if (!this.slugChanged(esoStatus, service)) {
+      return;
+    }
 
     // Write log with details (raw data)
     this.winstonService.log(
