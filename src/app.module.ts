@@ -9,7 +9,8 @@ import { Maintenance } from './resource/maintenance/entities/maintenance.entity'
 import { MaintenanceService } from './resource/maintenance/maintenance.service';
 import { ServiceModule } from './resource/service/service.module';
 import { Slug } from './resource/slug/entities/slug.entity';
-import { StatusModule } from './resource/status/status.module';
+import { Status } from './resource/status/entities/status.entity';
+import { StatusService } from './resource/status/status.service';
 import { Support } from './resource/support/entities/support.entity';
 import { Type } from './resource/type/entities/type.entity';
 import { Zone } from './resource/zone/entities/zone.entity';
@@ -20,13 +21,21 @@ import { WinstonService } from './service/winston/winston.service';
 @Module({
   imports: [
     TypeOrmModule.forRoot(dataSourceOptions),
-    TypeOrmModule.forFeature([Zone, Type, Support, Slug, Archive, Maintenance]),
-    StatusModule,
+    TypeOrmModule.forFeature([
+      Zone,
+      Type,
+      Support,
+      Slug,
+      Status,
+      Archive,
+      Maintenance,
+    ]),
     ServiceModule,
     ScheduleModule.forRoot(),
   ],
   controllers: [],
   providers: [
+    StatusService,
     ArchiveService,
     MaintenanceService,
     WebsocketService,
@@ -34,6 +43,7 @@ import { WinstonService } from './service/winston/winston.service';
     ScrapingService,
   ],
   exports: [
+    StatusService,
     ArchiveService,
     MaintenanceService,
     WebsocketService,
