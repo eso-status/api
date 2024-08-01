@@ -1007,12 +1007,10 @@ describe('QueueService (e2e)', (): void => {
 
       it('should getService method called', (): void => {
         expect(getService).toHaveBeenCalledTimes(2);
-        // TODO check le retour de la valeur
       });
 
       it('should getArchive method called', (): void => {
         expect(getArchive).toHaveBeenCalledTimes(2);
-        // TODO check le retour de la valeur
       });
 
       it('should archiveChanged method called and works', (): void => {
@@ -1023,7 +1021,6 @@ describe('QueueService (e2e)', (): void => {
 
       it('should getStatus method called and works', (): void => {
         expect(getStatus).toHaveBeenCalledTimes(2);
-        // TODO check le retour de la valeur
       });
 
       it('should updateArchive method called and works', async (): Promise<void> => {
@@ -1480,12 +1477,10 @@ describe('QueueService (e2e)', (): void => {
 
       it('should getService method called', (): void => {
         expect(getService).toHaveBeenCalledTimes(4);
-        // TODO check le retour de la valeur
       });
 
       it('should getArchive method called', (): void => {
         expect(getArchive).toHaveBeenCalledTimes(4);
-        // TODO check le retour de la valeur
       });
 
       it('should archiveChanged method called and works', (): void => {
@@ -1589,12 +1584,10 @@ describe('QueueService (e2e)', (): void => {
 
       it('should getService method called', (): void => {
         expect(getService).toHaveBeenCalledTimes(6);
-        // TODO check le retour de la valeur
       });
 
       it('should getArchive method called', (): void => {
         expect(getArchive).toHaveBeenCalledTimes(6);
-        // TODO check le retour de la valeur
       });
 
       it('should archiveChanged method called and works', (): void => {
@@ -1605,7 +1598,6 @@ describe('QueueService (e2e)', (): void => {
 
       it('should getStatus method not called', (): void => {
         expect(getStatus).toHaveBeenCalledTimes(2);
-        // TODO check le retour de la valeur
       });
     });
     describe('handle doQueue 4', (): void => {
@@ -1754,12 +1746,10 @@ describe('QueueService (e2e)', (): void => {
 
       it('should getService method called', (): void => {
         expect(getService).toHaveBeenCalledTimes(8);
-        // TODO check le retour de la valeur
       });
 
       it('should getArchive method called', (): void => {
         expect(getArchive).toHaveBeenCalledTimes(8);
-        // TODO check le retour de la valeur
       });
 
       it('should archiveChanged method called and works', (): void => {
@@ -1770,7 +1760,6 @@ describe('QueueService (e2e)', (): void => {
 
       it('should getStatus method called and works', (): void => {
         expect(getStatus).toHaveBeenCalledTimes(4);
-        // TODO check le retour de la valeur
       });
 
       it('should updateArchive method called and works', async (): Promise<void> => {
@@ -2001,12 +1990,10 @@ describe('QueueService (e2e)', (): void => {
 
       it('should getService method called', (): void => {
         expect(getService).toHaveBeenCalledTimes(10);
-        // TODO check le retour de la valeur
       });
 
       it('should getArchive method called', (): void => {
         expect(getArchive).toHaveBeenCalledTimes(10);
-        // TODO check le retour de la valeur
       });
 
       it('should archiveChanged method called and works', (): void => {
