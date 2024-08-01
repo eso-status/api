@@ -31,7 +31,7 @@ export class ServiceService {
 
   async findBySlug(slug: Slug): Promise<Service> {
     return this.serviceRepository.findOne({
-      relations: ['slug', 'status', 'type', 'zone', 'support', 'maintenances'],
+      relations: ['slug', 'status', 'type', 'zone', 'support', 'maintenance'],
       where: {
         slug: {
           slug,

@@ -5,6 +5,7 @@ import {
   PrimaryColumn,
   UpdateDateColumn,
   OneToMany,
+  OneToOne,
 } from 'typeorm';
 
 import { Archive } from '../../archive/entities/archive.entity';
@@ -62,9 +63,12 @@ export class Service {
   @ManyToOne(() => Zone)
   zone?: Zone;
 
-  @OneToMany(() => Archive, archive => archive.service)
+  @OneToMany(() => Archive, (archive: Archive) => archive.service)
   archives?: Archive[];
 
-  @OneToMany(() => Maintenance, maintenance => maintenance.service) // TODO mettre en 1 to 1
-  maintenances?: Maintenance[];
+  @OneToOne(
+    () => Maintenance,
+    (maintenance: Maintenance) => maintenance.service,
+  )
+  maintenance?: Maintenance;
 }

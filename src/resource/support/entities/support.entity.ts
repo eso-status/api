@@ -18,9 +18,9 @@ export class Support {
   })
   support: EsoStatusSupport;
 
-  @OneToMany(() => Slug, slug => slug.support)
+  @OneToMany(() => Slug, (slug: Slug) => slug.support)
   slugs?: Slug[];
 
-  @OneToMany(() => Service, service => service.slug)
+  @OneToMany(() => Service, (service: Service) => service.slug)
   services?: Service[];
 }

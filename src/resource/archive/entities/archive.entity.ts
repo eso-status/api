@@ -40,7 +40,7 @@ export class Archive {
   })
   updatedAt?: Date;
 
-  @ManyToOne(() => Service, service => service.archives)
+  @ManyToOne(() => Service, (service: Service) => service.archives)
   service?: Service;
 
   @ManyToOne(() => Status)

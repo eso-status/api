@@ -113,7 +113,7 @@ export class ScrapingService {
   }
 
   public serviceHaveMaintenance(service: Service): boolean {
-    return service.maintenances.length > 0;
+    return service.maintenance !== null;
   }
 
   public async detachMaintenanceToService(service: Service): Promise<void> {

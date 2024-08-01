@@ -18,9 +18,9 @@ export class Status {
   })
   status: EsoStatusStatus;
 
-  @OneToMany(() => Service, service => service.slug)
+  @OneToMany(() => Service, (service: Service) => service.slug)
   services?: Service[];
 
-  @OneToMany(() => Archive, archive => archive.status)
+  @OneToMany(() => Archive, (archive: Archive) => archive.status)
   archives?: Archive[];
 }

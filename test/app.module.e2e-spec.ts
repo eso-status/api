@@ -606,7 +606,7 @@ describe('ScrapingService (e2e)', (): void => {
                 },
               });
             const service: Service = await serviceRepository.findOne({
-              relations: ['maintenances'], // TODO mettre en 1 to 1
+              relations: ['maintenance'],
               where: {
                 id: serviceId,
               },
@@ -619,7 +619,7 @@ describe('ScrapingService (e2e)', (): void => {
             expect(maintenance.endingAt).toStrictEqual(
               new Date(rawData.dates[1].toISOString()),
             );
-            expect(service.maintenances[0].id).toStrictEqual(maintenance.id); // TODO mettre en 1 to 1
+            expect(service.maintenance.id).toStrictEqual(maintenance.id);
           },
           15000,
         );

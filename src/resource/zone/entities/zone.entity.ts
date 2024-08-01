@@ -18,9 +18,9 @@ export class Zone {
   })
   zone: EsoStatusZone;
 
-  @OneToMany(() => Slug, slug => slug.zone)
+  @OneToMany(() => Slug, (slug: Slug) => slug.zone)
   slugs?: Slug[];
 
-  @OneToMany(() => Service, service => service.slug)
+  @OneToMany(() => Service, (service: Service) => service.slug)
   services?: Service[];
 }

@@ -38,6 +38,6 @@ export class Slug {
   @ManyToOne(() => Zone)
   zone?: Zone;
 
-  @OneToOne(() => Service, service => service.slug)
+  @OneToOne(() => Service, (service: Service) => service.slug)
   service?: Service;
 }

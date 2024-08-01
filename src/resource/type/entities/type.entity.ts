@@ -18,9 +18,9 @@ export class Type {
   })
   type: EsoStatusType;
 
-  @OneToMany(() => Slug, slug => slug.type)
+  @OneToMany(() => Slug, (slug: Slug) => slug.type)
   slugs?: Slug[];
 
-  @OneToMany(() => Service, service => service.slug)
+  @OneToMany(() => Service, (service: Service) => service.slug)
   services?: Service[];
 }

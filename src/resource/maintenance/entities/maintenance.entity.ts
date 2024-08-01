@@ -1,9 +1,10 @@
 import {
   Column,
   Entity,
-  ManyToOne,
   CreateDateColumn,
   PrimaryGeneratedColumn,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
 
 import { Service } from '../../service/entities/service.entity';
@@ -18,7 +19,8 @@ export class Maintenance {
   @Column({ type: 'int', nullable: false })
   serviceId?: number;
 
-  @ManyToOne(() => Service, service => service.archives)
+  @OneToOne(() => Service, (service: Service) => service.maintenance)
+  @JoinColumn({ name: 'serviceId' })
   service?: Service;
 
   @Column({ type: 'datetime', nullable: false })
@@ -30,6 +32,9 @@ export class Maintenance {
   @Column({ type: 'text', nullable: false })
   rawData: string;
 
-  @CreateDateColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn({
+    type: 'datetime',
+    default: (): string => 'CURRENT_TIMESTAMP',
+  })
   createdAt?: Date;
 }
