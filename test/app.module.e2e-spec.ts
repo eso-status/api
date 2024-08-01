@@ -1,12 +1,7 @@
 import { ForumMessage } from '@eso-status/forum-message';
 import { LiveServices } from '@eso-status/live-services';
 import { ServiceAlerts } from '@eso-status/service-alerts';
-import {
-  EsoStatus,
-  MaintenanceEsoStatus,
-  RawEsoStatus,
-  Slug,
-} from '@eso-status/types';
+import { EsoStatus, RawEsoStatus, Slug } from '@eso-status/types';
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -14,6 +9,7 @@ import { config } from 'dotenv';
 import { Server } from 'socket.io';
 import { Socket, io } from 'socket.io-client';
 
+import { MaintenanceEsoStatus } from 'src/interface/maintenanceEsoStatus.interface';
 import { Maintenance } from 'src/resource/maintenance/entities/maintenance.entity';
 import { Connector } from 'src/type/connector.type';
 import { Repository } from 'typeorm';
@@ -108,7 +104,6 @@ const getArchiveByServiceIdAndConnectorName = async (
 const before = async (): Promise<void> => {
   const module: TestingModule = await Test.createTestingModule({
     imports: [
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       TypeOrmModule.forRoot(dataSourceOptions),
       TypeOrmModule.forFeature([Service, Status, Archive, Maintenance]),
     ],

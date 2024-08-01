@@ -1,9 +1,6 @@
-import {
-  EsoStatus,
-  MaintenanceEsoStatus,
-  RawEsoStatus,
-} from '@eso-status/types';
+import { EsoStatus, RawEsoStatus } from '@eso-status/types';
 import * as moment from 'moment/moment';
+import { MaintenanceEsoStatus as CustomMaintenanceEsoStatus } from 'src/interface/maintenanceEsoStatus.interface';
 
 export const LiveServicesPcEuUpRaw: RawEsoStatus = {
   sources: ['https://live-services.elderscrollsonline.com/status/realms'],
@@ -15,14 +12,6 @@ export const LiveServicesPcEuUpRaw: RawEsoStatus = {
   zone: 'eu',
   status: 'up',
 };
-export const LiveServicesPcEuUp: EsoStatus = {
-  raw: LiveServicesPcEuUpRaw,
-  slug: 'server_pc_eu',
-  type: 'server',
-  support: 'pc',
-  zone: 'eu',
-  status: 'up',
-};
 
 export const LiveServicesPcEuDownRaw: RawEsoStatus = {
   sources: ['https://live-services.elderscrollsonline.com/status/realms'],
@@ -30,14 +19,6 @@ export const LiveServicesPcEuDownRaw: RawEsoStatus = {
   rawSlug: 'The Elder Scrolls Online (EU)',
   rawStatus: 'DOWN',
   slugs: ['server_pc_eu'],
-  support: 'pc',
-  zone: 'eu',
-  status: 'down',
-};
-export const LiveServicesPcEuDown: EsoStatus = {
-  raw: LiveServicesPcEuDownRaw,
-  slug: 'server_pc_eu',
-  type: 'server',
   support: 'pc',
   zone: 'eu',
   status: 'down',
@@ -61,14 +42,6 @@ export const LiveServicesPcNaUpRaw: RawEsoStatus = {
   zone: 'na',
   status: 'up',
 };
-export const LiveServicesPcNaUp: EsoStatus = {
-  raw: LiveServicesPcNaUpRaw,
-  slug: 'server_pc_na',
-  type: 'server',
-  support: 'pc',
-  zone: 'na',
-  status: 'up',
-};
 
 export const LiveServicesPcNaDownRaw: RawEsoStatus = {
   sources: ['https://live-services.elderscrollsonline.com/status/realms'],
@@ -76,14 +49,6 @@ export const LiveServicesPcNaDownRaw: RawEsoStatus = {
   rawSlug: 'The Elder Scrolls Online (NA)',
   rawStatus: 'DOWN',
   slugs: ['server_pc_na'],
-  support: 'pc',
-  zone: 'na',
-  status: 'down',
-};
-export const LiveServicesPcNaDown: EsoStatus = {
-  raw: LiveServicesPcNaDownRaw,
-  slug: 'server_pc_na',
-  type: 'server',
   support: 'pc',
   zone: 'na',
   status: 'down',
@@ -107,14 +72,6 @@ export const LiveServicesPsEuUpRaw: RawEsoStatus = {
   zone: 'eu',
   status: 'up',
 };
-export const LiveServicesPsEuUp: EsoStatus = {
-  raw: LiveServicesPsEuUpRaw,
-  slug: 'server_ps_eu',
-  type: 'server',
-  support: 'ps',
-  zone: 'eu',
-  status: 'up',
-};
 
 export const LiveServicesPsNaUpRaw: RawEsoStatus = {
   sources: ['https://live-services.elderscrollsonline.com/status/realms'],
@@ -122,14 +79,6 @@ export const LiveServicesPsNaUpRaw: RawEsoStatus = {
   rawSlug: 'The Elder Scrolls Online (PS4 - US)',
   rawStatus: 'UP',
   slugs: ['server_ps_na'],
-  support: 'ps',
-  zone: 'na',
-  status: 'up',
-};
-export const LiveServicesPsNaUp: EsoStatus = {
-  raw: LiveServicesPsNaUpRaw,
-  slug: 'server_ps_na',
-  type: 'server',
   support: 'ps',
   zone: 'na',
   status: 'up',
@@ -145,14 +94,6 @@ export const LiveServicesPcPtsUpRaw: RawEsoStatus = {
   zone: 'pts',
   status: 'up',
 };
-export const LiveServicesPcPtsUp: EsoStatus = {
-  raw: LiveServicesPcPtsUpRaw,
-  slug: 'server_pc_pts',
-  type: 'server',
-  support: 'pc',
-  zone: 'pts',
-  status: 'up',
-};
 
 export const LiveServicesXboxEuUpRaw: RawEsoStatus = {
   sources: ['https://live-services.elderscrollsonline.com/status/realms'],
@@ -160,14 +101,6 @@ export const LiveServicesXboxEuUpRaw: RawEsoStatus = {
   rawSlug: 'The Elder Scrolls Online (XBox - EU)',
   rawStatus: 'UP',
   slugs: ['server_xbox_eu'],
-  support: 'xbox',
-  zone: 'eu',
-  status: 'up',
-};
-export const LiveServicesXboxEuUp: EsoStatus = {
-  raw: LiveServicesXboxEuUpRaw,
-  slug: 'server_xbox_eu',
-  type: 'server',
   support: 'xbox',
   zone: 'eu',
   status: 'up',
@@ -183,14 +116,6 @@ export const LiveServicesXboxNaUpRaw: RawEsoStatus = {
   zone: 'na',
   status: 'up',
 };
-export const LiveServicesXboxNaUp: EsoStatus = {
-  raw: LiveServicesXboxNaUpRaw,
-  slug: 'server_xbox_na',
-  type: 'server',
-  support: 'xbox',
-  zone: 'na',
-  status: 'up',
-};
 
 export const LiveServicesInitial: RawEsoStatus[] = [
   LiveServicesPcEuUpRaw,
@@ -201,15 +126,6 @@ export const LiveServicesInitial: RawEsoStatus[] = [
   LiveServicesXboxEuUpRaw,
   LiveServicesXboxNaUpRaw,
 ];
-export const LiveServicesInitialFormated: EsoStatus[] = [
-  LiveServicesPcEuUp,
-  LiveServicesPcNaUp,
-  LiveServicesPsEuUp,
-  LiveServicesPsNaUp,
-  LiveServicesPcPtsUp,
-  LiveServicesXboxEuUp,
-  LiveServicesXboxNaUp,
-];
 
 export const LiveServicesDown: RawEsoStatus[] = [
   LiveServicesPcEuDownRaw,
@@ -219,15 +135,6 @@ export const LiveServicesDown: RawEsoStatus[] = [
   LiveServicesPcPtsUpRaw,
   LiveServicesXboxEuUpRaw,
   LiveServicesXboxNaUpRaw,
-];
-export const LiveServicesDownFormated: EsoStatus[] = [
-  LiveServicesPcEuDown,
-  LiveServicesPcNaDown,
-  LiveServicesPsEuUp,
-  LiveServicesPsNaUp,
-  LiveServicesPcPtsUp,
-  LiveServicesXboxEuUp,
-  LiveServicesXboxNaUp,
 ];
 
 export const ForumMessageInitialPcEuLastUpRaw: RawEsoStatus = {
@@ -326,14 +233,6 @@ export const ServiceAlertsInitialPcPtsRaw: RawEsoStatus = {
   zone: 'pts',
   status: 'up',
 };
-export const ServiceAlertsInitialPcPts: EsoStatus = {
-  raw: ServiceAlertsInitialPcPtsRaw,
-  slug: 'server_pc_pts',
-  type: 'server',
-  support: 'pc',
-  zone: 'pts',
-  status: 'up',
-};
 
 export const ServiceAlertsInitialXboxNaRaw: RawEsoStatus = {
   sources: ['https://help.elderscrollsonline.com/app/answers/detail/a_id/4320'],
@@ -360,14 +259,6 @@ export const ServiceAlertsInitialXboxNaRaw: RawEsoStatus = {
   zone: 'na',
   status: 'up',
 };
-export const ServiceAlertsInitialXboxNa: EsoStatus = {
-  raw: ServiceAlertsInitialXboxNaRaw,
-  slug: 'server_xbox_na',
-  type: 'server',
-  support: 'xbox',
-  zone: 'na',
-  status: 'up',
-};
 
 export const ServiceAlertsInitialXboxEuRaw: RawEsoStatus = {
   sources: ['https://help.elderscrollsonline.com/app/answers/detail/a_id/4320'],
@@ -389,14 +280,6 @@ export const ServiceAlertsInitialXboxEuRaw: RawEsoStatus = {
       .set('milliseconds', 0)
       .utcOffset(0),
   ],
-  type: 'server',
-  support: 'xbox',
-  zone: 'eu',
-  status: 'up',
-};
-export const ServiceAlertsInitialXboxEu: EsoStatus = {
-  raw: ServiceAlertsInitialXboxEuRaw,
-  slug: 'server_xbox_eu',
   type: 'server',
   support: 'xbox',
   zone: 'eu',
@@ -429,14 +312,6 @@ export const ServiceAlertsInitialPsNaRaw: RawEsoStatus = {
   zone: 'na',
   status: 'up',
 };
-export const ServiceAlertsInitialPsNa: EsoStatus = {
-  raw: ServiceAlertsInitialPsNaRaw,
-  slug: 'server_ps_na',
-  type: 'server',
-  support: 'ps',
-  zone: 'na',
-  status: 'up',
-};
 
 export const ServiceAlertsInitialPsEuRaw: RawEsoStatus = {
   sources: ['https://help.elderscrollsonline.com/app/answers/detail/a_id/4320'],
@@ -458,14 +333,6 @@ export const ServiceAlertsInitialPsEuRaw: RawEsoStatus = {
       .set('milliseconds', 0)
       .utcOffset(0),
   ],
-  type: 'server',
-  support: 'ps',
-  zone: 'eu',
-  status: 'up',
-};
-export const ServiceAlertsInitialPsEu: EsoStatus = {
-  raw: ServiceAlertsInitialPsEuRaw,
-  slug: 'server_ps_eu',
   type: 'server',
   support: 'ps',
   zone: 'eu',
@@ -497,14 +364,6 @@ export const ServiceAlertsInitialPcNaRaw: RawEsoStatus = {
   zone: 'na',
   status: 'up',
 };
-export const ServiceAlertsInitialPcNa: EsoStatus = {
-  raw: ServiceAlertsInitialPcNaRaw,
-  slug: 'server_pc_na',
-  type: 'server',
-  support: 'pc',
-  zone: 'na',
-  status: 'up',
-};
 
 export const ServiceAlertsDownPcNaRaw: RawEsoStatus = {
   sources: ['https://help.elderscrollsonline.com/app/answers/detail/a_id/4320'],
@@ -531,14 +390,6 @@ export const ServiceAlertsDownPcNaRaw: RawEsoStatus = {
   zone: 'na',
   status: 'down',
 };
-export const ServiceAlertsDownPcNa: EsoStatus = {
-  raw: ServiceAlertsDownPcNaRaw,
-  slug: 'server_pc_na',
-  type: 'server',
-  support: 'pc',
-  zone: 'na',
-  status: 'down',
-};
 
 export const ServiceAlertsInitialPcEuRaw: RawEsoStatus = {
   sources: ['https://help.elderscrollsonline.com/app/answers/detail/a_id/4320'],
@@ -560,14 +411,6 @@ export const ServiceAlertsInitialPcEuRaw: RawEsoStatus = {
       .set('milliseconds', 0)
       .utcOffset(0),
   ],
-  type: 'server',
-  support: 'pc',
-  zone: 'eu',
-  status: 'up',
-};
-export const ServiceAlertsInitialPcEu: EsoStatus = {
-  raw: ServiceAlertsInitialPcEuRaw,
-  slug: 'server_pc_eu',
   type: 'server',
   support: 'pc',
   zone: 'eu',
@@ -600,14 +443,6 @@ export const ServiceAlertsDownPcEuRaw: RawEsoStatus = {
   zone: 'eu',
   status: 'down',
 };
-export const ServiceAlertsDownEuNa: EsoStatus = {
-  raw: ServiceAlertsDownPcEuRaw,
-  slug: 'server_pc_eu',
-  type: 'server',
-  support: 'pc',
-  zone: 'eu',
-  status: 'down',
-};
 
 export const ServiceAlertsInitialStoreEsoRaw: RawEsoStatus = {
   sources: ['https://help.elderscrollsonline.com/app/answers/detail/a_id/4320'],
@@ -629,14 +464,6 @@ export const ServiceAlertsInitialStoreEsoRaw: RawEsoStatus = {
       .set('milliseconds', 0)
       .utcOffset(0),
   ],
-  type: 'service',
-  support: 'store',
-  zone: 'eso',
-  status: 'up',
-};
-export const ServiceAlertsInitialStoreEso: EsoStatus = {
-  raw: ServiceAlertsInitialStoreEsoRaw,
-  slug: 'service_store_eso',
   type: 'service',
   support: 'store',
   zone: 'eso',
@@ -668,14 +495,6 @@ export const ServiceAlertsInitialSystemAccountRaw: RawEsoStatus = {
   zone: 'account',
   status: 'up',
 };
-export const ServiceAlertsInitialSystemAccount: EsoStatus = {
-  raw: ServiceAlertsInitialSystemAccountRaw,
-  slug: 'service_system_account',
-  type: 'service',
-  support: 'system',
-  zone: 'account',
-  status: 'up',
-};
 
 export const ServiceAlertsInitial: RawEsoStatus[] = [
   ServiceAlertsInitialPcPtsRaw,
@@ -687,17 +506,6 @@ export const ServiceAlertsInitial: RawEsoStatus[] = [
   ServiceAlertsInitialPcEuRaw,
   ServiceAlertsInitialStoreEsoRaw,
   ServiceAlertsInitialSystemAccountRaw,
-];
-export const ServiceAlertsInitialFormatted: EsoStatus[] = [
-  ServiceAlertsInitialPcPts,
-  ServiceAlertsInitialXboxNa,
-  ServiceAlertsInitialXboxEu,
-  ServiceAlertsInitialPsNa,
-  ServiceAlertsInitialPsEu,
-  ServiceAlertsInitialPcNa,
-  ServiceAlertsInitialPcEu,
-  ServiceAlertsInitialStoreEso,
-  ServiceAlertsInitialSystemAccount,
 ];
 
 export const ServiceAlertsDown: RawEsoStatus[] = [
@@ -746,26 +554,14 @@ export const ForumMessagePlannedPcEuRaw: RawEsoStatus = {
   zone: 'eu',
   status: 'planned',
 };
-export const ForumMessagePlannedPcEu: EsoStatus = {
-  raw: ForumMessagePlannedPcEuRaw,
-  slug: 'server_pc_eu',
-  type: 'server',
-  support: 'pc',
-  zone: 'eu',
-  status: 'planned',
-};
-export const ForumMessagePlannedPcEuMaintenance: MaintenanceEsoStatus = {
+export const ForumMessagePlannedPcEuMaintenance: CustomMaintenanceEsoStatus = {
   raw: {
     sources: ForumMessagePlannedPcEuRaw.sources,
     raw: ForumMessagePlannedPcEuRaw.raw,
     slugs: ForumMessagePlannedPcEuRaw.slugs,
     rawDate: ForumMessagePlannedPcEuRaw.rawDate,
     dates: [
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
       ForumMessagePlannedPcEuRaw.dates[0].toISOString(),
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
       ForumMessagePlannedPcEuRaw.dates[1].toISOString(),
     ],
     type: ForumMessagePlannedPcEuRaw.type,
@@ -812,26 +608,14 @@ export const ForumMessagePlannedPcNaRaw: RawEsoStatus = {
   zone: 'na',
   status: 'planned',
 };
-export const ForumMessagePlannedPcNa: EsoStatus = {
-  raw: ForumMessagePlannedPcNaRaw,
-  slug: 'server_pc_na',
-  type: 'server',
-  support: 'pc',
-  zone: 'na',
-  status: 'planned',
-};
-export const ForumMessagePlannedPcNaMaintenance: MaintenanceEsoStatus = {
+export const ForumMessagePlannedPcNaMaintenance: CustomMaintenanceEsoStatus = {
   raw: {
     sources: ForumMessagePlannedPcNaRaw.sources,
     raw: ForumMessagePlannedPcNaRaw.raw,
     slugs: ForumMessagePlannedPcNaRaw.slugs,
     rawDate: ForumMessagePlannedPcNaRaw.rawDate,
     dates: [
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
       ForumMessagePlannedPcNaRaw.dates[0].toISOString(),
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
       ForumMessagePlannedPcNaRaw.dates[1].toISOString(),
     ],
     type: ForumMessagePlannedPcNaRaw.type,
@@ -847,10 +631,6 @@ export const ForumMessagePlannedPcNaMaintenance: MaintenanceEsoStatus = {
 export const ForumMessagePlanned: RawEsoStatus[] = [
   ForumMessagePlannedPcEuRaw,
   ForumMessagePlannedPcNaRaw,
-];
-export const ForumMessagePlannedFormatted: EsoStatus[] = [
-  ForumMessagePlannedPcEu,
-  ForumMessagePlannedPcNa,
 ];
 
 export const ForumMessageDownPcEuRaw: RawEsoStatus = {
@@ -882,14 +662,6 @@ export const ForumMessageDownPcEuRaw: RawEsoStatus = {
       .set('milliseconds', 0)
       .utcOffset(0),
   ],
-  type: 'server',
-  support: 'pc',
-  zone: 'eu',
-  status: 'down',
-};
-export const ForumMessageDownPcEu: EsoStatus = {
-  raw: ForumMessageDownPcEuRaw,
-  slug: 'server_pc_eu',
   type: 'server',
   support: 'pc',
   zone: 'eu',
@@ -930,20 +702,8 @@ export const ForumMessageDownPcNaRaw: RawEsoStatus = {
   zone: 'na',
   status: 'down',
 };
-export const ForumMessageDownPcNa: EsoStatus = {
-  raw: ForumMessageDownPcNaRaw,
-  slug: 'server_pc_na',
-  type: 'server',
-  support: 'pc',
-  zone: 'na',
-  status: 'down',
-};
 
 export const ForumMessageDown: RawEsoStatus[] = [
   ForumMessageDownPcEuRaw,
   ForumMessageDownPcNaRaw,
-];
-export const ForumMessageDownFormatted: EsoStatus[] = [
-  ForumMessageDownPcEu,
-  ForumMessageDownPcNa,
 ];

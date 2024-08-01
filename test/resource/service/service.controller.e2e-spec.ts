@@ -2,6 +2,7 @@ import { RawEsoStatus } from '@eso-status/types';
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Service } from 'src/resource/service/entities/service.entity';
 import * as request from 'supertest';
 import supertest from 'supertest';
 import { App } from 'supertest/types';
@@ -36,42 +37,50 @@ describe('ServiceController (e2e)', () => {
     await dataSource.destroy();
   });
 
-  it('should return correct data for all slugs', async (): Promise<void> => {
-    const response: supertest.Response = await request(
-      <App>app.getHttpServer(),
-    ).get('/service');
-    expect(response.status).toBe(200);
-    for (let i: number = 0; i < 12; i += 1) {
-      expect(JSON.stringify(response.body)).toContain(
-        JSON.stringify({
-          slug: serviceData[i].slug.slug,
-          status: serviceData[i].status.status,
-          type: serviceData[i].type.type,
-          support: serviceData[i].support.support,
-          zone: serviceData[i].zone.zone,
-          raw: <RawEsoStatus>JSON.parse(serviceData[i].rawData),
-        }),
-      );
-    }
+  describe('should return correct data for all slugs', (): void => {
+    let response: supertest.Response;
+
+    it('should return correct data for all slugs status 200', async (): Promise<void> => {
+      response = await request(<App>app.getHttpServer()).get('/service');
+      expect(response.status).toBe(200);
+    });
+
+    it.each(serviceData)(
+      'should return correct data for specific slug',
+      (service: Service): void => {
+        expect(JSON.stringify(response.body)).toContain(
+          JSON.stringify({
+            slug: service.slug.slug,
+            status: service.status.status,
+            type: service.type.type,
+            support: service.support.support,
+            zone: service.zone.zone,
+            raw: <RawEsoStatus>JSON.parse(service.rawData),
+          }),
+        );
+      },
+      15000,
+    );
   });
 
-  it('should return correct data for specific slug', async () => {
-    for (let i: number = 0; i < 12; i += 1) {
-      // eslint-disable-next-line no-await-in-loop
+  it.each(serviceData)(
+    'should return correct data for specific slug',
+    async (service: Service): Promise<void> => {
       const response: supertest.Response = await request(
         <App>app.getHttpServer(),
-      ).get(`/service/${serviceData[i].slug.slug}`);
+      ).get(`/service/${service.slug.slug}`);
       expect(response.status).toBe(200);
       expect(JSON.stringify(response.body)).toContain(
         JSON.stringify({
-          slug: serviceData[i].slug.slug,
-          status: serviceData[i].status.status,
-          type: serviceData[i].type.type,
-          support: serviceData[i].support.support,
-          zone: serviceData[i].zone.zone,
-          raw: <RawEsoStatus>JSON.parse(serviceData[i].rawData),
+          slug: service.slug.slug,
+          status: service.status.status,
+          type: service.type.type,
+          support: service.support.support,
+          zone: service.zone.zone,
+          raw: <RawEsoStatus>JSON.parse(service.rawData),
         }),
       );
-    }
-  });
+    },
+    15000,
+  );
 });
