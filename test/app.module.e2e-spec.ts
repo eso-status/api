@@ -35,22 +35,18 @@ import { WinstonService } from '../src/service/winston/winston.service';
 
 import {
   ForumMessageDown,
-  ForumMessageDownFormatted,
   ForumMessageDownPcEuRaw,
   ForumMessageDownPcNaRaw,
   ForumMessageInitial,
   ForumMessageInitialPcEuLastUpRaw,
   ForumMessageInitialPcNaLastUpRaw,
   ForumMessagePlanned,
-  ForumMessagePlannedFormatted,
   ForumMessagePlannedPcEuMaintenance,
   ForumMessagePlannedPcEuRaw,
   ForumMessagePlannedPcNaMaintenance,
   ForumMessagePlannedPcNaRaw,
   LiveServicesDown,
-  LiveServicesDownFormated,
   LiveServicesInitial,
-  LiveServicesInitialFormated,
   LiveServicesPcEuDownEsoStatus,
   LiveServicesPcEuDownRaw,
   LiveServicesPcEuUpRaw,
@@ -63,7 +59,6 @@ import {
   LiveServicesXboxEuUpRaw,
   LiveServicesXboxNaUpRaw,
   ServiceAlertsInitial,
-  ServiceAlertsInitialFormatted,
   ServiceAlertsInitialPcEuRaw,
   ServiceAlertsInitialPcNaRaw,
   ServiceAlertsInitialPcPtsRaw,
@@ -84,28 +79,11 @@ let serverSocket: Server;
 let clientSocket: Socket;
 let serviceRepository: Repository<Service>;
 let archiveRepository: Repository<Archive>;
-let maintenanceRepository: Repository<Maintenance>;
 let serviceController: ServiceController;
-
-let doHandle: jest.SpyInstance<Promise<void>>;
-let formatData: jest.SpyInstance<EsoStatus[]>;
-let prepareUpdate: jest.SpyInstance<Promise<void>>;
-let getService: jest.SpyInstance<Promise<Service>>;
-let getArchive: jest.SpyInstance<Promise<Archive>>;
-let archiveChanged: jest.SpyInstance<boolean>;
-let getStatus: jest.SpyInstance<Promise<Status>>;
-let updateArchive: jest.SpyInstance<Promise<void>>;
-let slugChanged: jest.SpyInstance<boolean>;
-let isPlannedStatus: jest.SpyInstance<boolean>;
-let updateMaintenance: jest.SpyInstance<Promise<void>>;
-let updateNoMaintenance: jest.SpyInstance<Promise<void>>;
-let updateService: jest.SpyInstance<Promise<void>>;
-let addMaintenance: jest.SpyInstance<Promise<Maintenance>>;
-let serviceHaveMaintenance: jest.SpyInstance<boolean>;
-let detachMaintenanceToService: jest.SpyInstance<Promise<void>>;
 
 const getServiceById = async (id: number): Promise<Service> => {
   return serviceRepository.findOne({
+    relations: ['maintenance'],
     where: {
       id,
     },
@@ -164,7 +142,6 @@ const before = async (): Promise<void> => {
 
   serviceRepository = dataSource.getRepository(Service);
   archiveRepository = dataSource.getRepository(Archive);
-  maintenanceRepository = dataSource.getRepository(Maintenance);
 
   await new Promise<void>((resolve): void => {
     clientSocket.on('connect', (): void => {
@@ -176,29 +153,6 @@ const before = async (): Promise<void> => {
   await dataSource.dropDatabase();
   await dataSource.runMigrations();
   await runSeeders(dataSource);
-
-  doHandle = jest.spyOn(scrapingService, 'doHandle');
-  formatData = jest.spyOn(scrapingService, 'formatData');
-  prepareUpdate = jest.spyOn(scrapingService, 'prepareUpdate');
-  getService = jest.spyOn(scrapingService, 'getService');
-  getArchive = jest.spyOn(scrapingService, 'getArchive');
-  archiveChanged = jest.spyOn(scrapingService, 'archiveChanged');
-  getStatus = jest.spyOn(scrapingService, 'getStatus');
-  updateArchive = jest.spyOn(scrapingService, 'updateArchive');
-  slugChanged = jest.spyOn(scrapingService, 'slugChanged');
-  isPlannedStatus = jest.spyOn(scrapingService, 'isPlannedStatus');
-  updateMaintenance = jest.spyOn(scrapingService, 'updateMaintenance');
-  updateNoMaintenance = jest.spyOn(scrapingService, 'updateNoMaintenance');
-  updateService = jest.spyOn(scrapingService, 'updateService');
-  addMaintenance = jest.spyOn(scrapingService, 'addMaintenance');
-  serviceHaveMaintenance = jest.spyOn(
-    scrapingService,
-    'serviceHaveMaintenance',
-  );
-  detachMaintenanceToService = jest.spyOn(
-    scrapingService,
-    'detachMaintenanceToService',
-  );
 };
 
 const after = async (): Promise<void> => {
@@ -214,8 +168,6 @@ const after = async (): Promise<void> => {
 
 describe('ScrapingService (e2e)', (): void => {
   describe('classic maintenance', (): void => {
-    let updateDate: Date;
-
     describe('prepare test', (): void => {
       it('prepare', async (): Promise<void> => {
         await before();
@@ -233,7 +185,7 @@ describe('ScrapingService (e2e)', (): void => {
           statusId: number,
           rawData: RawEsoStatus,
         ): Promise<void> => {
-          let service = await getServiceById(serviceId);
+          let service: Service = await getServiceById(serviceId);
           service.statusId = statusId;
           service.rawData = JSON.stringify(rawData);
           await serviceRepository.save(service);
@@ -273,7 +225,7 @@ describe('ScrapingService (e2e)', (): void => {
           statusId: number,
           rawData: RawEsoStatus,
         ): Promise<void> => {
-          let archive = await getArchiveByServiceIdAndConnectorName(
+          let archive: Archive = await getArchiveByServiceIdAndConnectorName(
             serviceId,
             connector,
           );
@@ -291,201 +243,341 @@ describe('ScrapingService (e2e)', (): void => {
       );
 
       it.each([
-        ['server_pc_eu', LiveServicesPcEuUpRaw],
-        ['server_pc_na', LiveServicesPcNaUpRaw],
+        ['server_pc_eu', LiveServicesPcEuUpRaw, undefined],
+        ['server_pc_na', LiveServicesPcNaUpRaw, undefined],
       ])(
         'should service controller return correct data',
-        async (slug: Slug, rawData: RawEsoStatus): Promise<void> => {
+        async (
+          slug: Slug,
+          rawData: RawEsoStatus,
+          maintenance: MaintenanceEsoStatus | undefined,
+        ): Promise<void> => {
           const response: EsoStatus = await serviceController.findOne(slug);
           expect(response.status).toStrictEqual('up');
           expect(response.raw).toStrictEqual(rawData);
+          expect(response.maintenance).toStrictEqual(maintenance);
         },
         15000,
       );
     });
 
+    // Nothing changed
     describe('Nothing changed compare initial state', (): void => {
-      describe('handle handleLiveServices 1 (up)', (): void => {
+      describe('handle handleLiveServices (up)', (): void => {
         it('should doHandle method called', async (): Promise<void> => {
-          jest
-            .spyOn(LiveServices, 'getData')
-            .mockImplementation(async (): Promise<RawEsoStatus[]> => {
-              return Promise.resolve(LiveServicesInitial);
-            });
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises,no-async-promise-executor
+          await new Promise<void>(async (resolve): Promise<void> => {
+            jest
+              .spyOn(LiveServices, 'getData')
+              .mockImplementation(async (): Promise<RawEsoStatus[]> => {
+                return Promise.resolve(LiveServicesInitial);
+              });
 
-          await scrapingService.handleLiveServices();
+            const statusUpdateCalled: jest.Mock = jest.fn();
+            const maintenanceRemovedCalled: jest.Mock = jest.fn();
+            const maintenancePlannedCalled: jest.Mock = jest.fn();
 
-          updateDate = new Date();
-          updateDate.setMilliseconds(0);
+            clientSocket.on('statusUpdate', statusUpdateCalled);
+            clientSocket.on('maintenancePlanned', maintenancePlannedCalled);
+            clientSocket.on('maintenanceRemoved', maintenanceRemovedCalled);
 
-          expect(doHandle).toHaveBeenCalledTimes(1);
+            setTimeout((): void => {
+              expect(statusUpdateCalled).toHaveBeenCalledTimes(0);
+              expect(maintenancePlannedCalled).toHaveBeenCalledTimes(0);
+              expect(maintenanceRemovedCalled).toHaveBeenCalledTimes(0);
+              resolve();
+            }, 1000);
+
+            await scrapingService.handleLiveServices();
+          });
         }, 15000);
 
-        it('should formatData method called and works correctly', (): void => {
-          expect(formatData).toHaveBeenCalledTimes(1);
-          expect(formatData).toHaveNthReturnedWith(
-            1,
-            LiveServicesInitialFormated,
-          );
-        });
+        it.each([
+          [5, LiveServicesPcNaUpRaw],
+          [6, LiveServicesPcEuUpRaw],
+        ])(
+          'should archives not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const archive = await getArchiveByServiceIdAndConnectorName(
+              serviceId,
+              'LiveServices',
+            );
+            expect(archive.statusId).toEqual(1);
+            expect(archive.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
-        it('should prepareUpdate method called', (): void => {
-          expect(prepareUpdate).toHaveBeenCalledTimes(7);
-        });
+        it.each([
+          [5, LiveServicesPcNaUpRaw],
+          [6, LiveServicesPcEuUpRaw],
+        ])(
+          'should services not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const service = await getServiceById(serviceId);
+            expect(service.statusId).toEqual(1);
+            expect(service.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
-        it('should getService method called', (): void => {
-          expect(getService).toHaveBeenCalledTimes(7);
-        });
-
-        it('should getArchive method called', (): void => {
-          expect(getArchive).toHaveBeenCalledTimes(7);
-        });
-
-        it('should archiveChanged method called and works', (): void => {
-          expect(archiveChanged).toHaveBeenCalledTimes(7);
-          expect(archiveChanged).toHaveNthReturnedWith(1, false);
-          expect(archiveChanged).toHaveNthReturnedWith(2, false);
-          expect(archiveChanged).toHaveNthReturnedWith(3, false);
-          expect(archiveChanged).toHaveNthReturnedWith(4, false);
-          expect(archiveChanged).toHaveNthReturnedWith(5, false);
-          expect(archiveChanged).toHaveNthReturnedWith(6, false);
-          expect(archiveChanged).toHaveNthReturnedWith(7, false);
-        });
-
-        it('should getStatus method not called', (): void => {
-          expect(getStatus).toHaveBeenCalledTimes(0);
-        });
+        it.each([
+          ['server_pc_eu', LiveServicesPcEuUpRaw, undefined],
+          ['server_pc_na', LiveServicesPcNaUpRaw, undefined],
+        ])(
+          'should service controller return correct data',
+          async (
+            slug: Slug,
+            rawData: RawEsoStatus,
+            maintenance: MaintenanceEsoStatus | undefined,
+          ): Promise<void> => {
+            const response: EsoStatus = await serviceController.findOne(slug);
+            expect(response.status).toStrictEqual('up');
+            expect(response.raw).toStrictEqual(rawData);
+            expect(response.maintenance).toStrictEqual(maintenance);
+          },
+          15000,
+        );
       });
 
-      describe('handle handleForumMessage 1 (up)', (): void => {
+      describe('handle handleForumMessage (up)', (): void => {
         it('should doHandle method called', async (): Promise<void> => {
-          jest
-            .spyOn(ForumMessage, 'getData')
-            .mockImplementation(async (): Promise<RawEsoStatus[]> => {
-              return Promise.resolve(ForumMessageInitial);
-            });
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises,no-async-promise-executor
+          await new Promise<void>(async (resolve): Promise<void> => {
+            jest
+              .spyOn(ForumMessage, 'getData')
+              .mockImplementation(async (): Promise<RawEsoStatus[]> => {
+                return Promise.resolve(ForumMessageInitial);
+              });
 
-          await scrapingService.handleForumMessage();
+            const statusUpdateCalled: jest.Mock = jest.fn();
+            const maintenanceRemovedCalled: jest.Mock = jest.fn();
+            const maintenancePlannedCalled: jest.Mock = jest.fn();
 
-          updateDate = new Date();
-          updateDate.setMilliseconds(0);
+            clientSocket.on('statusUpdate', statusUpdateCalled);
+            clientSocket.on('maintenancePlanned', maintenancePlannedCalled);
+            clientSocket.on('maintenanceRemoved', maintenanceRemovedCalled);
 
-          expect(doHandle).toHaveBeenCalledTimes(2);
+            setTimeout((): void => {
+              expect(statusUpdateCalled).toHaveBeenCalledTimes(0);
+              expect(maintenancePlannedCalled).toHaveBeenCalledTimes(0);
+              expect(maintenanceRemovedCalled).toHaveBeenCalledTimes(0);
+              resolve();
+            }, 1000);
+
+            await scrapingService.handleForumMessage();
+          });
         }, 15000);
 
-        it('should formatData method called and works correctly', (): void => {
-          expect(formatData).toHaveBeenCalledTimes(2);
-          expect(formatData).toHaveNthReturnedWith(2, <EsoStatus[]>[]);
-        });
+        it.each([
+          [5, ForumMessageInitialPcNaLastUpRaw],
+          [6, ForumMessageInitialPcEuLastUpRaw],
+        ])(
+          'should archives not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const archive: Archive =
+              await getArchiveByServiceIdAndConnectorName(
+                serviceId,
+                'ForumMessage',
+              );
+            expect(archive.statusId).toEqual(1);
+            expect(archive.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
-        it('should prepareUpdate method not called', (): void => {
-          expect(prepareUpdate).toHaveBeenCalledTimes(7);
-        });
+        it.each([
+          [5, LiveServicesPcNaUpRaw],
+          [6, LiveServicesPcEuUpRaw],
+        ])(
+          'should services not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const service = await getServiceById(serviceId);
+            expect(service.statusId).toEqual(1);
+            expect(service.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
+
+        it.each([
+          ['server_pc_eu', LiveServicesPcEuUpRaw, undefined],
+          ['server_pc_na', LiveServicesPcNaUpRaw, undefined],
+        ])(
+          'should service controller return correct data',
+          async (
+            slug: Slug,
+            rawData: RawEsoStatus,
+            maintenance: MaintenanceEsoStatus | undefined,
+          ): Promise<void> => {
+            const response: EsoStatus = await serviceController.findOne(slug);
+            expect(response.status).toStrictEqual('up');
+            expect(response.raw).toStrictEqual(rawData);
+            expect(response.maintenance).toStrictEqual(maintenance);
+          },
+          15000,
+        );
       });
 
-      describe('handle handleServiceAlerts 1 (up)', (): void => {
+      describe('handle handleServiceAlerts (up)', (): void => {
         it('should doHandle method called', async (): Promise<void> => {
-          jest
-            .spyOn(ServiceAlerts, 'getData')
-            .mockImplementation(async (): Promise<RawEsoStatus[]> => {
-              return Promise.resolve(ServiceAlertsInitial);
-            });
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises,no-async-promise-executor
+          await new Promise<void>(async (resolve): Promise<void> => {
+            jest
+              .spyOn(ServiceAlerts, 'getData')
+              .mockImplementation(async (): Promise<RawEsoStatus[]> => {
+                return Promise.resolve(ServiceAlertsInitial);
+              });
 
-          await scrapingService.handleServiceAlerts();
+            const statusUpdateCalled: jest.Mock = jest.fn();
+            const maintenanceRemovedCalled: jest.Mock = jest.fn();
+            const maintenancePlannedCalled: jest.Mock = jest.fn();
 
-          updateDate = new Date();
-          updateDate.setMilliseconds(0);
+            clientSocket.on('statusUpdate', statusUpdateCalled);
+            clientSocket.on('maintenancePlanned', maintenancePlannedCalled);
+            clientSocket.on('maintenanceRemoved', maintenanceRemovedCalled);
 
-          expect(doHandle).toHaveBeenCalledTimes(3);
+            setTimeout((): void => {
+              expect(statusUpdateCalled).toHaveBeenCalledTimes(0);
+              expect(maintenancePlannedCalled).toHaveBeenCalledTimes(0);
+              expect(maintenanceRemovedCalled).toHaveBeenCalledTimes(0);
+              resolve();
+            }, 1000);
+
+            await scrapingService.handleServiceAlerts();
+          });
         }, 15000);
 
-        it('should formatData method called and works correctly', (): void => {
-          expect(formatData).toHaveBeenCalledTimes(3);
-          expect(formatData).toHaveNthReturnedWith(
-            3,
-            ServiceAlertsInitialFormatted,
-          );
-        });
+        it.each([
+          [5, ServiceAlertsInitialPcNaRaw],
+          [6, ServiceAlertsInitialPcEuRaw],
+        ])(
+          'should archives not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const archive: Archive =
+              await getArchiveByServiceIdAndConnectorName(
+                serviceId,
+                'ServiceAlerts',
+              );
+            expect(archive.statusId).toEqual(1);
+            expect(archive.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
-        it('should prepareUpdate method called', (): void => {
-          expect(prepareUpdate).toHaveBeenCalledTimes(16);
-        });
+        it.each([
+          [5, LiveServicesPcNaUpRaw],
+          [6, LiveServicesPcEuUpRaw],
+        ])(
+          'should services not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const service = await getServiceById(serviceId);
+            expect(service.statusId).toEqual(1);
+            expect(service.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
-        it('should getService method called', (): void => {
-          expect(getService).toHaveBeenCalledTimes(16);
-        });
-
-        it('should getArchive method called', (): void => {
-          expect(getArchive).toHaveBeenCalledTimes(16);
-        });
-
-        it('should archiveChanged method called and works', (): void => {
-          expect(archiveChanged).toHaveBeenCalledTimes(16);
-          expect(archiveChanged).toHaveNthReturnedWith(8, false);
-          expect(archiveChanged).toHaveNthReturnedWith(9, false);
-          expect(archiveChanged).toHaveNthReturnedWith(10, false);
-          expect(archiveChanged).toHaveNthReturnedWith(11, false);
-          expect(archiveChanged).toHaveNthReturnedWith(12, false);
-          expect(archiveChanged).toHaveNthReturnedWith(13, false);
-          expect(archiveChanged).toHaveNthReturnedWith(14, false);
-          expect(archiveChanged).toHaveNthReturnedWith(15, false);
-          expect(archiveChanged).toHaveNthReturnedWith(16, false);
-        });
-
-        it('should getStatus method not called', (): void => {
-          expect(getStatus).toHaveBeenCalledTimes(0);
-        });
+        it.each([
+          ['server_pc_eu', LiveServicesPcEuUpRaw, undefined],
+          ['server_pc_na', LiveServicesPcNaUpRaw, undefined],
+        ])(
+          'should service controller return correct data',
+          async (
+            slug: Slug,
+            rawData: RawEsoStatus,
+            maintenance: MaintenanceEsoStatus | undefined,
+          ): Promise<void> => {
+            const response: EsoStatus = await serviceController.findOne(slug);
+            expect(response.status).toStrictEqual('up');
+            expect(response.raw).toStrictEqual(rawData);
+            expect(response.maintenance).toStrictEqual(maintenance);
+          },
+          15000,
+        );
       });
     });
 
+    // maintenancePlanned emmit for server_pc_eu and server_pc_na
+    // archive (ForumMessage) raw and statusId change for server_pc_eu and server_pc_na
+    // maintenance created for server_pc_eu and server_pc_na
+    // controller return maintenance for server_pc_eu and server_pc_na
     describe('ForumMessage new data => maintenance planned for PC EU/NA', (): void => {
-      describe('handle handleLiveServices 2 (up)', (): void => {
+      describe('handle handleLiveServices (up)', (): void => {
         it('should doHandle method called', async (): Promise<void> => {
-          await scrapingService.handleLiveServices();
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises,no-async-promise-executor
+          await new Promise<void>(async (resolve): Promise<void> => {
+            const statusUpdateCalled: jest.Mock = jest.fn();
+            const maintenanceRemovedCalled: jest.Mock = jest.fn();
+            const maintenancePlannedCalled: jest.Mock = jest.fn();
 
-          updateDate = new Date();
-          updateDate.setMilliseconds(0);
+            clientSocket.on('statusUpdate', statusUpdateCalled);
+            clientSocket.on('maintenancePlanned', maintenancePlannedCalled);
+            clientSocket.on('maintenanceRemoved', maintenanceRemovedCalled);
 
-          expect(doHandle).toHaveBeenCalledTimes(4);
+            setTimeout((): void => {
+              expect(statusUpdateCalled).toHaveBeenCalledTimes(0);
+              expect(maintenancePlannedCalled).toHaveBeenCalledTimes(0);
+              expect(maintenanceRemovedCalled).toHaveBeenCalledTimes(0);
+              resolve();
+            }, 1000);
+
+            await scrapingService.handleLiveServices();
+          });
         }, 15000);
 
-        it('should formatData method called and works correctly', (): void => {
-          expect(formatData).toHaveBeenCalledTimes(4);
-          expect(formatData).toHaveNthReturnedWith(
-            4,
-            LiveServicesInitialFormated,
-          );
-        });
+        it.each([
+          [5, LiveServicesPcNaUpRaw],
+          [6, LiveServicesPcEuUpRaw],
+        ])(
+          'should archives not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const archive = await getArchiveByServiceIdAndConnectorName(
+              serviceId,
+              'LiveServices',
+            );
+            expect(archive.statusId).toEqual(1);
+            expect(archive.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
-        it('should prepareUpdate method called', (): void => {
-          expect(prepareUpdate).toHaveBeenCalledTimes(23);
-        });
+        it.each([
+          [5, LiveServicesPcNaUpRaw],
+          [6, LiveServicesPcEuUpRaw],
+        ])(
+          'should services not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const service = await getServiceById(serviceId);
+            expect(service.statusId).toEqual(1);
+            expect(service.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
-        it('should getService method called', (): void => {
-          expect(getService).toHaveBeenCalledTimes(23);
-        });
-
-        it('should getArchive method called', (): void => {
-          expect(getArchive).toHaveBeenCalledTimes(23);
-        });
-
-        it('should archiveChanged method called and works', (): void => {
-          expect(archiveChanged).toHaveBeenCalledTimes(23);
-          expect(archiveChanged).toHaveNthReturnedWith(17, false);
-          expect(archiveChanged).toHaveNthReturnedWith(18, false);
-          expect(archiveChanged).toHaveNthReturnedWith(19, false);
-          expect(archiveChanged).toHaveNthReturnedWith(20, false);
-          expect(archiveChanged).toHaveNthReturnedWith(21, false);
-          expect(archiveChanged).toHaveNthReturnedWith(22, false);
-          expect(archiveChanged).toHaveNthReturnedWith(23, false);
-        });
-
-        it('should getStatus method not called', (): void => {
-          expect(getStatus).toHaveBeenCalledTimes(0);
-        });
+        it.each([
+          ['server_pc_eu', LiveServicesPcEuUpRaw, undefined],
+          ['server_pc_na', LiveServicesPcNaUpRaw, undefined],
+        ])(
+          'should service controller return correct data',
+          async (
+            slug: Slug,
+            rawData: RawEsoStatus,
+            maintenance: MaintenanceEsoStatus | undefined,
+          ): Promise<void> => {
+            const response: EsoStatus = await serviceController.findOne(slug);
+            expect(response.status).toStrictEqual('up');
+            expect(response.raw).toStrictEqual(rawData);
+            expect(response.maintenance).toStrictEqual(maintenance);
+          },
+          15000,
+        );
       });
 
-      describe('handle handleForumMessage 2 (planned)', (): void => {
+      // maintenancePlanned emmit for server_pc_eu and server_pc_na
+      // archive (ForumMessage) raw and statusId change for server_pc_eu and server_pc_na
+      // maintenance created for server_pc_eu and server_pc_na
+      // controller return maintenance for server_pc_eu and server_pc_na
+      describe('handle handleForumMessage (planned)', (): void => {
         it('should doHandle method called', async (): Promise<void> => {
           // eslint-disable-next-line @typescript-eslint/no-misused-promises,no-async-promise-executor
           await new Promise<void>(async (resolve): Promise<void> => {
@@ -495,8 +587,13 @@ describe('ScrapingService (e2e)', (): void => {
                 return Promise.resolve(ForumMessagePlanned);
               });
 
+            const statusUpdateCalled: jest.Mock = jest.fn();
+            const maintenanceRemovedCalled: jest.Mock = jest.fn();
+
             let haveEu: boolean = false;
             let haveNa: boolean = false;
+
+            clientSocket.on('statusUpdate', statusUpdateCalled);
             clientSocket.on(
               'maintenancePlanned',
               (data: MaintenanceEsoStatus): void => {
@@ -514,305 +611,439 @@ describe('ScrapingService (e2e)', (): void => {
                 ) {
                   haveNa = true;
                 }
-                if (haveEu && haveNa) {
-                  resolve();
-                }
               },
             );
+            clientSocket.on('maintenanceRemoved', maintenanceRemovedCalled);
+
+            setTimeout((): void => {
+              expect(statusUpdateCalled).toHaveBeenCalledTimes(0);
+              if (haveEu && haveNa) {
+                resolve();
+              }
+              expect(maintenanceRemovedCalled).toHaveBeenCalledTimes(0);
+              resolve();
+            }, 1000);
 
             await scrapingService.handleForumMessage();
-
-            updateDate = new Date();
-            updateDate.setMilliseconds(0);
-
-            expect(doHandle).toHaveBeenCalledTimes(5);
           });
         }, 15000);
-
-        it('should formatData method called and works correctly', (): void => {
-          expect(formatData).toHaveBeenCalledTimes(5);
-          expect(formatData).toHaveNthReturnedWith(
-            5,
-            ForumMessagePlannedFormatted,
-          );
-        });
-
-        it('should prepareUpdate method not called', (): void => {
-          expect(prepareUpdate).toHaveBeenCalledTimes(25);
-        });
-
-        it('should getService method called', (): void => {
-          expect(getService).toHaveBeenCalledTimes(25);
-        });
-
-        it('should getArchive method called', (): void => {
-          expect(getArchive).toHaveBeenCalledTimes(25);
-        });
-
-        it('should archiveChanged method called and works', (): void => {
-          expect(archiveChanged).toHaveBeenCalledTimes(25);
-          expect(archiveChanged).toHaveNthReturnedWith(24, true);
-          expect(archiveChanged).toHaveNthReturnedWith(25, true);
-        });
-
-        it('should getStatus method called and works', (): void => {
-          expect(getStatus).toHaveBeenCalledTimes(2);
-        });
-
-        it('should updateArchive method called', (): void => {
-          expect(updateArchive).toHaveBeenCalledTimes(2);
-        });
 
         it.each([
           [5, ForumMessagePlannedPcNaRaw],
           [6, ForumMessagePlannedPcEuRaw],
         ])(
-          'should updateArchive method works',
+          'should archives changed',
           async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
-            const archive = await getArchiveByServiceIdAndConnectorName(
-              serviceId,
-              'ForumMessage',
-            );
+            const archive: Archive =
+              await getArchiveByServiceIdAndConnectorName(
+                serviceId,
+                'ForumMessage',
+              );
             expect(archive.statusId).toEqual(4);
             expect(archive.rawData).toEqual(JSON.stringify(rawData));
           },
           15000,
         );
 
-        it('should isPlannedStatus method called and works', (): void => {
-          expect(isPlannedStatus).toHaveBeenCalledTimes(2);
-          expect(isPlannedStatus).toHaveNthReturnedWith(1, true);
-          expect(isPlannedStatus).toHaveNthReturnedWith(2, true);
-        });
-
-        it('should updateMaintenance method called', (): void => {
-          expect(updateMaintenance).toHaveBeenCalledTimes(2);
-        });
-
-        it('should addMaintenance method called', (): void => {
-          expect(addMaintenance).toHaveBeenCalledTimes(2);
-        });
+        it.each([
+          [5, LiveServicesPcNaUpRaw],
+          [6, LiveServicesPcEuUpRaw],
+        ])(
+          'should services not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const service = await getServiceById(serviceId);
+            expect(service.statusId).toEqual(1);
+            expect(service.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
         it.each([
-          [5, ForumMessagePlannedPcNaRaw],
-          [6, ForumMessagePlannedPcEuRaw],
+          [
+            'server_pc_eu',
+            LiveServicesPcEuUpRaw,
+            ForumMessagePlannedPcEuMaintenance,
+          ],
+          [
+            'server_pc_na',
+            LiveServicesPcNaUpRaw,
+            ForumMessagePlannedPcNaMaintenance,
+          ],
         ])(
-          'should addMaintenance method works',
-          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
-            const maintenance: Maintenance =
-              await maintenanceRepository.findOne({
-                where: {
-                  serviceId,
-                },
-              });
-            const service: Service = await serviceRepository.findOne({
-              relations: ['maintenance'],
-              where: {
-                id: serviceId,
-              },
-            });
-            expect(maintenance.rawData).toStrictEqual(JSON.stringify(rawData));
-            expect(maintenance.serviceId).toStrictEqual(serviceId);
-            expect(maintenance.beginnerAt).toStrictEqual(
-              new Date(rawData.dates[0].toISOString()),
-            );
-            expect(maintenance.endingAt).toStrictEqual(
-              new Date(rawData.dates[1].toISOString()),
-            );
-            expect(service.maintenance.id).toStrictEqual(maintenance.id);
+          'should service controller return correct data',
+          async (
+            slug: Slug,
+            rawData: RawEsoStatus,
+            maintenance: MaintenanceEsoStatus | undefined,
+          ): Promise<void> => {
+            const response: EsoStatus = await serviceController.findOne(slug);
+            expect(response.status).toStrictEqual('up');
+            expect(response.raw).toStrictEqual(rawData);
+            expect(response.maintenance).toStrictEqual(maintenance);
           },
           15000,
         );
       });
 
-      describe('handle handleServiceAlerts 2 (up)', (): void => {
+      describe('handle handleServiceAlerts (up)', (): void => {
         it('should doHandle method called', async (): Promise<void> => {
-          await scrapingService.handleServiceAlerts();
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises,no-async-promise-executor
+          await new Promise<void>(async (resolve): Promise<void> => {
+            jest
+              .spyOn(ServiceAlerts, 'getData')
+              .mockImplementation(async (): Promise<RawEsoStatus[]> => {
+                return Promise.resolve(ServiceAlertsInitial);
+              });
 
-          updateDate = new Date();
-          updateDate.setMilliseconds(0);
+            const statusUpdateCalled: jest.Mock = jest.fn();
+            const maintenanceRemovedCalled: jest.Mock = jest.fn();
+            const maintenancePlannedCalled: jest.Mock = jest.fn();
 
-          expect(doHandle).toHaveBeenCalledTimes(6);
+            clientSocket.on('statusUpdate', statusUpdateCalled);
+            clientSocket.on('maintenancePlanned', maintenancePlannedCalled);
+            clientSocket.on('maintenanceRemoved', maintenanceRemovedCalled);
+
+            setTimeout((): void => {
+              expect(statusUpdateCalled).toHaveBeenCalledTimes(0);
+              expect(maintenancePlannedCalled).toHaveBeenCalledTimes(0);
+              expect(maintenanceRemovedCalled).toHaveBeenCalledTimes(0);
+              resolve();
+            }, 1000);
+
+            await scrapingService.handleServiceAlerts();
+          });
         }, 15000);
 
-        it('should formatData method called and works correctly', (): void => {
-          expect(formatData).toHaveBeenCalledTimes(6);
-          expect(formatData).toHaveNthReturnedWith(
-            6,
-            ServiceAlertsInitialFormatted,
-          );
-        });
+        it.each([
+          [5, ServiceAlertsInitialPcNaRaw],
+          [6, ServiceAlertsInitialPcEuRaw],
+        ])(
+          'should archives not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const archive: Archive =
+              await getArchiveByServiceIdAndConnectorName(
+                serviceId,
+                'ServiceAlerts',
+              );
+            expect(archive.statusId).toEqual(1);
+            expect(archive.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
-        it('should prepareUpdate method called', (): void => {
-          expect(prepareUpdate).toHaveBeenCalledTimes(34);
-        });
+        it.each([
+          [5, LiveServicesPcNaUpRaw],
+          [6, LiveServicesPcEuUpRaw],
+        ])(
+          'should services not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const service = await getServiceById(serviceId);
+            expect(service.statusId).toEqual(1);
+            expect(service.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
-        it('should getService method called', (): void => {
-          expect(getService).toHaveBeenCalledTimes(34);
-        });
-
-        it('should getArchive method called', (): void => {
-          expect(getArchive).toHaveBeenCalledTimes(34);
-        });
-
-        it('should archiveChanged method called and works', (): void => {
-          expect(archiveChanged).toHaveBeenCalledTimes(34);
-          expect(archiveChanged).toHaveNthReturnedWith(26, false);
-          expect(archiveChanged).toHaveNthReturnedWith(27, false);
-          expect(archiveChanged).toHaveNthReturnedWith(28, false);
-          expect(archiveChanged).toHaveNthReturnedWith(29, false);
-          expect(archiveChanged).toHaveNthReturnedWith(30, false);
-          expect(archiveChanged).toHaveNthReturnedWith(31, false);
-          expect(archiveChanged).toHaveNthReturnedWith(32, false);
-          expect(archiveChanged).toHaveNthReturnedWith(33, false);
-          expect(archiveChanged).toHaveNthReturnedWith(34, false);
-        });
-
-        it('should getStatus method not called', (): void => {
-          expect(getStatus).toHaveBeenCalledTimes(2);
-        });
+        it.each([
+          [
+            'server_pc_eu',
+            LiveServicesPcEuUpRaw,
+            ForumMessagePlannedPcEuMaintenance,
+          ],
+          [
+            'server_pc_na',
+            LiveServicesPcNaUpRaw,
+            ForumMessagePlannedPcNaMaintenance,
+          ],
+        ])(
+          'should service controller return correct data',
+          async (
+            slug: Slug,
+            rawData: RawEsoStatus,
+            maintenance: MaintenanceEsoStatus | undefined,
+          ): Promise<void> => {
+            const response: EsoStatus = await serviceController.findOne(slug);
+            expect(response.status).toStrictEqual('up');
+            expect(response.raw).toStrictEqual(rawData);
+            expect(response.maintenance).toStrictEqual(maintenance);
+          },
+          15000,
+        );
       });
     });
 
+    // Nothing changed
     describe('ForumMessage still planned', (): void => {
-      describe('handle handleLiveServices 3 (up)', (): void => {
+      describe('handle handleLiveServices (up)', (): void => {
         it('should doHandle method called', async (): Promise<void> => {
-          await scrapingService.handleLiveServices();
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises,no-async-promise-executor
+          await new Promise<void>(async (resolve): Promise<void> => {
+            jest
+              .spyOn(LiveServices, 'getData')
+              .mockImplementation(async (): Promise<RawEsoStatus[]> => {
+                return Promise.resolve(LiveServicesInitial);
+              });
 
-          updateDate = new Date();
-          updateDate.setMilliseconds(0);
+            const statusUpdateCalled: jest.Mock = jest.fn();
+            const maintenanceRemovedCalled: jest.Mock = jest.fn();
+            const maintenancePlannedCalled: jest.Mock = jest.fn();
 
-          expect(doHandle).toHaveBeenCalledTimes(7);
+            clientSocket.on('statusUpdate', statusUpdateCalled);
+            clientSocket.on('maintenancePlanned', maintenancePlannedCalled);
+            clientSocket.on('maintenanceRemoved', maintenanceRemovedCalled);
+
+            setTimeout((): void => {
+              expect(statusUpdateCalled).toHaveBeenCalledTimes(0);
+              expect(maintenancePlannedCalled).toHaveBeenCalledTimes(0);
+              expect(maintenanceRemovedCalled).toHaveBeenCalledTimes(0);
+              resolve();
+            }, 1000);
+
+            await scrapingService.handleLiveServices();
+          });
         }, 15000);
 
-        it('should formatData method called and works correctly', (): void => {
-          expect(formatData).toHaveBeenCalledTimes(7);
-          expect(formatData).toHaveNthReturnedWith(
-            7,
-            LiveServicesInitialFormated,
-          );
-        });
+        it.each([
+          [5, LiveServicesPcNaUpRaw],
+          [6, LiveServicesPcEuUpRaw],
+        ])(
+          'should archives not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const archive = await getArchiveByServiceIdAndConnectorName(
+              serviceId,
+              'LiveServices',
+            );
+            expect(archive.statusId).toEqual(1);
+            expect(archive.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
-        it('should prepareUpdate method called', (): void => {
-          expect(prepareUpdate).toHaveBeenCalledTimes(41);
-        });
+        it.each([
+          [5, LiveServicesPcNaUpRaw],
+          [6, LiveServicesPcEuUpRaw],
+        ])(
+          'should services not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const service = await getServiceById(serviceId);
+            expect(service.statusId).toEqual(1);
+            expect(service.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
-        it('should getService method called', (): void => {
-          expect(getService).toHaveBeenCalledTimes(41);
-        });
-
-        it('should getArchive method called', (): void => {
-          expect(getArchive).toHaveBeenCalledTimes(41);
-        });
-
-        it('should archiveChanged method called and works', (): void => {
-          expect(archiveChanged).toHaveBeenCalledTimes(41);
-          expect(archiveChanged).toHaveNthReturnedWith(35, false);
-          expect(archiveChanged).toHaveNthReturnedWith(36, false);
-          expect(archiveChanged).toHaveNthReturnedWith(37, false);
-          expect(archiveChanged).toHaveNthReturnedWith(38, false);
-          expect(archiveChanged).toHaveNthReturnedWith(39, false);
-          expect(archiveChanged).toHaveNthReturnedWith(40, false);
-          expect(archiveChanged).toHaveNthReturnedWith(41, false);
-        });
-
-        it('should getStatus method not called', (): void => {
-          expect(getStatus).toHaveBeenCalledTimes(2);
-        });
+        it.each([
+          [
+            'server_pc_eu',
+            LiveServicesPcEuUpRaw,
+            ForumMessagePlannedPcEuMaintenance,
+          ],
+          [
+            'server_pc_na',
+            LiveServicesPcNaUpRaw,
+            ForumMessagePlannedPcNaMaintenance,
+          ],
+        ])(
+          'should service controller return correct data',
+          async (
+            slug: Slug,
+            rawData: RawEsoStatus,
+            maintenance: MaintenanceEsoStatus | undefined,
+          ): Promise<void> => {
+            const response: EsoStatus = await serviceController.findOne(slug);
+            expect(response.status).toStrictEqual('up');
+            expect(response.raw).toStrictEqual(rawData);
+            expect(response.maintenance).toStrictEqual(maintenance);
+          },
+          15000,
+        );
       });
 
-      describe('handle handleForumMessage 3 (planned)', (): void => {
+      describe('handle handleForumMessage (planned)', (): void => {
         it('should doHandle method called', async (): Promise<void> => {
-          await scrapingService.handleForumMessage();
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises,no-async-promise-executor
+          await new Promise<void>(async (resolve): Promise<void> => {
+            jest
+              .spyOn(ForumMessage, 'getData')
+              .mockImplementation(async (): Promise<RawEsoStatus[]> => {
+                return Promise.resolve(ForumMessageInitial);
+              });
 
-          updateDate = new Date();
-          updateDate.setMilliseconds(0);
+            const statusUpdateCalled: jest.Mock = jest.fn();
+            const maintenanceRemovedCalled: jest.Mock = jest.fn();
+            const maintenancePlannedCalled: jest.Mock = jest.fn();
 
-          expect(doHandle).toHaveBeenCalledTimes(8);
+            clientSocket.on('statusUpdate', statusUpdateCalled);
+            clientSocket.on('maintenancePlanned', maintenancePlannedCalled);
+            clientSocket.on('maintenanceRemoved', maintenanceRemovedCalled);
+
+            setTimeout((): void => {
+              expect(statusUpdateCalled).toHaveBeenCalledTimes(0);
+              expect(maintenancePlannedCalled).toHaveBeenCalledTimes(0);
+              expect(maintenanceRemovedCalled).toHaveBeenCalledTimes(0);
+              resolve();
+            }, 1000);
+
+            await scrapingService.handleForumMessage();
+          });
         }, 15000);
 
-        it('should formatData method called and works correctly', (): void => {
-          expect(formatData).toHaveBeenCalledTimes(8);
-          expect(formatData).toHaveNthReturnedWith(
-            8,
-            ForumMessagePlannedFormatted,
-          );
-        });
+        it.each([
+          [5, ForumMessagePlannedPcNaRaw],
+          [6, ForumMessagePlannedPcEuRaw],
+        ])(
+          'should archives not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const archive: Archive =
+              await getArchiveByServiceIdAndConnectorName(
+                serviceId,
+                'ForumMessage',
+              );
+            expect(archive.statusId).toEqual(4);
+            expect(archive.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
-        it('should prepareUpdate method called', (): void => {
-          expect(prepareUpdate).toHaveBeenCalledTimes(43);
-        });
+        it.each([
+          [5, LiveServicesPcNaUpRaw],
+          [6, LiveServicesPcEuUpRaw],
+        ])(
+          'should services not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const service = await getServiceById(serviceId);
+            expect(service.statusId).toEqual(1);
+            expect(service.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
-        it('should getService method called', (): void => {
-          expect(getService).toHaveBeenCalledTimes(43);
-        });
-
-        it('should getArchive method called', (): void => {
-          expect(getArchive).toHaveBeenCalledTimes(43);
-        });
-
-        it('should archiveChanged method called and works', (): void => {
-          expect(archiveChanged).toHaveBeenCalledTimes(43);
-          expect(archiveChanged).toHaveNthReturnedWith(42, false);
-          expect(archiveChanged).toHaveNthReturnedWith(43, false);
-        });
-
-        it('should getStatus method not called', (): void => {
-          expect(getStatus).toHaveBeenCalledTimes(2);
-        });
+        it.each([
+          [
+            'server_pc_eu',
+            LiveServicesPcEuUpRaw,
+            ForumMessagePlannedPcEuMaintenance,
+          ],
+          [
+            'server_pc_na',
+            LiveServicesPcNaUpRaw,
+            ForumMessagePlannedPcNaMaintenance,
+          ],
+        ])(
+          'should service controller return correct data',
+          async (
+            slug: Slug,
+            rawData: RawEsoStatus,
+            maintenance: MaintenanceEsoStatus | undefined,
+          ): Promise<void> => {
+            const response: EsoStatus = await serviceController.findOne(slug);
+            expect(response.status).toStrictEqual('up');
+            expect(response.raw).toStrictEqual(rawData);
+            expect(response.maintenance).toStrictEqual(maintenance);
+          },
+          15000,
+        );
       });
 
-      describe('handle handleServiceAlerts 3 (up)', (): void => {
+      describe('handle handleServiceAlerts (up)', (): void => {
         it('should doHandle method called', async (): Promise<void> => {
-          await scrapingService.handleServiceAlerts();
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises,no-async-promise-executor
+          await new Promise<void>(async (resolve): Promise<void> => {
+            jest
+              .spyOn(ServiceAlerts, 'getData')
+              .mockImplementation(async (): Promise<RawEsoStatus[]> => {
+                return Promise.resolve(ServiceAlertsInitial);
+              });
 
-          updateDate = new Date();
-          updateDate.setMilliseconds(0);
+            const statusUpdateCalled: jest.Mock = jest.fn();
+            const maintenanceRemovedCalled: jest.Mock = jest.fn();
+            const maintenancePlannedCalled: jest.Mock = jest.fn();
 
-          expect(doHandle).toHaveBeenCalledTimes(9);
+            clientSocket.on('statusUpdate', statusUpdateCalled);
+            clientSocket.on('maintenancePlanned', maintenancePlannedCalled);
+            clientSocket.on('maintenanceRemoved', maintenanceRemovedCalled);
+
+            setTimeout((): void => {
+              expect(statusUpdateCalled).toHaveBeenCalledTimes(0);
+              expect(maintenancePlannedCalled).toHaveBeenCalledTimes(0);
+              expect(maintenanceRemovedCalled).toHaveBeenCalledTimes(0);
+              resolve();
+            }, 1000);
+
+            await scrapingService.handleServiceAlerts();
+          });
         }, 15000);
 
-        it('should formatData method called and works correctly', (): void => {
-          expect(formatData).toHaveBeenCalledTimes(9);
-          expect(formatData).toHaveNthReturnedWith(
-            9,
-            ServiceAlertsInitialFormatted,
-          );
-        });
+        it.each([
+          [5, ServiceAlertsInitialPcNaRaw],
+          [6, ServiceAlertsInitialPcEuRaw],
+        ])(
+          'should archives not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const archive: Archive =
+              await getArchiveByServiceIdAndConnectorName(
+                serviceId,
+                'ServiceAlerts',
+              );
+            expect(archive.statusId).toEqual(1);
+            expect(archive.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
-        it('should prepareUpdate method called', (): void => {
-          expect(prepareUpdate).toHaveBeenCalledTimes(52);
-        });
+        it.each([
+          [5, LiveServicesPcNaUpRaw],
+          [6, LiveServicesPcEuUpRaw],
+        ])(
+          'should services not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const service = await getServiceById(serviceId);
+            expect(service.statusId).toEqual(1);
+            expect(service.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
-        it('should getService method called', (): void => {
-          expect(getService).toHaveBeenCalledTimes(52);
-        });
-
-        it('should getArchive method called', (): void => {
-          expect(getArchive).toHaveBeenCalledTimes(52);
-        });
-
-        it('should archiveChanged method called and works', (): void => {
-          expect(archiveChanged).toHaveBeenCalledTimes(52);
-          expect(archiveChanged).toHaveNthReturnedWith(44, false);
-          expect(archiveChanged).toHaveNthReturnedWith(45, false);
-          expect(archiveChanged).toHaveNthReturnedWith(46, false);
-          expect(archiveChanged).toHaveNthReturnedWith(47, false);
-          expect(archiveChanged).toHaveNthReturnedWith(48, false);
-          expect(archiveChanged).toHaveNthReturnedWith(49, false);
-          expect(archiveChanged).toHaveNthReturnedWith(50, false);
-          expect(archiveChanged).toHaveNthReturnedWith(51, false);
-          expect(archiveChanged).toHaveNthReturnedWith(52, false);
-        });
-
-        it('should getStatus method not called', (): void => {
-          expect(getStatus).toHaveBeenCalledTimes(2);
-        });
+        it.each([
+          [
+            'server_pc_eu',
+            LiveServicesPcEuUpRaw,
+            ForumMessagePlannedPcEuMaintenance,
+          ],
+          [
+            'server_pc_na',
+            LiveServicesPcNaUpRaw,
+            ForumMessagePlannedPcNaMaintenance,
+          ],
+        ])(
+          'should service controller return correct data',
+          async (
+            slug: Slug,
+            rawData: RawEsoStatus,
+            maintenance: MaintenanceEsoStatus | undefined,
+          ): Promise<void> => {
+            const response: EsoStatus = await serviceController.findOne(slug);
+            expect(response.status).toStrictEqual('up');
+            expect(response.raw).toStrictEqual(rawData);
+            expect(response.maintenance).toStrictEqual(maintenance);
+          },
+          15000,
+        );
       });
     });
 
+    // maintenanceRemoved emmit for server_pc_eu and server_pc_na
+    // statusUpdate emmit for server_pc_eu and server_pc_na
+    // archive (LiveServices) raw and statusId change for server_pc_eu and server_pc_na
+    // maintenance remove for server_pc_eu and server_pc_na
+    // controller return no maintenance for server_pc_eu and server_pc_na and change raw and id
     describe('LiveServices new data => PC EU/NA down', (): void => {
-      describe('handle handleLiveServices 4 (down)', (): void => {
+      // maintenanceRemoved emmit for server_pc_eu and server_pc_na
+      // statusUpdate emmit for server_pc_eu and server_pc_na
+      // archive (LiveServices) raw and statusId change for server_pc_eu and server_pc_na
+      // maintenance remove for server_pc_eu and server_pc_na
+      // controller return no maintenance for server_pc_eu and server_pc_na and change raw and id
+      describe('handle handleLiveServices (down)', (): void => {
         it('should doHandle method called', async (): Promise<void> => {
           // eslint-disable-next-line @typescript-eslint/no-misused-promises,no-async-promise-executor
           await new Promise<void>(async (resolve): Promise<void> => {
@@ -822,14 +1053,13 @@ describe('ScrapingService (e2e)', (): void => {
                 return Promise.resolve(LiveServicesDown);
               });
 
+            const maintenancePlannedCalled: jest.Mock = jest.fn();
+
             let haveStatusUpdateEu: boolean = false;
             let haveStatusUpdateNa: boolean = false;
 
             let haveMaintenanceRemovedEu: boolean = false;
             let haveMaintenanceRemovedNa: boolean = false;
-
-            let statusUpdateDone: boolean = false;
-            let maintenanceRemovedDone: boolean = false;
 
             clientSocket.on(
               'statusUpdate',
@@ -848,87 +1078,45 @@ describe('ScrapingService (e2e)', (): void => {
                 ) {
                   haveStatusUpdateNa = true;
                 }
-                if (haveStatusUpdateEu && haveStatusUpdateNa) {
-                  statusUpdateDone = true;
-
-                  if (statusUpdateDone && maintenanceRemovedDone) {
-                    resolve();
-                  }
-                }
               },
             );
-
+            clientSocket.on('maintenancePlanned', maintenancePlannedCalled);
             clientSocket.on('maintenanceRemoved', (data: Slug): void => {
-              if (!haveMaintenanceRemovedEu && data === 'server_pc_eu') {
+              if (
+                !haveMaintenanceRemovedEu &&
+                data === LiveServicesPcEuDownEsoStatus.slug
+              ) {
                 haveMaintenanceRemovedEu = true;
               }
-
-              if (!haveMaintenanceRemovedNa && data === 'server_pc_na') {
+              if (
+                !haveMaintenanceRemovedNa &&
+                data === LiveServicesPcNaDownEsoStatus.slug
+              ) {
                 haveMaintenanceRemovedNa = true;
-              }
-
-              if (haveMaintenanceRemovedEu && haveMaintenanceRemovedNa) {
-                maintenanceRemovedDone = true;
-
-                if (statusUpdateDone && maintenanceRemovedDone) {
-                  resolve();
-                }
               }
             });
 
+            setTimeout((): void => {
+              expect(maintenancePlannedCalled).toHaveBeenCalledTimes(0);
+              if (
+                haveStatusUpdateEu &&
+                haveStatusUpdateNa &&
+                haveMaintenanceRemovedEu &&
+                haveMaintenanceRemovedNa
+              ) {
+                resolve();
+              }
+            }, 1000);
+
             await scrapingService.handleLiveServices();
-
-            updateDate = new Date();
-            updateDate.setMilliseconds(0);
-
-            expect(doHandle).toHaveBeenCalledTimes(10);
           });
         }, 15000);
-
-        it('should formatData method called and works correctly', (): void => {
-          expect(formatData).toHaveBeenCalledTimes(10);
-          expect(formatData).toHaveNthReturnedWith(
-            10,
-            LiveServicesDownFormated,
-          );
-        });
-
-        it('should prepareUpdate method called', (): void => {
-          expect(prepareUpdate).toHaveBeenCalledTimes(59);
-        });
-
-        it('should getService method called', (): void => {
-          expect(getService).toHaveBeenCalledTimes(59);
-        });
-
-        it('should getArchive method called', (): void => {
-          expect(getArchive).toHaveBeenCalledTimes(59);
-        });
-
-        it('should archiveChanged method called and works', (): void => {
-          expect(archiveChanged).toHaveBeenCalledTimes(59); // TODO check les resultat
-          // expect(archiveChanged).toHaveNthReturnedWith(53, true);
-          // expect(archiveChanged).toHaveNthReturnedWith(54, true);
-          // expect(archiveChanged).toHaveNthReturnedWith(55, false);
-          // expect(archiveChanged).toHaveNthReturnedWith(56, false);
-          // expect(archiveChanged).toHaveNthReturnedWith(57, false);
-          // expect(archiveChanged).toHaveNthReturnedWith(58, false);
-          // expect(archiveChanged).toHaveNthReturnedWith(59, false);
-        });
-
-        it('should getStatus method called and works', (): void => {
-          expect(getStatus).toHaveBeenCalledTimes(4);
-        });
-
-        it('should updateArchive method called', (): void => {
-          expect(updateArchive).toHaveBeenCalledTimes(4);
-        });
 
         it.each([
           [5, LiveServicesPcNaDownRaw],
           [6, LiveServicesPcEuDownRaw],
         ])(
-          'should updateArchive method works',
+          'should archives changed',
           async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
             const archive = await getArchiveByServiceIdAndConnectorName(
               serviceId,
@@ -940,397 +1128,217 @@ describe('ScrapingService (e2e)', (): void => {
           15000,
         );
 
-        it('should isPlannedStatus method called and works', (): void => {
-          expect(isPlannedStatus).toHaveBeenCalledTimes(4);
-          expect(isPlannedStatus).toHaveNthReturnedWith(3, false);
-          expect(isPlannedStatus).toHaveNthReturnedWith(4, false);
-        });
+        it.each([
+          [5, LiveServicesPcNaDownRaw],
+          [6, LiveServicesPcEuDownRaw],
+        ])(
+          'should services changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const service = await getServiceById(serviceId);
+            expect(service.statusId).toEqual(2);
+            expect(service.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
-        it('should isPlannedStatus method called', (): void => {
-          expect(updateNoMaintenance).toHaveBeenCalledTimes(2);
-        });
+        it.each([
+          ['server_pc_eu', LiveServicesPcEuDownRaw, undefined],
+          ['server_pc_na', LiveServicesPcNaDownRaw, undefined],
+        ])(
+          'should service controller return correct data',
+          async (
+            slug: Slug,
+            rawData: RawEsoStatus,
+            maintenance: MaintenanceEsoStatus | undefined,
+          ): Promise<void> => {
+            const response: EsoStatus = await serviceController.findOne(slug);
+            expect(response.status).toStrictEqual('down');
+            expect(response.raw).toStrictEqual(rawData);
+            expect(response.maintenance).toStrictEqual(maintenance);
+          },
+          15000,
+        );
+      });
 
-        it('should slugChanged method called and works', (): void => {
-          expect(slugChanged).toHaveBeenCalledTimes(2);
-          expect(slugChanged).toHaveNthReturnedWith(2, true);
-          expect(slugChanged).toHaveNthReturnedWith(2, true);
-        });
+      describe('handle handleForumMessage (planned)', (): void => {
+        it('should doHandle method called', async (): Promise<void> => {
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises,no-async-promise-executor
+          await new Promise<void>(async (resolve): Promise<void> => {
+            const statusUpdateCalled: jest.Mock = jest.fn();
+            const maintenanceRemovedCalled: jest.Mock = jest.fn();
+            const maintenancePlannedCalled: jest.Mock = jest.fn();
 
-        it('should updateService method called', (): void => {
-          expect(updateService).toHaveBeenCalledTimes(2);
-        });
+            clientSocket.on('statusUpdate', statusUpdateCalled);
+            clientSocket.on('maintenancePlanned', maintenancePlannedCalled);
+            clientSocket.on('maintenanceRemoved', maintenanceRemovedCalled);
+
+            setTimeout((): void => {
+              expect(statusUpdateCalled).toHaveBeenCalledTimes(0);
+              expect(maintenancePlannedCalled).toHaveBeenCalledTimes(0);
+              expect(maintenanceRemovedCalled).toHaveBeenCalledTimes(0);
+              resolve();
+            }, 1000);
+
+            await scrapingService.handleForumMessage();
+          });
+        }, 15000);
+
+        it.each([
+          [5, ForumMessagePlannedPcNaRaw],
+          [6, ForumMessagePlannedPcEuRaw],
+        ])(
+          'should archives not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const archive: Archive =
+              await getArchiveByServiceIdAndConnectorName(
+                serviceId,
+                'ForumMessage',
+              );
+            expect(archive.statusId).toEqual(4);
+            expect(archive.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
         it.each([
           [5, LiveServicesPcNaDownRaw],
           [6, LiveServicesPcEuDownRaw],
         ])(
-          'should updateService method works',
+          'should services not changed',
           async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
-            const servie = await getServiceById(serviceId);
-            expect(servie.statusId).toEqual(2);
-            expect(servie.rawData).toEqual(JSON.stringify(rawData));
+            const service = await getServiceById(serviceId);
+            expect(service.statusId).toEqual(2);
+            expect(service.rawData).toEqual(JSON.stringify(rawData));
           },
           15000,
         );
 
         it.each([
-          ['server_pc_eu', LiveServicesPcEuDownRaw],
-          ['server_pc_na', LiveServicesPcNaDownRaw],
+          ['server_pc_eu', LiveServicesPcEuDownRaw, undefined],
+          ['server_pc_na', LiveServicesPcNaDownRaw, undefined],
         ])(
           'should service controller return correct data',
-          async (slug: Slug, rawData: RawEsoStatus): Promise<void> => {
+          async (
+            slug: Slug,
+            rawData: RawEsoStatus,
+            maintenance: MaintenanceEsoStatus | undefined,
+          ): Promise<void> => {
             const response: EsoStatus = await serviceController.findOne(slug);
             expect(response.status).toStrictEqual('down');
             expect(response.raw).toStrictEqual(rawData);
+            expect(response.maintenance).toStrictEqual(maintenance);
+          },
+          15000,
+        );
+      });
+
+      describe('handle handleServiceAlerts (up)', (): void => {
+        it('should doHandle method called', async (): Promise<void> => {
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises,no-async-promise-executor
+          await new Promise<void>(async (resolve): Promise<void> => {
+            const statusUpdateCalled: jest.Mock = jest.fn();
+            const maintenanceRemovedCalled: jest.Mock = jest.fn();
+            const maintenancePlannedCalled: jest.Mock = jest.fn();
+
+            clientSocket.on('statusUpdate', statusUpdateCalled);
+            clientSocket.on('maintenancePlanned', maintenancePlannedCalled);
+            clientSocket.on('maintenanceRemoved', maintenanceRemovedCalled);
+
+            setTimeout((): void => {
+              expect(statusUpdateCalled).toHaveBeenCalledTimes(0);
+              expect(maintenancePlannedCalled).toHaveBeenCalledTimes(0);
+              expect(maintenanceRemovedCalled).toHaveBeenCalledTimes(0);
+              resolve();
+            }, 1000);
+
+            await scrapingService.handleServiceAlerts();
+          });
+        }, 15000);
+
+        it.each([
+          [5, ServiceAlertsInitialPcNaRaw],
+          [6, ServiceAlertsInitialPcEuRaw],
+        ])(
+          'should archives not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const archive: Archive =
+              await getArchiveByServiceIdAndConnectorName(
+                serviceId,
+                'ServiceAlerts',
+              );
+            expect(archive.statusId).toEqual(1);
+            expect(archive.rawData).toEqual(JSON.stringify(rawData));
           },
           15000,
         );
 
-        it('should serviceHaveMaintenance method called and works', (): void => {
-          expect(serviceHaveMaintenance).toHaveBeenCalledTimes(2);
-          expect(serviceHaveMaintenance).toHaveNthReturnedWith(1, true);
-          expect(serviceHaveMaintenance).toHaveNthReturnedWith(2, true);
-        });
-
-        it('should detachMaintenanceToService method called and works', (): void => {
-          expect(detachMaintenanceToService).toHaveBeenCalledTimes(2);
-        });
-      });
-
-      describe('handle handleForumMessage 4 (planned)', (): void => {
-        it('should doHandle method called', async (): Promise<void> => {
-          await scrapingService.handleForumMessage();
-
-          updateDate = new Date();
-          updateDate.setMilliseconds(0);
-
-          expect(doHandle).toHaveBeenCalledTimes(11);
-        }, 15000);
-
-        it('should formatData method called and works correctly', (): void => {
-          expect(formatData).toHaveBeenCalledTimes(11);
-          expect(formatData).toHaveNthReturnedWith(
-            11,
-            ForumMessagePlannedFormatted,
-          );
-        });
-
-        it('should prepareUpdate method called', (): void => {
-          expect(prepareUpdate).toHaveBeenCalledTimes(61);
-        });
-
-        it('should getService method called', (): void => {
-          expect(getService).toHaveBeenCalledTimes(61);
-        });
-
-        it('should getArchive method called', (): void => {
-          expect(getArchive).toHaveBeenCalledTimes(61);
-        });
-
-        it('should archiveChanged method called and works', (): void => {
-          expect(archiveChanged).toHaveBeenCalledTimes(61);
-          expect(archiveChanged).toHaveNthReturnedWith(60, false);
-          expect(archiveChanged).toHaveNthReturnedWith(61, false);
-        });
-
-        it('should getStatus method not called', (): void => {
-          expect(getStatus).toHaveBeenCalledTimes(4);
-        });
-      });
-
-      describe('handle handleServiceAlerts 4 (up)', (): void => {
-        it('should doHandle method called', async (): Promise<void> => {
-          await scrapingService.handleServiceAlerts();
-
-          updateDate = new Date();
-          updateDate.setMilliseconds(0);
-
-          expect(doHandle).toHaveBeenCalledTimes(12);
-        }, 15000);
-
-        it('should formatData method called and works correctly', (): void => {
-          expect(formatData).toHaveBeenCalledTimes(12);
-          expect(formatData).toHaveNthReturnedWith(
-            12,
-            ServiceAlertsInitialFormatted,
-          );
-        });
-
-        it('should prepareUpdate method called', (): void => {
-          expect(prepareUpdate).toHaveBeenCalledTimes(70);
-        });
-
-        it('should getService method called', (): void => {
-          expect(getService).toHaveBeenCalledTimes(70);
-        });
-
-        it('should getArchive method called', (): void => {
-          expect(getArchive).toHaveBeenCalledTimes(70);
-        });
-
-        it('should archiveChanged method called and works', (): void => {
-          expect(archiveChanged).toHaveBeenCalledTimes(70);
-          expect(archiveChanged).toHaveNthReturnedWith(61, false);
-          expect(archiveChanged).toHaveNthReturnedWith(62, false);
-          expect(archiveChanged).toHaveNthReturnedWith(63, false);
-          expect(archiveChanged).toHaveNthReturnedWith(64, false);
-          expect(archiveChanged).toHaveNthReturnedWith(65, false);
-          expect(archiveChanged).toHaveNthReturnedWith(66, false);
-          expect(archiveChanged).toHaveNthReturnedWith(67, false);
-          expect(archiveChanged).toHaveNthReturnedWith(68, false);
-          expect(archiveChanged).toHaveNthReturnedWith(69, false);
-          expect(archiveChanged).toHaveNthReturnedWith(70, false);
-        });
-
-        it('should getStatus method not called', (): void => {
-          expect(getStatus).toHaveBeenCalledTimes(4);
-        });
-      });
-    });
-
-    describe('ForumMessage still planned / LiveServices still down', (): void => {
-      describe('handle handleLiveServices 5 (down)', (): void => {
-        it('should doHandle method called', async (): Promise<void> => {
-          await scrapingService.handleLiveServices();
-
-          updateDate = new Date();
-          updateDate.setMilliseconds(0);
-
-          expect(doHandle).toHaveBeenCalledTimes(13);
-        }, 15000);
-
-        it('should formatData method called and works correctly', (): void => {
-          expect(formatData).toHaveBeenCalledTimes(13);
-          expect(formatData).toHaveNthReturnedWith(
-            13,
-            LiveServicesDownFormated,
-          );
-        });
-
-        it('should prepareUpdate method called', (): void => {
-          expect(prepareUpdate).toHaveBeenCalledTimes(77);
-        });
-
-        it('should getService method called', (): void => {
-          expect(getService).toHaveBeenCalledTimes(77);
-        });
-
-        it('should getArchive method called', (): void => {
-          expect(getArchive).toHaveBeenCalledTimes(77);
-        });
-
-        it('should archiveChanged method called and works', (): void => {
-          expect(archiveChanged).toHaveBeenCalledTimes(77);
-          expect(archiveChanged).toHaveNthReturnedWith(71, false);
-          expect(archiveChanged).toHaveNthReturnedWith(72, false);
-          expect(archiveChanged).toHaveNthReturnedWith(73, false);
-          expect(archiveChanged).toHaveNthReturnedWith(74, false);
-          expect(archiveChanged).toHaveNthReturnedWith(75, false);
-          expect(archiveChanged).toHaveNthReturnedWith(76, false);
-          expect(archiveChanged).toHaveNthReturnedWith(77, false);
-        });
-
-        it('should getStatus method not called', (): void => {
-          expect(getStatus).toHaveBeenCalledTimes(4);
-        });
-      });
-
-      describe('handle handleForumMessage 5 (planned)', (): void => {
-        it('should doHandle method called', async (): Promise<void> => {
-          await scrapingService.handleForumMessage();
-
-          updateDate = new Date();
-          updateDate.setMilliseconds(0);
-
-          expect(doHandle).toHaveBeenCalledTimes(14);
-        }, 15000);
-
-        it('should formatData method called and works correctly', (): void => {
-          expect(formatData).toHaveBeenCalledTimes(14);
-          expect(formatData).toHaveNthReturnedWith(
-            14,
-            ForumMessagePlannedFormatted,
-          );
-        });
-
-        it('should prepareUpdate method called', (): void => {
-          expect(prepareUpdate).toHaveBeenCalledTimes(79);
-        });
-
-        it('should getService method called', (): void => {
-          expect(getService).toHaveBeenCalledTimes(79);
-        });
-
-        it('should getArchive method called', (): void => {
-          expect(getArchive).toHaveBeenCalledTimes(79);
-        });
-
-        it('should archiveChanged method called and works', (): void => {
-          expect(archiveChanged).toHaveBeenCalledTimes(79);
-          expect(archiveChanged).toHaveNthReturnedWith(79, false);
-          expect(archiveChanged).toHaveNthReturnedWith(79, false);
-        });
-
-        it('should getStatus method not called', (): void => {
-          expect(getStatus).toHaveBeenCalledTimes(4);
-        });
-      });
-
-      describe('handle handleServiceAlerts 5 (up)', (): void => {
-        it('should doHandle method called', async (): Promise<void> => {
-          await scrapingService.handleServiceAlerts();
-
-          updateDate = new Date();
-          updateDate.setMilliseconds(0);
-
-          expect(doHandle).toHaveBeenCalledTimes(15);
-        }, 15000);
-
-        it('should formatData method called and works correctly', (): void => {
-          expect(formatData).toHaveBeenCalledTimes(15);
-          expect(formatData).toHaveNthReturnedWith(
-            15,
-            ServiceAlertsInitialFormatted,
-          );
-        });
-
-        it('should prepareUpdate method called', (): void => {
-          expect(prepareUpdate).toHaveBeenCalledTimes(88);
-        });
-
-        it('should getService method called', (): void => {
-          expect(getService).toHaveBeenCalledTimes(88);
-        });
-
-        it('should getArchive method called', (): void => {
-          expect(getArchive).toHaveBeenCalledTimes(88);
-        });
-
-        it('should archiveChanged method called and works', (): void => {
-          expect(archiveChanged).toHaveBeenCalledTimes(88);
-          expect(archiveChanged).toHaveNthReturnedWith(80, false);
-          expect(archiveChanged).toHaveNthReturnedWith(81, false);
-          expect(archiveChanged).toHaveNthReturnedWith(82, false);
-          expect(archiveChanged).toHaveNthReturnedWith(83, false);
-          expect(archiveChanged).toHaveNthReturnedWith(84, false);
-          expect(archiveChanged).toHaveNthReturnedWith(85, false);
-          expect(archiveChanged).toHaveNthReturnedWith(86, false);
-          expect(archiveChanged).toHaveNthReturnedWith(87, false);
-          expect(archiveChanged).toHaveNthReturnedWith(88, false);
-        });
-
-        it('should getStatus method not called', (): void => {
-          expect(getStatus).toHaveBeenCalledTimes(4);
-        });
-      });
-    });
-
-    describe('ForumMessage down', (): void => {
-      describe('handle handleLiveServices 6 (down)', (): void => {
-        it('should doHandle method called', async (): Promise<void> => {
-          await scrapingService.handleLiveServices();
-
-          updateDate = new Date();
-          updateDate.setMilliseconds(0);
-
-          expect(doHandle).toHaveBeenCalledTimes(16);
-        }, 15000);
-
-        it('should formatData method called and works correctly', (): void => {
-          expect(formatData).toHaveBeenCalledTimes(16);
-          expect(formatData).toHaveNthReturnedWith(
-            16,
-            LiveServicesDownFormated,
-          );
-        });
-
-        it('should prepareUpdate method called', (): void => {
-          expect(prepareUpdate).toHaveBeenCalledTimes(95);
-        });
-
-        it('should getService method called', (): void => {
-          expect(getService).toHaveBeenCalledTimes(95);
-        });
-
-        it('should getArchive method called', (): void => {
-          expect(getArchive).toHaveBeenCalledTimes(95);
-        });
-
-        it('should archiveChanged method called and works', (): void => {
-          expect(archiveChanged).toHaveBeenCalledTimes(95);
-          expect(archiveChanged).toHaveNthReturnedWith(89, false);
-          expect(archiveChanged).toHaveNthReturnedWith(90, false);
-          expect(archiveChanged).toHaveNthReturnedWith(91, false);
-          expect(archiveChanged).toHaveNthReturnedWith(92, false);
-          expect(archiveChanged).toHaveNthReturnedWith(93, false);
-          expect(archiveChanged).toHaveNthReturnedWith(94, false);
-          expect(archiveChanged).toHaveNthReturnedWith(95, false);
-        });
-
-        it('should getStatus method not called', (): void => {
-          expect(getStatus).toHaveBeenCalledTimes(4);
-        });
-      });
-
-      describe('handle handleForumMessage 6 (down)', (): void => {
-        it('should doHandle method called', async (): Promise<void> => {
-          jest
-            .spyOn(ForumMessage, 'getData')
-            .mockImplementation(async (): Promise<RawEsoStatus[]> => {
-              return Promise.resolve(ForumMessageDown);
-            });
-
-          await scrapingService.handleForumMessage();
-
-          updateDate = new Date();
-          updateDate.setMilliseconds(0);
-
-          expect(doHandle).toHaveBeenCalledTimes(17);
-        }, 15000);
-
-        it('should formatData method called and works correctly', (): void => {
-          expect(formatData).toHaveBeenCalledTimes(17);
-          expect(formatData).toHaveNthReturnedWith(
-            17,
-            ForumMessageDownFormatted,
-          );
-        });
-
-        it('should prepareUpdate method called', (): void => {
-          expect(prepareUpdate).toHaveBeenCalledTimes(97);
-        });
-
-        it('should getService method called', (): void => {
-          expect(getService).toHaveBeenCalledTimes(97);
-        });
-
-        it('should getArchive method called', (): void => {
-          expect(getArchive).toHaveBeenCalledTimes(97);
-        });
-
-        it('should archiveChanged method called and works', (): void => {
-          expect(archiveChanged).toHaveBeenCalledTimes(97);
-          expect(archiveChanged).toHaveNthReturnedWith(96, true);
-          expect(archiveChanged).toHaveNthReturnedWith(97, true);
-        });
-
-        it('should getStatus method called', (): void => {
-          expect(getStatus).toHaveBeenCalledTimes(6);
-        });
-
-        it('should updateArchive method called', (): void => {
-          expect(updateArchive).toHaveBeenCalledTimes(6);
-        });
+        it.each([
+          [5, LiveServicesPcNaDownRaw],
+          [6, LiveServicesPcEuDownRaw],
+        ])(
+          'should services not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const service = await getServiceById(serviceId);
+            expect(service.statusId).toEqual(2);
+            expect(service.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
         it.each([
-          [5, ForumMessageDownPcNaRaw],
-          [6, ForumMessageDownPcEuRaw],
+          ['server_pc_eu', LiveServicesPcEuDownRaw, undefined],
+          ['server_pc_na', LiveServicesPcNaDownRaw, undefined],
         ])(
-          'should updateArchive method works',
+          'should service controller return correct data',
+          async (
+            slug: Slug,
+            rawData: RawEsoStatus,
+            maintenance: MaintenanceEsoStatus | undefined,
+          ): Promise<void> => {
+            const response: EsoStatus = await serviceController.findOne(slug);
+            expect(response.status).toStrictEqual('down');
+            expect(response.raw).toStrictEqual(rawData);
+            expect(response.maintenance).toStrictEqual(maintenance);
+          },
+          15000,
+        );
+      });
+    });
+
+    // Nothing changed
+    describe('ForumMessage still planned / LiveServices still down', (): void => {
+      describe('handle handleLiveServices (down)', (): void => {
+        it('should doHandle method called', async (): Promise<void> => {
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises,no-async-promise-executor
+          await new Promise<void>(async (resolve): Promise<void> => {
+            const statusUpdateCalled: jest.Mock = jest.fn();
+            const maintenanceRemovedCalled: jest.Mock = jest.fn();
+            const maintenancePlannedCalled: jest.Mock = jest.fn();
+
+            clientSocket.on('statusUpdate', statusUpdateCalled);
+            clientSocket.on('maintenancePlanned', maintenancePlannedCalled);
+            clientSocket.on('maintenanceRemoved', maintenanceRemovedCalled);
+
+            setTimeout((): void => {
+              expect(statusUpdateCalled).toHaveBeenCalledTimes(0);
+              expect(maintenancePlannedCalled).toHaveBeenCalledTimes(0);
+              expect(maintenanceRemovedCalled).toHaveBeenCalledTimes(0);
+              resolve();
+            }, 1000);
+
+            await scrapingService.handleLiveServices();
+          });
+        }, 15000);
+
+        it.each([
+          [5, LiveServicesPcNaDownRaw],
+          [6, LiveServicesPcEuDownRaw],
+        ])(
+          'should archives not changed',
           async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
             const archive = await getArchiveByServiceIdAndConnectorName(
               serviceId,
-              'ForumMessage',
+              'LiveServices',
             );
             expect(archive.statusId).toEqual(2);
             expect(archive.rawData).toEqual(JSON.stringify(rawData));
@@ -1338,75 +1346,414 @@ describe('ScrapingService (e2e)', (): void => {
           15000,
         );
 
-        it('should isPlannedStatus method called and works', (): void => {
-          expect(isPlannedStatus).toHaveBeenCalledTimes(6);
-          expect(isPlannedStatus).toHaveNthReturnedWith(5, false);
-          expect(isPlannedStatus).toHaveNthReturnedWith(6, false);
-        });
+        it.each([
+          [5, LiveServicesPcNaDownRaw],
+          [6, LiveServicesPcEuDownRaw],
+        ])(
+          'should services not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const service = await getServiceById(serviceId);
+            expect(service.statusId).toEqual(2);
+            expect(service.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
-        it('should isPlannedStatus method called', (): void => {
-          expect(updateNoMaintenance).toHaveBeenCalledTimes(4);
-        });
-
-        it('should slugChanged method called and works', (): void => {
-          expect(slugChanged).toHaveBeenCalledTimes(4);
-          expect(slugChanged).toHaveNthReturnedWith(3, false);
-          expect(slugChanged).toHaveNthReturnedWith(4, false);
-        });
-
-        it('should updateService method not called', (): void => {
-          expect(updateService).toHaveBeenCalledTimes(2);
-        });
+        it.each([
+          ['server_pc_eu', LiveServicesPcEuDownRaw, undefined],
+          ['server_pc_na', LiveServicesPcNaDownRaw, undefined],
+        ])(
+          'should service controller return correct data',
+          async (
+            slug: Slug,
+            rawData: RawEsoStatus,
+            maintenance: MaintenanceEsoStatus | undefined,
+          ): Promise<void> => {
+            const response: EsoStatus = await serviceController.findOne(slug);
+            expect(response.status).toStrictEqual('down');
+            expect(response.raw).toStrictEqual(rawData);
+            expect(response.maintenance).toStrictEqual(maintenance);
+          },
+          15000,
+        );
       });
 
-      describe('handle handleServiceAlerts 6 (up)', (): void => {
+      describe('handle handleForumMessage (planned)', (): void => {
         it('should doHandle method called', async (): Promise<void> => {
-          await scrapingService.handleServiceAlerts();
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises,no-async-promise-executor
+          await new Promise<void>(async (resolve): Promise<void> => {
+            const statusUpdateCalled: jest.Mock = jest.fn();
+            const maintenanceRemovedCalled: jest.Mock = jest.fn();
+            const maintenancePlannedCalled: jest.Mock = jest.fn();
 
-          updateDate = new Date();
-          updateDate.setMilliseconds(0);
+            clientSocket.on('statusUpdate', statusUpdateCalled);
+            clientSocket.on('maintenancePlanned', maintenancePlannedCalled);
+            clientSocket.on('maintenanceRemoved', maintenanceRemovedCalled);
 
-          expect(doHandle).toHaveBeenCalledTimes(18);
+            setTimeout((): void => {
+              expect(statusUpdateCalled).toHaveBeenCalledTimes(0);
+              expect(maintenancePlannedCalled).toHaveBeenCalledTimes(0);
+              expect(maintenanceRemovedCalled).toHaveBeenCalledTimes(0);
+              resolve();
+            }, 1000);
+
+            await scrapingService.handleForumMessage();
+          });
         }, 15000);
 
-        it('should formatData method called and works correctly', (): void => {
-          expect(formatData).toHaveBeenCalledTimes(18);
-          expect(formatData).toHaveNthReturnedWith(
-            18,
-            ServiceAlertsInitialFormatted,
-          );
-        });
+        it.each([
+          [5, ForumMessagePlannedPcNaRaw],
+          [6, ForumMessagePlannedPcEuRaw],
+        ])(
+          'should archives not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const archive: Archive =
+              await getArchiveByServiceIdAndConnectorName(
+                serviceId,
+                'ForumMessage',
+              );
+            expect(archive.statusId).toEqual(4);
+            expect(archive.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
-        it('should prepareUpdate method called', (): void => {
-          expect(prepareUpdate).toHaveBeenCalledTimes(106);
-        });
+        it.each([
+          [5, LiveServicesPcNaDownRaw],
+          [6, LiveServicesPcEuDownRaw],
+        ])(
+          'should services not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const service = await getServiceById(serviceId);
+            expect(service.statusId).toEqual(2);
+            expect(service.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
-        it('should getService method called', (): void => {
-          expect(getService).toHaveBeenCalledTimes(106);
-        });
-
-        it('should getArchive method called', (): void => {
-          expect(getArchive).toHaveBeenCalledTimes(106);
-        });
-
-        it('should archiveChanged method called and works', (): void => {
-          expect(archiveChanged).toHaveBeenCalledTimes(106);
-          expect(archiveChanged).toHaveNthReturnedWith(98, false);
-          expect(archiveChanged).toHaveNthReturnedWith(99, false);
-          expect(archiveChanged).toHaveNthReturnedWith(100, false);
-          expect(archiveChanged).toHaveNthReturnedWith(101, false);
-          expect(archiveChanged).toHaveNthReturnedWith(102, false);
-          expect(archiveChanged).toHaveNthReturnedWith(103, false);
-          expect(archiveChanged).toHaveNthReturnedWith(104, false);
-          expect(archiveChanged).toHaveNthReturnedWith(105, false);
-          expect(archiveChanged).toHaveNthReturnedWith(106, false);
-        });
-
-        it('should getStatus method not called', async (): Promise<void> => {
-          expect(getStatus).toHaveBeenCalledTimes(6);
-          await after();
-        });
+        it.each([
+          ['server_pc_eu', LiveServicesPcEuDownRaw, undefined],
+          ['server_pc_na', LiveServicesPcNaDownRaw, undefined],
+        ])(
+          'should service controller return correct data',
+          async (
+            slug: Slug,
+            rawData: RawEsoStatus,
+            maintenance: MaintenanceEsoStatus | undefined,
+          ): Promise<void> => {
+            const response: EsoStatus = await serviceController.findOne(slug);
+            expect(response.status).toStrictEqual('down');
+            expect(response.raw).toStrictEqual(rawData);
+            expect(response.maintenance).toStrictEqual(maintenance);
+          },
+          15000,
+        );
       });
+
+      describe('handle handleServiceAlerts (up)', (): void => {
+        it('should doHandle method called', async (): Promise<void> => {
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises,no-async-promise-executor
+          await new Promise<void>(async (resolve): Promise<void> => {
+            const statusUpdateCalled: jest.Mock = jest.fn();
+            const maintenanceRemovedCalled: jest.Mock = jest.fn();
+            const maintenancePlannedCalled: jest.Mock = jest.fn();
+
+            clientSocket.on('statusUpdate', statusUpdateCalled);
+            clientSocket.on('maintenancePlanned', maintenancePlannedCalled);
+            clientSocket.on('maintenanceRemoved', maintenanceRemovedCalled);
+
+            setTimeout((): void => {
+              expect(statusUpdateCalled).toHaveBeenCalledTimes(0);
+              expect(maintenancePlannedCalled).toHaveBeenCalledTimes(0);
+              expect(maintenanceRemovedCalled).toHaveBeenCalledTimes(0);
+              resolve();
+            }, 1000);
+
+            await scrapingService.handleServiceAlerts();
+          });
+        }, 15000);
+
+        it.each([
+          [5, ServiceAlertsInitialPcNaRaw],
+          [6, ServiceAlertsInitialPcEuRaw],
+        ])(
+          'should archives not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const archive: Archive =
+              await getArchiveByServiceIdAndConnectorName(
+                serviceId,
+                'ServiceAlerts',
+              );
+            expect(archive.statusId).toEqual(1);
+            expect(archive.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
+
+        it.each([
+          [5, LiveServicesPcNaDownRaw],
+          [6, LiveServicesPcEuDownRaw],
+        ])(
+          'should services not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const service = await getServiceById(serviceId);
+            expect(service.statusId).toEqual(2);
+            expect(service.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
+
+        it.each([
+          ['server_pc_eu', LiveServicesPcEuDownRaw, undefined],
+          ['server_pc_na', LiveServicesPcNaDownRaw, undefined],
+        ])(
+          'should service controller return correct data',
+          async (
+            slug: Slug,
+            rawData: RawEsoStatus,
+            maintenance: MaintenanceEsoStatus | undefined,
+          ): Promise<void> => {
+            const response: EsoStatus = await serviceController.findOne(slug);
+            expect(response.status).toStrictEqual('down');
+            expect(response.raw).toStrictEqual(rawData);
+            expect(response.maintenance).toStrictEqual(maintenance);
+          },
+          15000,
+        );
+      });
+    });
+
+    // archive (ForumMessage) raw and statusId change for server_pc_eu and server_pc_na
+    describe('ForumMessage down', (): void => {
+      describe('handle handleLiveServices (down)', (): void => {
+        it('should doHandle method called', async (): Promise<void> => {
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises,no-async-promise-executor
+          await new Promise<void>(async (resolve): Promise<void> => {
+            const statusUpdateCalled: jest.Mock = jest.fn();
+            const maintenanceRemovedCalled: jest.Mock = jest.fn();
+            const maintenancePlannedCalled: jest.Mock = jest.fn();
+
+            clientSocket.on('statusUpdate', statusUpdateCalled);
+            clientSocket.on('maintenancePlanned', maintenancePlannedCalled);
+            clientSocket.on('maintenanceRemoved', maintenanceRemovedCalled);
+
+            setTimeout((): void => {
+              expect(statusUpdateCalled).toHaveBeenCalledTimes(0);
+              expect(maintenancePlannedCalled).toHaveBeenCalledTimes(0);
+              expect(maintenanceRemovedCalled).toHaveBeenCalledTimes(0);
+              resolve();
+            }, 1000);
+
+            await scrapingService.handleLiveServices();
+          });
+        }, 15000);
+
+        it.each([
+          [5, LiveServicesPcNaDownRaw],
+          [6, LiveServicesPcEuDownRaw],
+        ])(
+          'should archives changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const archive = await getArchiveByServiceIdAndConnectorName(
+              serviceId,
+              'LiveServices',
+            );
+            expect(archive.statusId).toEqual(2);
+            expect(archive.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
+
+        it.each([
+          [5, LiveServicesPcNaDownRaw],
+          [6, LiveServicesPcEuDownRaw],
+        ])(
+          'should services not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const service = await getServiceById(serviceId);
+            expect(service.statusId).toEqual(2);
+            expect(service.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
+
+        it.each([
+          ['server_pc_eu', LiveServicesPcEuDownRaw, undefined],
+          ['server_pc_na', LiveServicesPcNaDownRaw, undefined],
+        ])(
+          'should service controller return correct data',
+          async (
+            slug: Slug,
+            rawData: RawEsoStatus,
+            maintenance: MaintenanceEsoStatus | undefined,
+          ): Promise<void> => {
+            const response: EsoStatus = await serviceController.findOne(slug);
+            expect(response.status).toStrictEqual('down');
+            expect(response.raw).toStrictEqual(rawData);
+            expect(response.maintenance).toStrictEqual(maintenance);
+          },
+          15000,
+        );
+      });
+
+      // archive (ForumMessage) raw and statusId change for server_pc_eu and server_pc_na
+      describe('handle handleForumMessage (down)', (): void => {
+        it('should doHandle method called', async (): Promise<void> => {
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises,no-async-promise-executor
+          await new Promise<void>(async (resolve): Promise<void> => {
+            jest
+              .spyOn(ForumMessage, 'getData')
+              .mockImplementation(async (): Promise<RawEsoStatus[]> => {
+                return Promise.resolve(ForumMessageDown);
+              });
+
+            const statusUpdateCalled: jest.Mock = jest.fn();
+            const maintenanceRemovedCalled: jest.Mock = jest.fn();
+            const maintenancePlannedCalled: jest.Mock = jest.fn();
+
+            clientSocket.on('statusUpdate', statusUpdateCalled);
+            clientSocket.on('maintenancePlanned', maintenancePlannedCalled);
+            clientSocket.on('maintenanceRemoved', maintenanceRemovedCalled);
+
+            setTimeout((): void => {
+              expect(statusUpdateCalled).toHaveBeenCalledTimes(0);
+              expect(maintenancePlannedCalled).toHaveBeenCalledTimes(0);
+              expect(maintenanceRemovedCalled).toHaveBeenCalledTimes(0);
+              resolve();
+            }, 1000);
+
+            await scrapingService.handleForumMessage();
+          });
+        }, 15000);
+
+        it.each([
+          [5, ForumMessageDownPcNaRaw],
+          [6, ForumMessageDownPcEuRaw],
+        ])(
+          'should archives not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const archive: Archive =
+              await getArchiveByServiceIdAndConnectorName(
+                serviceId,
+                'ForumMessage',
+              );
+            expect(archive.statusId).toEqual(2);
+            expect(archive.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
+
+        it.each([
+          [5, LiveServicesPcNaDownRaw],
+          [6, LiveServicesPcEuDownRaw],
+        ])(
+          'should services not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const service = await getServiceById(serviceId);
+            expect(service.statusId).toEqual(2);
+            expect(service.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
+
+        it.each([
+          ['server_pc_eu', LiveServicesPcEuDownRaw, undefined],
+          ['server_pc_na', LiveServicesPcNaDownRaw, undefined],
+        ])(
+          'should service controller return correct data',
+          async (
+            slug: Slug,
+            rawData: RawEsoStatus,
+            maintenance: MaintenanceEsoStatus | undefined,
+          ): Promise<void> => {
+            const response: EsoStatus = await serviceController.findOne(slug);
+            expect(response.status).toStrictEqual('down');
+            expect(response.raw).toStrictEqual(rawData);
+            expect(response.maintenance).toStrictEqual(maintenance);
+          },
+          15000,
+        );
+      });
+
+      describe('handle handleServiceAlerts (up)', (): void => {
+        it('should doHandle method called', async (): Promise<void> => {
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises,no-async-promise-executor
+          await new Promise<void>(async (resolve): Promise<void> => {
+            const statusUpdateCalled: jest.Mock = jest.fn();
+            const maintenanceRemovedCalled: jest.Mock = jest.fn();
+            const maintenancePlannedCalled: jest.Mock = jest.fn();
+
+            clientSocket.on('statusUpdate', statusUpdateCalled);
+            clientSocket.on('maintenancePlanned', maintenancePlannedCalled);
+            clientSocket.on('maintenanceRemoved', maintenanceRemovedCalled);
+
+            setTimeout((): void => {
+              expect(statusUpdateCalled).toHaveBeenCalledTimes(0);
+              expect(maintenancePlannedCalled).toHaveBeenCalledTimes(0);
+              expect(maintenanceRemovedCalled).toHaveBeenCalledTimes(0);
+              resolve();
+            }, 1000);
+
+            await scrapingService.handleServiceAlerts();
+          });
+        }, 15000);
+
+        it.each([
+          [5, ServiceAlertsInitialPcNaRaw],
+          [6, ServiceAlertsInitialPcEuRaw],
+        ])(
+          'should archives not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const archive: Archive =
+              await getArchiveByServiceIdAndConnectorName(
+                serviceId,
+                'ServiceAlerts',
+              );
+            expect(archive.statusId).toEqual(1);
+            expect(archive.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
+
+        it.each([
+          [5, LiveServicesPcNaDownRaw],
+          [6, LiveServicesPcEuDownRaw],
+        ])(
+          'should services not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const service = await getServiceById(serviceId);
+            expect(service.statusId).toEqual(2);
+            expect(service.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
+
+        it.each([
+          ['server_pc_eu', LiveServicesPcEuDownRaw, undefined],
+          ['server_pc_na', LiveServicesPcNaDownRaw, undefined],
+        ])(
+          'should service controller return correct data',
+          async (
+            slug: Slug,
+            rawData: RawEsoStatus,
+            maintenance: MaintenanceEsoStatus | undefined,
+          ): Promise<void> => {
+            const response: EsoStatus = await serviceController.findOne(slug);
+            expect(response.status).toStrictEqual('down');
+            expect(response.raw).toStrictEqual(rawData);
+            expect(response.maintenance).toStrictEqual(maintenance);
+          },
+          15000,
+        );
+      });
+    });
+
+    describe('close test', (): void => {
+      it('prepare', async (): Promise<void> => {
+        await after();
+
+        expect(true).toStrictEqual(true);
+      }, 15000);
     });
   });
 });

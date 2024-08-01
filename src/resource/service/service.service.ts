@@ -13,7 +13,7 @@ export class ServiceService {
   ) {}
 
   format(service: Service): EsoStatus {
-    return {
+    const formatedEsoStatus: EsoStatus = {
       slug: service.slug.slug,
       status: service.status.status,
       type: service.type.type,
@@ -21,11 +21,22 @@ export class ServiceService {
       zone: service.zone.zone,
       raw: <RawEsoStatus>JSON.parse(service.rawData),
     };
+
+    if (service.maintenance) {
+      formatedEsoStatus.maintenance = {
+        raw: <RawEsoStatus>JSON.parse(service.maintenance.rawData),
+        slug: service.slug.slug,
+        beginnerAt: service.maintenance.beginnerAt.toISOString(),
+        endingAt: service.maintenance.endingAt.toISOString(),
+      };
+    }
+
+    return formatedEsoStatus;
   }
 
   async findAll(): Promise<Service[]> {
     return this.serviceRepository.find({
-      relations: ['slug', 'status', 'type', 'zone', 'support'],
+      relations: ['slug', 'status', 'type', 'zone', 'support', 'maintenance'],
     });
   }
 
