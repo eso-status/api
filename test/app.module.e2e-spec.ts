@@ -1,15 +1,21 @@
 import { ForumMessage } from '@eso-status/forum-message';
 import { LiveServices } from '@eso-status/live-services';
 import { ServiceAlerts } from '@eso-status/service-alerts';
-import { EsoStatus, RawEsoStatus } from '@eso-status/types';
+import {
+  EsoStatus,
+  MaintenanceEsoStatus,
+  RawEsoStatus,
+  Slug,
+} from '@eso-status/types';
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from 'dotenv';
-import * as moment from 'moment/moment';
 import { Server } from 'socket.io';
 import { Socket, io } from 'socket.io-client';
 
+import { Maintenance } from 'src/resource/maintenance/entities/maintenance.entity';
+import { Connector } from 'src/type/connector.type';
 import { Repository } from 'typeorm';
 
 import { runSeeders } from 'typeorm-extension';
@@ -17,15 +23,57 @@ import { runSeeders } from 'typeorm-extension';
 import { dataSource, dataSourceOptions } from '../src/config/typeorm.config';
 import { ArchiveService } from '../src/resource/archive/archive.service';
 import { Archive } from '../src/resource/archive/entities/archive.entity';
+import { MaintenanceService } from '../src/resource/maintenance/maintenance.service';
 import { Service } from '../src/resource/service/entities/service.entity';
 import { ServiceController } from '../src/resource/service/service.controller';
 import { ServiceService } from '../src/resource/service/service.service';
 import { Status } from '../src/resource/status/entities/status.entity';
 import { StatusService } from '../src/resource/status/status.service';
-import { QueueService } from '../src/service/queue/queue.service';
 import { ScrapingService } from '../src/service/scraping/scraping.service';
 import { WebsocketService } from '../src/service/websocket/websocket.service';
 import { WinstonService } from '../src/service/winston/winston.service';
+
+import {
+  ForumMessageDown,
+  ForumMessageDownFormatted,
+  ForumMessageDownPcEuRaw,
+  ForumMessageDownPcNaRaw,
+  ForumMessageInitial,
+  ForumMessageInitialPcEuLastUpRaw,
+  ForumMessageInitialPcNaLastUpRaw,
+  ForumMessagePlanned,
+  ForumMessagePlannedFormatted,
+  ForumMessagePlannedPcEuMaintenance,
+  ForumMessagePlannedPcEuRaw,
+  ForumMessagePlannedPcNaMaintenance,
+  ForumMessagePlannedPcNaRaw,
+  LiveServicesDown,
+  LiveServicesDownFormated,
+  LiveServicesInitial,
+  LiveServicesInitialFormated,
+  LiveServicesPcEuDownEsoStatus,
+  LiveServicesPcEuDownRaw,
+  LiveServicesPcEuUpRaw,
+  LiveServicesPcNaDownEsoStatus,
+  LiveServicesPcNaDownRaw,
+  LiveServicesPcNaUpRaw,
+  LiveServicesPcPtsUpRaw,
+  LiveServicesPsEuUpRaw,
+  LiveServicesPsNaUpRaw,
+  LiveServicesXboxEuUpRaw,
+  LiveServicesXboxNaUpRaw,
+  ServiceAlertsInitial,
+  ServiceAlertsInitialFormatted,
+  ServiceAlertsInitialPcEuRaw,
+  ServiceAlertsInitialPcNaRaw,
+  ServiceAlertsInitialPcPtsRaw,
+  ServiceAlertsInitialPsEuRaw,
+  ServiceAlertsInitialPsNaRaw,
+  ServiceAlertsInitialStoreEsoRaw,
+  ServiceAlertsInitialSystemAccountRaw,
+  ServiceAlertsInitialXboxEuRaw,
+  ServiceAlertsInitialXboxNaRaw,
+} from './data/data';
 
 config();
 
@@ -36,41 +84,60 @@ let serverSocket: Server;
 let clientSocket: Socket;
 let serviceRepository: Repository<Service>;
 let archiveRepository: Repository<Archive>;
+let maintenanceRepository: Repository<Maintenance>;
 let serviceController: ServiceController;
 
 let doHandle: jest.SpyInstance<Promise<void>>;
 let formatData: jest.SpyInstance<EsoStatus[]>;
-let update: jest.SpyInstance<Promise<void>>;
+let prepareUpdate: jest.SpyInstance<Promise<void>>;
 let getService: jest.SpyInstance<Promise<Service>>;
 let getArchive: jest.SpyInstance<Promise<Archive>>;
-let updateArchive: jest.SpyInstance<Promise<void>>;
-let isPlannedStatus: jest.SpyInstance<boolean>;
-let slugChanged: jest.SpyInstance<boolean>;
 let archiveChanged: jest.SpyInstance<boolean>;
 let getStatus: jest.SpyInstance<Promise<Status>>;
+let updateArchive: jest.SpyInstance<Promise<void>>;
+let slugChanged: jest.SpyInstance<boolean>;
+let isPlannedStatus: jest.SpyInstance<boolean>;
+let updateMaintenance: jest.SpyInstance<Promise<void>>;
+let updateNoMaintenance: jest.SpyInstance<Promise<void>>;
 let updateService: jest.SpyInstance<Promise<void>>;
+let addMaintenance: jest.SpyInstance<Promise<Maintenance>>;
+let serviceHaveMaintenance: jest.SpyInstance<boolean>;
+let detachMaintenanceToService: jest.SpyInstance<Promise<void>>;
 
-let updateQueue: jest.SpyInstance<void>;
-let getQueue: jest.SpyInstance<EsoStatus[]>;
-let setQueue: jest.SpyInstance<void>;
-let isQueueEmpty: jest.SpyInstance<boolean>;
-let pushQueue: jest.SpyInstance<void>;
-let emptyQueue: jest.SpyInstance<void>;
+const getServiceById = async (id: number): Promise<Service> => {
+  return serviceRepository.findOne({
+    where: {
+      id,
+    },
+  });
+};
+
+const getArchiveByServiceIdAndConnectorName = async (
+  serviceId: number,
+  connector: Connector,
+): Promise<Archive> => {
+  return archiveRepository.findOne({
+    where: {
+      connector,
+      serviceId,
+    },
+  });
+};
 
 const before = async (): Promise<void> => {
   const module: TestingModule = await Test.createTestingModule({
     imports: [
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       TypeOrmModule.forRoot(dataSourceOptions),
-      TypeOrmModule.forFeature([Service, Status, Archive]),
+      TypeOrmModule.forFeature([Service, Status, Archive, Maintenance]),
     ],
     providers: [
-      QueueService,
       WebsocketService,
       WinstonService,
       ScrapingService,
       ServiceService,
       ArchiveService,
+      MaintenanceService,
       StatusService,
       ServiceController,
     ],
@@ -97,6 +164,7 @@ const before = async (): Promise<void> => {
 
   serviceRepository = dataSource.getRepository(Service);
   archiveRepository = dataSource.getRepository(Archive);
+  maintenanceRepository = dataSource.getRepository(Maintenance);
 
   await new Promise<void>((resolve): void => {
     clientSocket.on('connect', (): void => {
@@ -111,22 +179,26 @@ const before = async (): Promise<void> => {
 
   doHandle = jest.spyOn(scrapingService, 'doHandle');
   formatData = jest.spyOn(scrapingService, 'formatData');
-  update = jest.spyOn(scrapingService, 'update');
+  prepareUpdate = jest.spyOn(scrapingService, 'prepareUpdate');
   getService = jest.spyOn(scrapingService, 'getService');
   getArchive = jest.spyOn(scrapingService, 'getArchive');
-  updateArchive = jest.spyOn(scrapingService, 'updateArchive');
-  isPlannedStatus = jest.spyOn(scrapingService, 'isPlannedStatus');
-  slugChanged = jest.spyOn(scrapingService, 'slugChanged');
   archiveChanged = jest.spyOn(scrapingService, 'archiveChanged');
   getStatus = jest.spyOn(scrapingService, 'getStatus');
+  updateArchive = jest.spyOn(scrapingService, 'updateArchive');
+  slugChanged = jest.spyOn(scrapingService, 'slugChanged');
+  isPlannedStatus = jest.spyOn(scrapingService, 'isPlannedStatus');
+  updateMaintenance = jest.spyOn(scrapingService, 'updateMaintenance');
+  updateNoMaintenance = jest.spyOn(scrapingService, 'updateNoMaintenance');
   updateService = jest.spyOn(scrapingService, 'updateService');
-
-  updateQueue = jest.spyOn(scrapingService.queueService, 'updateQueue');
-  getQueue = jest.spyOn(scrapingService.queueService, 'getQueue');
-  setQueue = jest.spyOn(scrapingService.queueService, 'setQueue');
-  isQueueEmpty = jest.spyOn(scrapingService.queueService, 'isQueueEmpty');
-  pushQueue = jest.spyOn(scrapingService.queueService, 'pushQueue');
-  emptyQueue = jest.spyOn(scrapingService.queueService, 'emptyQueue');
+  addMaintenance = jest.spyOn(scrapingService, 'addMaintenance');
+  serviceHaveMaintenance = jest.spyOn(
+    scrapingService,
+    'serviceHaveMaintenance',
+  );
+  detachMaintenanceToService = jest.spyOn(
+    scrapingService,
+    'detachMaintenanceToService',
+  );
 };
 
 const after = async (): Promise<void> => {
@@ -140,1892 +212,1200 @@ const after = async (): Promise<void> => {
   });
 };
 
-describe('QueueService (e2e)', (): void => {
+describe('ScrapingService (e2e)', (): void => {
   describe('classic maintenance', (): void => {
-    const forumMessageUpLate: RawEsoStatus[] = [
-      {
-        sources: ['https://forums.elderscrollsonline.com/en/categories/pts'],
-        raw: [
-          '• PC/Mac: NA and EU megaservers for patch maintenance – July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
-        ],
-        rawDate: 'July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
-        dates: [
-          moment()
-            .utc()
-            .set('years', 2023)
-            .set('months', 7)
-            .set('date', 26)
-            .set('hours', 8)
-            .set('minutes', 0)
-            .set('seconds', 0)
-            .set('milliseconds', 0)
-            .utcOffset(0),
-          moment()
-            .utc()
-            .set('years', 2023)
-            .set('months', 7)
-            .set('date', 26)
-            .set('hours', 12)
-            .set('minutes', 0)
-            .set('seconds', 0)
-            .set('milliseconds', 0)
-            .utcOffset(0),
-        ],
-        slugs: ['server_pc_eu'],
-        type: 'server',
-        support: 'pc',
-        zone: 'eu',
-        status: 'planned',
-      },
-      {
-        sources: ['https://forums.elderscrollsonline.com/en/categories/pts'],
-        raw: [
-          '• PC/Mac: NA and EU megaservers for patch maintenance – July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
-        ],
-        rawDate: 'July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
-        dates: [
-          moment()
-            .utc()
-            .set('years', 2023)
-            .set('months', 7)
-            .set('date', 26)
-            .set('hours', 8)
-            .set('minutes', 0)
-            .set('seconds', 0)
-            .set('milliseconds', 0)
-            .utcOffset(0),
-          moment()
-            .utc()
-            .set('years', 2023)
-            .set('months', 7)
-            .set('date', 26)
-            .set('hours', 12)
-            .set('minutes', 0)
-            .set('seconds', 0)
-            .set('milliseconds', 0)
-            .utcOffset(0),
-        ],
-        slugs: ['server_pc_na'],
-        type: 'server',
-        support: 'pc',
-        zone: 'na',
-        status: 'planned',
-      },
-    ];
-    const serviceAlertsUpLate: RawEsoStatus[] = [
-      {
-        sources: [
-          'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
-        ],
-        raw: [
-          ' />\n  \n<p>2024.07.19 - 12:15 UTC (08:15 EDT)</p>\n<p>The North American PC/Mac megaserver is currently available.</p>\n<p>The European PC/Mac megaserver is currently available.</p>\n',
-        ],
-        rawData: 'The European PC/Mac megaserver is currently available.',
-        rawDate: ' />  2024.07.19 - 12:15 UTC (08:15 EDT)',
-        dates: [
-          moment()
-            .utc()
-            .set('years', 2024)
-            .set('months', 7)
-            .set('date', 19)
-            .set('hours', 12)
-            .set('minutes', 15)
-            .set('seconds', 0)
-            .set('milliseconds', 0)
-            .utcOffset(0),
-        ],
-        slugs: ['server_pc_eu'],
-        type: 'server',
-        support: 'pc',
-        zone: 'eu',
-        status: 'up',
-      },
-      {
-        sources: [
-          'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
-        ],
-        raw: [
-          ' />\n  \n<p>2024.07.19 - 12:15 UTC (08:15 EDT)</p>\n<p>The North American PC/Mac megaserver is currently available.</p>\n<p>The European PC/Mac megaserver is currently available.</p>\n',
-        ],
-        rawData: 'The North American PC/Mac megaserver is currently available.',
-        rawDate: ' />  2024.07.19 - 12:15 UTC (08:15 EDT)',
-        dates: [
-          moment()
-            .utc()
-            .set('years', 2024)
-            .set('months', 7)
-            .set('date', 19)
-            .set('hours', 12)
-            .set('minutes', 15)
-            .set('seconds', 0)
-            .set('milliseconds', 0)
-            .utcOffset(0),
-        ],
-        slugs: ['server_pc_na'],
-        type: 'server',
-        support: 'pc',
-        zone: 'na',
-        status: 'up',
-      },
-    ];
-    const liveServicesDown: RawEsoStatus[] = [
-      {
-        sources: ['https://live-services.elderscrollsonline.com/status/realms'],
-        raw: ['The Elder Scrolls Online (EU)', 'DOWN'],
-        rawSlug: 'The Elder Scrolls Online (EU)',
-        rawStatus: 'DOWN',
-        slugs: ['server_pc_eu'],
-        support: 'pc',
-        zone: 'eu',
-        status: 'down',
-      },
-      {
-        sources: ['https://live-services.elderscrollsonline.com/status/realms'],
-        raw: ['The Elder Scrolls Online (NA)', 'DOWN'],
-        rawSlug: 'The Elder Scrolls Online (NA)',
-        rawStatus: 'DOWN',
-        slugs: ['server_pc_na'],
-        support: 'pc',
-        zone: 'na',
-        status: 'down',
-      },
-    ];
-    const forumMessageDown: RawEsoStatus[] = [
-      {
-        sources: ['https://forums.elderscrollsonline.com/en/categories/pts'],
-        raw: [
-          '• [IN PROGRESS] PC/Mac: NA and EU megaservers for patch maintenance – July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
-        ],
-        rawDate: 'July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
-        dates: [
-          moment()
-            .utc()
-            .set('years', 2023)
-            .set('months', 7)
-            .set('date', 26)
-            .set('hours', 8)
-            .set('minutes', 0)
-            .set('seconds', 0)
-            .set('milliseconds', 0)
-            .utcOffset(0),
-          moment()
-            .utc()
-            .set('years', 2023)
-            .set('months', 7)
-            .set('date', 26)
-            .set('hours', 12)
-            .set('minutes', 0)
-            .set('seconds', 0)
-            .set('milliseconds', 0)
-            .utcOffset(0),
-        ],
-        slugs: ['server_pc_eu'],
-        type: 'server',
-        support: 'pc',
-        zone: 'eu',
-        status: 'down',
-      },
-      {
-        sources: ['https://forums.elderscrollsonline.com/en/categories/pts'],
-        raw: [
-          '• [IN PROGRESS] PC/Mac: NA and EU megaservers for patch maintenance – July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
-        ],
-        rawDate: 'July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
-        dates: [
-          moment()
-            .utc()
-            .set('years', 2023)
-            .set('months', 7)
-            .set('date', 26)
-            .set('hours', 8)
-            .set('minutes', 0)
-            .set('seconds', 0)
-            .set('milliseconds', 0)
-            .utcOffset(0),
-          moment()
-            .utc()
-            .set('years', 2023)
-            .set('months', 7)
-            .set('date', 26)
-            .set('hours', 12)
-            .set('minutes', 0)
-            .set('seconds', 0)
-            .set('milliseconds', 0)
-            .utcOffset(0),
-        ],
-        slugs: ['server_pc_na'],
-        type: 'server',
-        support: 'pc',
-        zone: 'na',
-        status: 'down',
-      },
-    ];
-
-    let pcNa: Service;
-    let pcEu: Service;
-
-    let findOnePcEu: EsoStatus;
-    let findOnePcNa: EsoStatus;
-
-    let pcNaLiveServiceArchive: Archive;
-    let pcEuLiveServiceArchive: Archive;
-
-    let pcNaForumMessageArchive: Archive;
-    let pcEuForumMessageArchive: Archive;
-
-    let pcNaServiceAlertsArchive: Archive;
-    let pcEuServiceAlertsArchive: Archive;
-
     let updateDate: Date;
 
-    let expectQueue: EsoStatus[];
-
     describe('prepare test', (): void => {
-      it('should queue empty', async (): Promise<void> => {
+      it('prepare', async (): Promise<void> => {
         await before();
 
-        expect(scrapingService.queueService.getQueue()).toStrictEqual([]);
+        expect(true).toStrictEqual(true);
       }, 15000);
 
-      it('update service status to up', async (): Promise<void> => {
-        pcNa = await serviceRepository.findOne({
-          where: {
-            id: 5,
-          },
-        });
-        pcEu = await serviceRepository.findOne({
-          where: {
-            id: 6,
-          },
-        });
+      it.each([
+        [5, 1, LiveServicesPcNaUpRaw],
+        [6, 1, LiveServicesPcEuUpRaw],
+      ])(
+        'update service status to up',
+        async (
+          serviceId: number,
+          statusId: number,
+          rawData: RawEsoStatus,
+        ): Promise<void> => {
+          let service = await getServiceById(serviceId);
+          service.statusId = statusId;
+          service.rawData = JSON.stringify(rawData);
+          await serviceRepository.save(service);
+          service = await getServiceById(serviceId);
+          expect(service.statusId).toEqual(statusId);
+          expect(service.rawData).toEqual(JSON.stringify(rawData));
+        },
+        15000,
+      );
 
-        pcEu.statusId = 1;
-        pcEu.rawData = JSON.stringify(<RawEsoStatus>{
-          raw: ['The Elder Scrolls Online (EU)', 'UP'],
-          rawSlug: 'The Elder Scrolls Online (EU)',
-          rawStatus: 'UP',
-          slugs: ['server_pc_eu'],
-          sources: [
-            'https://live-services.elderscrollsonline.com/status/realms',
-          ],
-          status: 'up',
-          support: 'pc',
-          zone: 'eu',
-        });
-        pcNa.statusId = 1;
-        pcNa.rawData = JSON.stringify(<RawEsoStatus>{
-          raw: ['The Elder Scrolls Online (NA)', 'UP'],
-          rawSlug: 'The Elder Scrolls Online (NA)',
-          rawStatus: 'UP',
-          slugs: ['server_pc_na'],
-          sources: [
-            'https://live-services.elderscrollsonline.com/status/realms',
-          ],
-          status: 'up',
-          support: 'pc',
-          zone: 'na',
-        });
+      it.each([
+        ['LiveServices', 1, 1, LiveServicesXboxNaUpRaw],
+        ['LiveServices', 2, 1, LiveServicesXboxEuUpRaw],
+        ['LiveServices', 3, 1, LiveServicesPsNaUpRaw],
+        ['LiveServices', 4, 1, LiveServicesPsEuUpRaw],
+        ['LiveServices', 5, 1, LiveServicesPcNaUpRaw],
+        ['LiveServices', 6, 1, LiveServicesPcEuUpRaw],
+        ['LiveServices', 7, 1, LiveServicesPcPtsUpRaw],
 
-        await serviceRepository.save(pcEu);
-        await serviceRepository.save(pcNa);
+        ['ForumMessage', 5, 1, ForumMessageInitialPcNaLastUpRaw],
+        ['ForumMessage', 6, 1, ForumMessageInitialPcEuLastUpRaw],
 
-        pcNa = await serviceRepository.findOne({
-          where: {
-            id: 5,
-          },
-        });
-        pcEu = await serviceRepository.findOne({
-          where: {
-            id: 6,
-          },
-        });
+        ['ServiceAlerts', 1, 1, ServiceAlertsInitialXboxNaRaw],
+        ['ServiceAlerts', 2, 1, ServiceAlertsInitialXboxEuRaw],
+        ['ServiceAlerts', 3, 1, ServiceAlertsInitialPsNaRaw],
+        ['ServiceAlerts', 4, 1, ServiceAlertsInitialPsEuRaw],
+        ['ServiceAlerts', 5, 1, ServiceAlertsInitialPcNaRaw],
+        ['ServiceAlerts', 6, 1, ServiceAlertsInitialPcEuRaw],
+        ['ServiceAlerts', 7, 1, ServiceAlertsInitialPcPtsRaw],
+        ['ServiceAlerts', 11, 1, ServiceAlertsInitialStoreEsoRaw],
+        ['ServiceAlerts', 12, 1, ServiceAlertsInitialSystemAccountRaw],
+      ])(
+        'update %s archive',
+        async (
+          connector: Connector,
+          serviceId: number,
+          statusId: number,
+          rawData: RawEsoStatus,
+        ): Promise<void> => {
+          let archive = await getArchiveByServiceIdAndConnectorName(
+            serviceId,
+            connector,
+          );
+          archive.statusId = statusId;
+          archive.rawData = JSON.stringify(rawData);
+          await archiveRepository.save(archive);
+          archive = await getArchiveByServiceIdAndConnectorName(
+            serviceId,
+            connector,
+          );
+          expect(archive.statusId).toEqual(statusId);
+          expect(archive.rawData).toEqual(JSON.stringify(rawData));
+        },
+        15000,
+      );
 
-        expect(pcNa.statusId).toEqual(1);
-        expect(pcNa.rawData).toEqual(
-          JSON.stringify(<RawEsoStatus>{
-            raw: ['The Elder Scrolls Online (NA)', 'UP'],
-            rawSlug: 'The Elder Scrolls Online (NA)',
-            rawStatus: 'UP',
-            slugs: ['server_pc_na'],
-            sources: [
-              'https://live-services.elderscrollsonline.com/status/realms',
-            ],
-            status: 'up',
-            support: 'pc',
-            zone: 'na',
-          }),
-        );
-        expect(pcEu.statusId).toEqual(1);
-        expect(pcEu.rawData).toEqual(
-          JSON.stringify(<RawEsoStatus>{
-            raw: ['The Elder Scrolls Online (EU)', 'UP'],
-            rawSlug: 'The Elder Scrolls Online (EU)',
-            rawStatus: 'UP',
-            slugs: ['server_pc_eu'],
-            sources: [
-              'https://live-services.elderscrollsonline.com/status/realms',
-            ],
-            status: 'up',
-            support: 'pc',
-            zone: 'eu',
-          }),
-        );
-      }, 15000);
-
-      it('update LiveServices archive', async (): Promise<void> => {
-        pcEuLiveServiceArchive = await archiveRepository.findOne({
-          where: {
-            connector: 'LiveServices',
-            serviceId: 6,
-          },
-        });
-        pcEuLiveServiceArchive.statusId = 1;
-        pcEuLiveServiceArchive.rawData = JSON.stringify(<RawEsoStatus>{
-          raw: ['The Elder Scrolls Online (EU)', 'UP'],
-          rawSlug: 'The Elder Scrolls Online (EU)',
-          rawStatus: 'UP',
-          slugs: ['server_pc_eu'],
-          sources: [
-            'https://live-services.elderscrollsonline.com/status/realms',
-          ],
-          status: 'up',
-          support: 'pc',
-          zone: 'eu',
-        });
-        await archiveRepository.save(pcEuLiveServiceArchive);
-        pcEuLiveServiceArchive = await archiveRepository.findOne({
-          where: {
-            connector: 'LiveServices',
-            serviceId: 6,
-          },
-        });
-        expect(pcEuLiveServiceArchive.statusId).toEqual(1);
-        expect(pcEuLiveServiceArchive.rawData).toEqual(
-          JSON.stringify(<RawEsoStatus>{
-            raw: ['The Elder Scrolls Online (EU)', 'UP'],
-            rawSlug: 'The Elder Scrolls Online (EU)',
-            rawStatus: 'UP',
-            slugs: ['server_pc_eu'],
-            sources: [
-              'https://live-services.elderscrollsonline.com/status/realms',
-            ],
-            status: 'up',
-            support: 'pc',
-            zone: 'eu',
-          }),
-        );
-
-        pcNaLiveServiceArchive = await archiveRepository.findOne({
-          where: {
-            connector: 'LiveServices',
-            serviceId: 5,
-          },
-        });
-        pcNaLiveServiceArchive.statusId = 1;
-        pcNaLiveServiceArchive.rawData = JSON.stringify(<RawEsoStatus>{
-          raw: ['The Elder Scrolls Online (NA)', 'UP'],
-          rawSlug: 'The Elder Scrolls Online (NA)',
-          rawStatus: 'UP',
-          slugs: ['server_pc_na'],
-          sources: [
-            'https://live-services.elderscrollsonline.com/status/realms',
-          ],
-          status: 'up',
-          support: 'pc',
-          zone: 'na',
-        });
-        await archiveRepository.save(pcNaLiveServiceArchive);
-        pcNaLiveServiceArchive = await archiveRepository.findOne({
-          where: {
-            connector: 'LiveServices',
-            serviceId: 5,
-          },
-        });
-        expect(pcNaLiveServiceArchive.statusId).toEqual(1);
-        expect(pcNaLiveServiceArchive.rawData).toEqual(
-          JSON.stringify(<RawEsoStatus>{
-            raw: ['The Elder Scrolls Online (NA)', 'UP'],
-            rawSlug: 'The Elder Scrolls Online (NA)',
-            rawStatus: 'UP',
-            slugs: ['server_pc_na'],
-            sources: [
-              'https://live-services.elderscrollsonline.com/status/realms',
-            ],
-            status: 'up',
-            support: 'pc',
-            zone: 'na',
-          }),
-        );
-      }, 15000);
-
-      it('update ForumMessage archive', async (): Promise<void> => {
-        pcEuForumMessageArchive = await archiveRepository.findOne({
-          where: {
-            connector: 'ForumMessage',
-            serviceId: 6,
-          },
-        });
-        pcEuForumMessageArchive.statusId = 4;
-        pcEuForumMessageArchive.rawData = JSON.stringify(<RawEsoStatus>{
-          sources: ['https://forums.elderscrollsonline.com/en/categories/pts'],
-          raw: [
-            '• PC/Mac: NA and EU megaservers for patch maintenance – July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
-          ],
-          rawDate: 'July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
-          dates: [
-            moment()
-              .utc()
-              .set('years', 2023)
-              .set('months', 7)
-              .set('date', 26)
-              .set('hours', 8)
-              .set('minutes', 0)
-              .set('seconds', 0)
-              .set('milliseconds', 0)
-              .utcOffset(0),
-            moment()
-              .utc()
-              .set('years', 2023)
-              .set('months', 7)
-              .set('date', 26)
-              .set('hours', 12)
-              .set('minutes', 0)
-              .set('seconds', 0)
-              .set('milliseconds', 0)
-              .utcOffset(0),
-          ],
-          slugs: ['server_pc_eu'],
-          type: 'server',
-          support: 'pc',
-          zone: 'eu',
-          status: 'planned',
-        });
-        await archiveRepository.save(pcEuForumMessageArchive);
-        pcEuForumMessageArchive = await archiveRepository.findOne({
-          where: {
-            connector: 'ForumMessage',
-            serviceId: 6,
-          },
-        });
-        expect(pcEuForumMessageArchive.statusId).toEqual(4);
-        expect(pcEuForumMessageArchive.rawData).toEqual(
-          JSON.stringify(<RawEsoStatus>{
-            sources: [
-              'https://forums.elderscrollsonline.com/en/categories/pts',
-            ],
-            raw: [
-              '• PC/Mac: NA and EU megaservers for patch maintenance – July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
-            ],
-            rawDate: 'July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
-            dates: [
-              moment()
-                .utc()
-                .set('years', 2023)
-                .set('months', 7)
-                .set('date', 26)
-                .set('hours', 8)
-                .set('minutes', 0)
-                .set('seconds', 0)
-                .set('milliseconds', 0)
-                .utcOffset(0),
-              moment()
-                .utc()
-                .set('years', 2023)
-                .set('months', 7)
-                .set('date', 26)
-                .set('hours', 12)
-                .set('minutes', 0)
-                .set('seconds', 0)
-                .set('milliseconds', 0)
-                .utcOffset(0),
-            ],
-            slugs: ['server_pc_eu'],
-            type: 'server',
-            support: 'pc',
-            zone: 'eu',
-            status: 'planned',
-          }),
-        );
-
-        pcNaForumMessageArchive = await archiveRepository.findOne({
-          where: {
-            connector: 'ForumMessage',
-            serviceId: 5,
-          },
-        });
-        pcNaForumMessageArchive.statusId = 4;
-        pcNaForumMessageArchive.rawData = JSON.stringify(<RawEsoStatus>{
-          sources: ['https://forums.elderscrollsonline.com/en/categories/pts'],
-          raw: [
-            '• PC/Mac: NA and EU megaservers for patch maintenance – July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
-          ],
-          rawDate: 'July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
-          dates: [
-            moment()
-              .utc()
-              .set('years', 2023)
-              .set('months', 7)
-              .set('date', 26)
-              .set('hours', 8)
-              .set('minutes', 0)
-              .set('seconds', 0)
-              .set('milliseconds', 0)
-              .utcOffset(0),
-            moment()
-              .utc()
-              .set('years', 2023)
-              .set('months', 7)
-              .set('date', 26)
-              .set('hours', 12)
-              .set('minutes', 0)
-              .set('seconds', 0)
-              .set('milliseconds', 0)
-              .utcOffset(0),
-          ],
-          slugs: ['server_pc_na'],
-          type: 'server',
-          support: 'pc',
-          zone: 'na',
-          status: 'planned',
-        });
-        await archiveRepository.save(pcNaForumMessageArchive);
-        pcNaForumMessageArchive = await archiveRepository.findOne({
-          where: {
-            connector: 'ForumMessage',
-            serviceId: 5,
-          },
-        });
-        expect(pcNaForumMessageArchive.statusId).toEqual(4);
-        expect(pcNaForumMessageArchive.rawData).toEqual(
-          JSON.stringify(<RawEsoStatus>{
-            sources: [
-              'https://forums.elderscrollsonline.com/en/categories/pts',
-            ],
-            raw: [
-              '• PC/Mac: NA and EU megaservers for patch maintenance – July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
-            ],
-            rawDate: 'July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
-            dates: [
-              moment()
-                .utc()
-                .set('years', 2023)
-                .set('months', 7)
-                .set('date', 26)
-                .set('hours', 8)
-                .set('minutes', 0)
-                .set('seconds', 0)
-                .set('milliseconds', 0)
-                .utcOffset(0),
-              moment()
-                .utc()
-                .set('years', 2023)
-                .set('months', 7)
-                .set('date', 26)
-                .set('hours', 12)
-                .set('minutes', 0)
-                .set('seconds', 0)
-                .set('milliseconds', 0)
-                .utcOffset(0),
-            ],
-            slugs: ['server_pc_na'],
-            type: 'server',
-            support: 'pc',
-            zone: 'na',
-            status: 'planned',
-          }),
-        );
-      }, 15000);
-
-      it('update ServiceAlerts archive', async (): Promise<void> => {
-        pcEuServiceAlertsArchive = await archiveRepository.findOne({
-          where: {
-            connector: 'ServiceAlerts',
-            serviceId: 6,
-          },
-        });
-        pcEuServiceAlertsArchive.statusId = 1;
-        pcEuServiceAlertsArchive.rawData = JSON.stringify(<RawEsoStatus>{
-          sources: [
-            'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
-          ],
-          raw: [
-            ' />\n  \n<p>2024.07.19 - 12:15 UTC (08:15 EDT)</p>\n<p>The North American PC/Mac megaserver is currently available.</p>\n<p>The European PC/Mac megaserver is currently available.</p>\n',
-          ],
-          rawData: 'The European PC/Mac megaserver is currently available.',
-          rawDate: ' />  2024.07.19 - 12:15 UTC (08:15 EDT)',
-          dates: [
-            moment()
-              .utc()
-              .set('years', 2024)
-              .set('months', 7)
-              .set('date', 19)
-              .set('hours', 12)
-              .set('minutes', 15)
-              .set('seconds', 0)
-              .set('milliseconds', 0)
-              .utcOffset(0),
-          ],
-          slugs: ['server_pc_eu'],
-          type: 'server',
-          support: 'pc',
-          zone: 'eu',
-          status: 'up',
-        });
-        await archiveRepository.save(pcEuServiceAlertsArchive);
-        pcEuServiceAlertsArchive = await archiveRepository.findOne({
-          where: {
-            connector: 'ServiceAlerts',
-            serviceId: 6,
-          },
-        });
-        expect(pcEuServiceAlertsArchive.statusId).toEqual(1);
-        expect(pcEuServiceAlertsArchive.rawData).toEqual(
-          JSON.stringify(<RawEsoStatus>{
-            sources: [
-              'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
-            ],
-            raw: [
-              ' />\n  \n<p>2024.07.19 - 12:15 UTC (08:15 EDT)</p>\n<p>The North American PC/Mac megaserver is currently available.</p>\n<p>The European PC/Mac megaserver is currently available.</p>\n',
-            ],
-            rawData: 'The European PC/Mac megaserver is currently available.',
-            rawDate: ' />  2024.07.19 - 12:15 UTC (08:15 EDT)',
-            dates: [
-              moment()
-                .utc()
-                .set('years', 2024)
-                .set('months', 7)
-                .set('date', 19)
-                .set('hours', 12)
-                .set('minutes', 15)
-                .set('seconds', 0)
-                .set('milliseconds', 0)
-                .utcOffset(0),
-            ],
-            slugs: ['server_pc_eu'],
-            type: 'server',
-            support: 'pc',
-            zone: 'eu',
-            status: 'up',
-          }),
-        );
-
-        pcNaServiceAlertsArchive = await archiveRepository.findOne({
-          where: {
-            connector: 'ServiceAlerts',
-            serviceId: 5,
-          },
-        });
-        pcNaServiceAlertsArchive.statusId = 1;
-        pcNaServiceAlertsArchive.rawData = JSON.stringify(<RawEsoStatus>{
-          sources: [
-            'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
-          ],
-          raw: [
-            ' />\n  \n<p>2024.07.19 - 12:15 UTC (08:15 EDT)</p>\n<p>The North American PC/Mac megaserver is currently available.</p>\n<p>The European PC/Mac megaserver is currently available.</p>\n',
-          ],
-          rawData:
-            'The North American PC/Mac megaserver is currently available.',
-          rawDate: ' />  2024.07.19 - 12:15 UTC (08:15 EDT)',
-          dates: [
-            moment()
-              .utc()
-              .set('years', 2024)
-              .set('months', 7)
-              .set('date', 19)
-              .set('hours', 12)
-              .set('minutes', 15)
-              .set('seconds', 0)
-              .set('milliseconds', 0)
-              .utcOffset(0),
-          ],
-          slugs: ['server_pc_na'],
-          type: 'server',
-          support: 'pc',
-          zone: 'na',
-          status: 'up',
-        });
-        await archiveRepository.save(pcNaServiceAlertsArchive);
-        pcNaServiceAlertsArchive = await archiveRepository.findOne({
-          where: {
-            connector: 'ServiceAlerts',
-            serviceId: 5,
-          },
-        });
-        expect(pcNaServiceAlertsArchive.statusId).toEqual(1);
-        expect(pcNaServiceAlertsArchive.rawData).toEqual(
-          JSON.stringify(<RawEsoStatus>{
-            sources: [
-              'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
-            ],
-            raw: [
-              ' />\n  \n<p>2024.07.19 - 12:15 UTC (08:15 EDT)</p>\n<p>The North American PC/Mac megaserver is currently available.</p>\n<p>The European PC/Mac megaserver is currently available.</p>\n',
-            ],
-            rawData:
-              'The North American PC/Mac megaserver is currently available.',
-            rawDate: ' />  2024.07.19 - 12:15 UTC (08:15 EDT)',
-            dates: [
-              moment()
-                .utc()
-                .set('years', 2024)
-                .set('months', 7)
-                .set('date', 19)
-                .set('hours', 12)
-                .set('minutes', 15)
-                .set('seconds', 0)
-                .set('milliseconds', 0)
-                .utcOffset(0),
-            ],
-            slugs: ['server_pc_na'],
-            type: 'server',
-            support: 'pc',
-            zone: 'na',
-            status: 'up',
-          }),
-        );
-      }, 15000);
-
-      it('should service controller return correct data', async (): Promise<void> => {
-        findOnePcEu = await serviceController.findOne('server_pc_eu');
-
-        findOnePcNa = await serviceController.findOne('server_pc_na');
-
-        expect(findOnePcEu).toStrictEqual(<EsoStatus>{
-          raw: {
-            raw: ['The Elder Scrolls Online (EU)', 'UP'],
-            rawSlug: 'The Elder Scrolls Online (EU)',
-            rawStatus: 'UP',
-            slugs: ['server_pc_eu'],
-            sources: [
-              'https://live-services.elderscrollsonline.com/status/realms',
-            ],
-            status: 'up',
-            support: 'pc',
-            zone: 'eu',
-          },
-          slug: 'server_pc_eu',
-          status: 'up',
-          support: 'pc',
-          type: 'server',
-          zone: 'eu',
-        });
-
-        expect(findOnePcNa).toStrictEqual(<EsoStatus>{
-          raw: {
-            raw: ['The Elder Scrolls Online (NA)', 'UP'],
-            rawSlug: 'The Elder Scrolls Online (NA)',
-            rawStatus: 'UP',
-            slugs: ['server_pc_na'],
-            sources: [
-              'https://live-services.elderscrollsonline.com/status/realms',
-            ],
-            status: 'up',
-            support: 'pc',
-            zone: 'na',
-          },
-          slug: 'server_pc_na',
-          status: 'up',
-          support: 'pc',
-          type: 'server',
-          zone: 'na',
-        });
-      }, 15000);
+      it.each([
+        ['server_pc_eu', LiveServicesPcEuUpRaw],
+        ['server_pc_na', LiveServicesPcNaUpRaw],
+      ])(
+        'should service controller return correct data',
+        async (slug: Slug, rawData: RawEsoStatus): Promise<void> => {
+          const response: EsoStatus = await serviceController.findOne(slug);
+          expect(response.status).toStrictEqual('up');
+          expect(response.raw).toStrictEqual(rawData);
+        },
+        15000,
+      );
     });
 
-    describe('handle handleLiveServices(down) 1', (): void => {
-      it('handle', async (): Promise<void> => {
-        jest
-          .spyOn(LiveServices, 'getData')
-          .mockImplementation(async (): Promise<RawEsoStatus[]> => {
-            return Promise.resolve(liveServicesDown);
+    describe('Nothing changed compare initial state', (): void => {
+      describe('handle handleLiveServices 1 (up)', (): void => {
+        it('should doHandle method called', async (): Promise<void> => {
+          jest
+            .spyOn(LiveServices, 'getData')
+            .mockImplementation(async (): Promise<RawEsoStatus[]> => {
+              return Promise.resolve(LiveServicesInitial);
+            });
+
+          await scrapingService.handleLiveServices();
+
+          updateDate = new Date();
+          updateDate.setMilliseconds(0);
+
+          expect(doHandle).toHaveBeenCalledTimes(1);
+        }, 15000);
+
+        it('should formatData method called and works correctly', (): void => {
+          expect(formatData).toHaveBeenCalledTimes(1);
+          expect(formatData).toHaveNthReturnedWith(
+            1,
+            LiveServicesInitialFormated,
+          );
+        });
+
+        it('should prepareUpdate method called', (): void => {
+          expect(prepareUpdate).toHaveBeenCalledTimes(7);
+        });
+
+        it('should getService method called', (): void => {
+          expect(getService).toHaveBeenCalledTimes(7);
+        });
+
+        it('should getArchive method called', (): void => {
+          expect(getArchive).toHaveBeenCalledTimes(7);
+        });
+
+        it('should archiveChanged method called and works', (): void => {
+          expect(archiveChanged).toHaveBeenCalledTimes(7);
+          expect(archiveChanged).toHaveNthReturnedWith(1, false);
+          expect(archiveChanged).toHaveNthReturnedWith(2, false);
+          expect(archiveChanged).toHaveNthReturnedWith(3, false);
+          expect(archiveChanged).toHaveNthReturnedWith(4, false);
+          expect(archiveChanged).toHaveNthReturnedWith(5, false);
+          expect(archiveChanged).toHaveNthReturnedWith(6, false);
+          expect(archiveChanged).toHaveNthReturnedWith(7, false);
+        });
+
+        it('should getStatus method not called', (): void => {
+          expect(getStatus).toHaveBeenCalledTimes(0);
+        });
+      });
+
+      describe('handle handleForumMessage 1 (up)', (): void => {
+        it('should doHandle method called', async (): Promise<void> => {
+          jest
+            .spyOn(ForumMessage, 'getData')
+            .mockImplementation(async (): Promise<RawEsoStatus[]> => {
+              return Promise.resolve(ForumMessageInitial);
+            });
+
+          await scrapingService.handleForumMessage();
+
+          updateDate = new Date();
+          updateDate.setMilliseconds(0);
+
+          expect(doHandle).toHaveBeenCalledTimes(2);
+        }, 15000);
+
+        it('should formatData method called and works correctly', (): void => {
+          expect(formatData).toHaveBeenCalledTimes(2);
+          expect(formatData).toHaveNthReturnedWith(2, <EsoStatus[]>[]);
+        });
+
+        it('should prepareUpdate method not called', (): void => {
+          expect(prepareUpdate).toHaveBeenCalledTimes(7);
+        });
+      });
+
+      describe('handle handleServiceAlerts 1 (up)', (): void => {
+        it('should doHandle method called', async (): Promise<void> => {
+          jest
+            .spyOn(ServiceAlerts, 'getData')
+            .mockImplementation(async (): Promise<RawEsoStatus[]> => {
+              return Promise.resolve(ServiceAlertsInitial);
+            });
+
+          await scrapingService.handleServiceAlerts();
+
+          updateDate = new Date();
+          updateDate.setMilliseconds(0);
+
+          expect(doHandle).toHaveBeenCalledTimes(3);
+        }, 15000);
+
+        it('should formatData method called and works correctly', (): void => {
+          expect(formatData).toHaveBeenCalledTimes(3);
+          expect(formatData).toHaveNthReturnedWith(
+            3,
+            ServiceAlertsInitialFormatted,
+          );
+        });
+
+        it('should prepareUpdate method called', (): void => {
+          expect(prepareUpdate).toHaveBeenCalledTimes(16);
+        });
+
+        it('should getService method called', (): void => {
+          expect(getService).toHaveBeenCalledTimes(16);
+        });
+
+        it('should getArchive method called', (): void => {
+          expect(getArchive).toHaveBeenCalledTimes(16);
+        });
+
+        it('should archiveChanged method called and works', (): void => {
+          expect(archiveChanged).toHaveBeenCalledTimes(16);
+          expect(archiveChanged).toHaveNthReturnedWith(8, false);
+          expect(archiveChanged).toHaveNthReturnedWith(9, false);
+          expect(archiveChanged).toHaveNthReturnedWith(10, false);
+          expect(archiveChanged).toHaveNthReturnedWith(11, false);
+          expect(archiveChanged).toHaveNthReturnedWith(12, false);
+          expect(archiveChanged).toHaveNthReturnedWith(13, false);
+          expect(archiveChanged).toHaveNthReturnedWith(14, false);
+          expect(archiveChanged).toHaveNthReturnedWith(15, false);
+          expect(archiveChanged).toHaveNthReturnedWith(16, false);
+        });
+
+        it('should getStatus method not called', (): void => {
+          expect(getStatus).toHaveBeenCalledTimes(0);
+        });
+      });
+    });
+
+    describe('ForumMessage new data => maintenance planned for PC EU/NA', (): void => {
+      describe('handle handleLiveServices 2 (up)', (): void => {
+        it('should doHandle method called', async (): Promise<void> => {
+          await scrapingService.handleLiveServices();
+
+          updateDate = new Date();
+          updateDate.setMilliseconds(0);
+
+          expect(doHandle).toHaveBeenCalledTimes(4);
+        }, 15000);
+
+        it('should formatData method called and works correctly', (): void => {
+          expect(formatData).toHaveBeenCalledTimes(4);
+          expect(formatData).toHaveNthReturnedWith(
+            4,
+            LiveServicesInitialFormated,
+          );
+        });
+
+        it('should prepareUpdate method called', (): void => {
+          expect(prepareUpdate).toHaveBeenCalledTimes(23);
+        });
+
+        it('should getService method called', (): void => {
+          expect(getService).toHaveBeenCalledTimes(23);
+        });
+
+        it('should getArchive method called', (): void => {
+          expect(getArchive).toHaveBeenCalledTimes(23);
+        });
+
+        it('should archiveChanged method called and works', (): void => {
+          expect(archiveChanged).toHaveBeenCalledTimes(23);
+          expect(archiveChanged).toHaveNthReturnedWith(17, false);
+          expect(archiveChanged).toHaveNthReturnedWith(18, false);
+          expect(archiveChanged).toHaveNthReturnedWith(19, false);
+          expect(archiveChanged).toHaveNthReturnedWith(20, false);
+          expect(archiveChanged).toHaveNthReturnedWith(21, false);
+          expect(archiveChanged).toHaveNthReturnedWith(22, false);
+          expect(archiveChanged).toHaveNthReturnedWith(23, false);
+        });
+
+        it('should getStatus method not called', (): void => {
+          expect(getStatus).toHaveBeenCalledTimes(0);
+        });
+      });
+
+      describe('handle handleForumMessage 2 (planned)', (): void => {
+        it('should doHandle method called', async (): Promise<void> => {
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises,no-async-promise-executor
+          await new Promise<void>(async (resolve): Promise<void> => {
+            jest
+              .spyOn(ForumMessage, 'getData')
+              .mockImplementation(async (): Promise<RawEsoStatus[]> => {
+                return Promise.resolve(ForumMessagePlanned);
+              });
+
+            let haveEu: boolean = false;
+            let haveNa: boolean = false;
+            clientSocket.on(
+              'maintenancePlanned',
+              (data: MaintenanceEsoStatus): void => {
+                if (
+                  !haveEu &&
+                  JSON.stringify(data) ===
+                    JSON.stringify(ForumMessagePlannedPcEuMaintenance)
+                ) {
+                  haveEu = true;
+                }
+                if (
+                  !haveNa &&
+                  JSON.stringify(data) ===
+                    JSON.stringify(ForumMessagePlannedPcNaMaintenance)
+                ) {
+                  haveNa = true;
+                }
+                if (haveEu && haveNa) {
+                  resolve();
+                }
+              },
+            );
+
+            await scrapingService.handleForumMessage();
+
+            updateDate = new Date();
+            updateDate.setMilliseconds(0);
+
+            expect(doHandle).toHaveBeenCalledTimes(5);
           });
+        }, 15000);
 
-        await scrapingService.handleLiveServices();
-
-        updateDate = new Date();
-        updateDate.setMilliseconds(0);
-
-        expect(true).toEqual(true);
-      }, 15000);
-
-      it('should doHandle method called', (): void => {
-        expect(doHandle).toHaveBeenCalledTimes(1);
-      });
-
-      it('should formatData method called and works correctly', (): void => {
-        expect(formatData).toHaveBeenCalledTimes(1);
-        expect(formatData).toHaveNthReturnedWith(1, <EsoStatus[]>[
-          {
-            raw: {
-              sources: [
-                'https://live-services.elderscrollsonline.com/status/realms',
-              ],
-              raw: ['The Elder Scrolls Online (EU)', 'DOWN'],
-              rawSlug: 'The Elder Scrolls Online (EU)',
-              rawStatus: 'DOWN',
-              slugs: ['server_pc_eu'],
-              support: 'pc',
-              zone: 'eu',
-              status: 'down',
-            },
-            slug: 'server_pc_eu',
-            type: 'server',
-            support: 'pc',
-            zone: 'eu',
-            status: 'down',
-          },
-          {
-            raw: {
-              sources: [
-                'https://live-services.elderscrollsonline.com/status/realms',
-              ],
-              raw: ['The Elder Scrolls Online (NA)', 'DOWN'],
-              rawSlug: 'The Elder Scrolls Online (NA)',
-              rawStatus: 'DOWN',
-              slugs: ['server_pc_na'],
-              support: 'pc',
-              zone: 'na',
-              status: 'down',
-            },
-            slug: 'server_pc_na',
-            type: 'server',
-            support: 'pc',
-            zone: 'na',
-            status: 'down',
-          },
-        ]);
-      });
-
-      it('should update method called', (): void => {
-        expect(update).toHaveBeenCalledTimes(2);
-      });
-
-      it('should isPlannedStatus method called and works', (): void => {
-        expect(isPlannedStatus).toHaveBeenCalledTimes(2);
-        expect(isPlannedStatus).toHaveNthReturnedWith(1, false);
-        expect(isPlannedStatus).toHaveNthReturnedWith(2, false);
-      });
-
-      it('should getService method called', (): void => {
-        expect(getService).toHaveBeenCalledTimes(2);
-      });
-
-      it('should getArchive method called', (): void => {
-        expect(getArchive).toHaveBeenCalledTimes(2);
-      });
-
-      it('should archiveChanged method called and works', (): void => {
-        expect(archiveChanged).toHaveBeenCalledTimes(2);
-        expect(archiveChanged).toHaveNthReturnedWith(1, true);
-        expect(archiveChanged).toHaveNthReturnedWith(2, true);
-      });
-
-      it('should getStatus method called and works', (): void => {
-        expect(getStatus).toHaveBeenCalledTimes(2);
-      });
-
-      it('should updateArchive method called and works', async (): Promise<void> => {
-        expect(updateArchive).toHaveBeenCalledTimes(2);
-        pcEuLiveServiceArchive = await archiveRepository.findOne({
-          where: {
-            serviceId: 6,
-            connector: 'LiveServices',
-          },
+        it('should formatData method called and works correctly', (): void => {
+          expect(formatData).toHaveBeenCalledTimes(5);
+          expect(formatData).toHaveNthReturnedWith(
+            5,
+            ForumMessagePlannedFormatted,
+          );
         });
-        expect(pcEuLiveServiceArchive.rawData).toEqual(
-          JSON.stringify(<RawEsoStatus>{
-            sources: [
-              'https://live-services.elderscrollsonline.com/status/realms',
-            ],
-            raw: ['The Elder Scrolls Online (EU)', 'DOWN'],
-            rawSlug: 'The Elder Scrolls Online (EU)',
-            rawStatus: 'DOWN',
-            slugs: ['server_pc_eu'],
-            support: 'pc',
-            zone: 'eu',
-            status: 'down',
-          }),
+
+        it('should prepareUpdate method not called', (): void => {
+          expect(prepareUpdate).toHaveBeenCalledTimes(25);
+        });
+
+        it('should getService method called', (): void => {
+          expect(getService).toHaveBeenCalledTimes(25);
+        });
+
+        it('should getArchive method called', (): void => {
+          expect(getArchive).toHaveBeenCalledTimes(25);
+        });
+
+        it('should archiveChanged method called and works', (): void => {
+          expect(archiveChanged).toHaveBeenCalledTimes(25);
+          expect(archiveChanged).toHaveNthReturnedWith(24, true);
+          expect(archiveChanged).toHaveNthReturnedWith(25, true);
+        });
+
+        it('should getStatus method called and works', (): void => {
+          expect(getStatus).toHaveBeenCalledTimes(2);
+        });
+
+        it('should updateArchive method called', (): void => {
+          expect(updateArchive).toHaveBeenCalledTimes(2);
+        });
+
+        it.each([
+          [5, ForumMessagePlannedPcNaRaw],
+          [6, ForumMessagePlannedPcEuRaw],
+        ])(
+          'should updateArchive method works',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const archive = await getArchiveByServiceIdAndConnectorName(
+              serviceId,
+              'ForumMessage',
+            );
+            expect(archive.statusId).toEqual(4);
+            expect(archive.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
         );
-        expect(pcEuLiveServiceArchive.updatedAt).toStrictEqual(updateDate);
-        expect(pcEuLiveServiceArchive.statusId).toEqual(2);
 
-        pcNaLiveServiceArchive = await archiveRepository.findOne({
-          where: {
-            serviceId: 5,
-            connector: 'LiveServices',
-          },
+        it('should isPlannedStatus method called and works', (): void => {
+          expect(isPlannedStatus).toHaveBeenCalledTimes(2);
+          expect(isPlannedStatus).toHaveNthReturnedWith(1, true);
+          expect(isPlannedStatus).toHaveNthReturnedWith(2, true);
         });
-        expect(pcNaLiveServiceArchive.rawData).toEqual(
-          JSON.stringify(<RawEsoStatus>{
-            sources: [
-              'https://live-services.elderscrollsonline.com/status/realms',
-            ],
-            raw: ['The Elder Scrolls Online (NA)', 'DOWN'],
-            rawSlug: 'The Elder Scrolls Online (NA)',
-            rawStatus: 'DOWN',
-            slugs: ['server_pc_na'],
-            support: 'pc',
-            zone: 'na',
-            status: 'down',
-          }),
-        );
-        expect(pcNaLiveServiceArchive.updatedAt).toStrictEqual(updateDate);
-        expect(pcNaLiveServiceArchive.statusId).toEqual(2);
-      }, 15000);
 
-      it('should slugChanged method called and works', (): void => {
-        expect(slugChanged).toHaveBeenCalledTimes(2);
-        expect(slugChanged).toHaveNthReturnedWith(1, true);
-        expect(slugChanged).toHaveNthReturnedWith(2, true);
+        it('should updateMaintenance method called', (): void => {
+          expect(updateMaintenance).toHaveBeenCalledTimes(2);
+        });
+
+        it('should addMaintenance method called', (): void => {
+          expect(addMaintenance).toHaveBeenCalledTimes(2);
+        });
+
+        it.each([
+          [5, ForumMessagePlannedPcNaRaw],
+          [6, ForumMessagePlannedPcEuRaw],
+        ])(
+          'should addMaintenance method works',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const maintenance: Maintenance =
+              await maintenanceRepository.findOne({
+                where: {
+                  serviceId,
+                },
+              });
+            const service: Service = await serviceRepository.findOne({
+              relations: ['maintenances'], // TODO mettre en 1 to 1
+              where: {
+                id: serviceId,
+              },
+            });
+            expect(maintenance.rawData).toStrictEqual(JSON.stringify(rawData));
+            expect(maintenance.serviceId).toStrictEqual(serviceId);
+            expect(maintenance.beginnerAt).toStrictEqual(
+              new Date(rawData.dates[0].toISOString()),
+            );
+            expect(maintenance.endingAt).toStrictEqual(
+              new Date(rawData.dates[1].toISOString()),
+            );
+            expect(service.maintenances[0].id).toStrictEqual(maintenance.id); // TODO mettre en 1 to 1
+          },
+          15000,
+        );
       });
 
-      it('should updateService method called and works', async (): Promise<void> => {
-        expect(updateService).toHaveBeenCalledTimes(2);
+      describe('handle handleServiceAlerts 2 (up)', (): void => {
+        it('should doHandle method called', async (): Promise<void> => {
+          await scrapingService.handleServiceAlerts();
 
-        pcEu = await serviceRepository.findOne({
-          where: {
-            id: 6,
-          },
-        });
-        expect(pcEu.statusId).toEqual(2);
+          updateDate = new Date();
+          updateDate.setMilliseconds(0);
 
-        pcNa = await serviceRepository.findOne({
-          where: {
-            id: 5,
-          },
-        });
-        expect(pcNa.statusId).toEqual(2);
-      }, 15000);
+          expect(doHandle).toHaveBeenCalledTimes(6);
+        }, 15000);
 
-      it('should service controller return correct data', async (): Promise<void> => {
-        findOnePcEu = await serviceController.findOne('server_pc_eu');
-        expect(findOnePcEu).toStrictEqual(<EsoStatus>{
-          raw: {
-            sources: [
-              'https://live-services.elderscrollsonline.com/status/realms',
-            ],
-            raw: ['The Elder Scrolls Online (EU)', 'DOWN'],
-            rawSlug: 'The Elder Scrolls Online (EU)',
-            rawStatus: 'DOWN',
-            slugs: ['server_pc_eu'],
-            support: 'pc',
-            zone: 'eu',
-            status: 'down',
-          },
-          slug: 'server_pc_eu',
-          type: 'server',
-          support: 'pc',
-          zone: 'eu',
-          status: 'down',
+        it('should formatData method called and works correctly', (): void => {
+          expect(formatData).toHaveBeenCalledTimes(6);
+          expect(formatData).toHaveNthReturnedWith(
+            6,
+            ServiceAlertsInitialFormatted,
+          );
         });
 
-        findOnePcNa = await serviceController.findOne('server_pc_na');
-        expect(findOnePcNa).toStrictEqual(<EsoStatus>{
-          raw: {
-            raw: ['The Elder Scrolls Online (NA)', 'DOWN'],
-            rawSlug: 'The Elder Scrolls Online (NA)',
-            rawStatus: 'DOWN',
-            slugs: ['server_pc_na'],
-            sources: [
-              'https://live-services.elderscrollsonline.com/status/realms',
-            ],
-            support: 'pc',
-            zone: 'na',
-            status: 'down',
-          },
-          slug: 'server_pc_na',
-          type: 'server',
-          support: 'pc',
-          zone: 'na',
-          status: 'down',
+        it('should prepareUpdate method called', (): void => {
+          expect(prepareUpdate).toHaveBeenCalledTimes(34);
         });
-      }, 15000);
 
-      it('should queue methods called', (): void => {
-        expect(updateQueue).toHaveBeenCalledTimes(2);
-        expect(getQueue).toHaveBeenCalledTimes(3); // +1 cause of test call
-        expect(setQueue).toHaveBeenCalledTimes(2);
+        it('should getService method called', (): void => {
+          expect(getService).toHaveBeenCalledTimes(34);
+        });
+
+        it('should getArchive method called', (): void => {
+          expect(getArchive).toHaveBeenCalledTimes(34);
+        });
+
+        it('should archiveChanged method called and works', (): void => {
+          expect(archiveChanged).toHaveBeenCalledTimes(34);
+          expect(archiveChanged).toHaveNthReturnedWith(26, false);
+          expect(archiveChanged).toHaveNthReturnedWith(27, false);
+          expect(archiveChanged).toHaveNthReturnedWith(28, false);
+          expect(archiveChanged).toHaveNthReturnedWith(29, false);
+          expect(archiveChanged).toHaveNthReturnedWith(30, false);
+          expect(archiveChanged).toHaveNthReturnedWith(31, false);
+          expect(archiveChanged).toHaveNthReturnedWith(32, false);
+          expect(archiveChanged).toHaveNthReturnedWith(33, false);
+          expect(archiveChanged).toHaveNthReturnedWith(34, false);
+        });
+
+        it('should getStatus method not called', (): void => {
+          expect(getStatus).toHaveBeenCalledTimes(2);
+        });
       });
     });
-    describe('handle doQueue 1', (): void => {
-      it('should queue has expected', (): void => {
-        expectQueue = [
-          {
-            raw: {
-              sources: [
-                'https://live-services.elderscrollsonline.com/status/realms',
-              ],
-              raw: ['The Elder Scrolls Online (EU)', 'DOWN'],
-              rawSlug: 'The Elder Scrolls Online (EU)',
-              rawStatus: 'DOWN',
-              slugs: ['server_pc_eu'],
-              support: 'pc',
-              zone: 'eu',
-              status: 'down',
-            },
-            slug: 'server_pc_eu',
-            type: 'server',
-            support: 'pc',
-            zone: 'eu',
-            status: 'down',
-          },
-          {
-            raw: {
-              sources: [
-                'https://live-services.elderscrollsonline.com/status/realms',
-              ],
-              raw: ['The Elder Scrolls Online (NA)', 'DOWN'],
-              rawSlug: 'The Elder Scrolls Online (NA)',
-              rawStatus: 'DOWN',
-              slugs: ['server_pc_na'],
-              support: 'pc',
-              zone: 'na',
-              status: 'down',
-            },
-            slug: 'server_pc_na',
-            type: 'server',
-            support: 'pc',
-            zone: 'na',
-            status: 'down',
-          },
-        ];
 
-        expect(scrapingService.queueService.getQueue()).toStrictEqual(
-          expectQueue,
-        );
+    describe('ForumMessage still planned', (): void => {
+      describe('handle handleLiveServices 3 (up)', (): void => {
+        it('should doHandle method called', async (): Promise<void> => {
+          await scrapingService.handleLiveServices();
+
+          updateDate = new Date();
+          updateDate.setMilliseconds(0);
+
+          expect(doHandle).toHaveBeenCalledTimes(7);
+        }, 15000);
+
+        it('should formatData method called and works correctly', (): void => {
+          expect(formatData).toHaveBeenCalledTimes(7);
+          expect(formatData).toHaveNthReturnedWith(
+            7,
+            LiveServicesInitialFormated,
+          );
+        });
+
+        it('should prepareUpdate method called', (): void => {
+          expect(prepareUpdate).toHaveBeenCalledTimes(41);
+        });
+
+        it('should getService method called', (): void => {
+          expect(getService).toHaveBeenCalledTimes(41);
+        });
+
+        it('should getArchive method called', (): void => {
+          expect(getArchive).toHaveBeenCalledTimes(41);
+        });
+
+        it('should archiveChanged method called and works', (): void => {
+          expect(archiveChanged).toHaveBeenCalledTimes(41);
+          expect(archiveChanged).toHaveNthReturnedWith(35, false);
+          expect(archiveChanged).toHaveNthReturnedWith(36, false);
+          expect(archiveChanged).toHaveNthReturnedWith(37, false);
+          expect(archiveChanged).toHaveNthReturnedWith(38, false);
+          expect(archiveChanged).toHaveNthReturnedWith(39, false);
+          expect(archiveChanged).toHaveNthReturnedWith(40, false);
+          expect(archiveChanged).toHaveNthReturnedWith(41, false);
+        });
+
+        it('should getStatus method not called', (): void => {
+          expect(getStatus).toHaveBeenCalledTimes(2);
+        });
       });
 
-      it('should queueService event send and received by client with correct data', async (): Promise<void> => {
-        await new Promise<void>((resolve): void => {
-          clientSocket.on('statusUpdate', (data: EsoStatus[]): void => {
-            expect(data).toEqual(expectQueue);
-            resolve();
+      describe('handle handleForumMessage 3 (planned)', (): void => {
+        it('should doHandle method called', async (): Promise<void> => {
+          await scrapingService.handleForumMessage();
+
+          updateDate = new Date();
+          updateDate.setMilliseconds(0);
+
+          expect(doHandle).toHaveBeenCalledTimes(8);
+        }, 15000);
+
+        it('should formatData method called and works correctly', (): void => {
+          expect(formatData).toHaveBeenCalledTimes(8);
+          expect(formatData).toHaveNthReturnedWith(
+            8,
+            ForumMessagePlannedFormatted,
+          );
+        });
+
+        it('should prepareUpdate method called', (): void => {
+          expect(prepareUpdate).toHaveBeenCalledTimes(43);
+        });
+
+        it('should getService method called', (): void => {
+          expect(getService).toHaveBeenCalledTimes(43);
+        });
+
+        it('should getArchive method called', (): void => {
+          expect(getArchive).toHaveBeenCalledTimes(43);
+        });
+
+        it('should archiveChanged method called and works', (): void => {
+          expect(archiveChanged).toHaveBeenCalledTimes(43);
+          expect(archiveChanged).toHaveNthReturnedWith(42, false);
+          expect(archiveChanged).toHaveNthReturnedWith(43, false);
+        });
+
+        it('should getStatus method not called', (): void => {
+          expect(getStatus).toHaveBeenCalledTimes(2);
+        });
+      });
+
+      describe('handle handleServiceAlerts 3 (up)', (): void => {
+        it('should doHandle method called', async (): Promise<void> => {
+          await scrapingService.handleServiceAlerts();
+
+          updateDate = new Date();
+          updateDate.setMilliseconds(0);
+
+          expect(doHandle).toHaveBeenCalledTimes(9);
+        }, 15000);
+
+        it('should formatData method called and works correctly', (): void => {
+          expect(formatData).toHaveBeenCalledTimes(9);
+          expect(formatData).toHaveNthReturnedWith(
+            9,
+            ServiceAlertsInitialFormatted,
+          );
+        });
+
+        it('should prepareUpdate method called', (): void => {
+          expect(prepareUpdate).toHaveBeenCalledTimes(52);
+        });
+
+        it('should getService method called', (): void => {
+          expect(getService).toHaveBeenCalledTimes(52);
+        });
+
+        it('should getArchive method called', (): void => {
+          expect(getArchive).toHaveBeenCalledTimes(52);
+        });
+
+        it('should archiveChanged method called and works', (): void => {
+          expect(archiveChanged).toHaveBeenCalledTimes(52);
+          expect(archiveChanged).toHaveNthReturnedWith(44, false);
+          expect(archiveChanged).toHaveNthReturnedWith(45, false);
+          expect(archiveChanged).toHaveNthReturnedWith(46, false);
+          expect(archiveChanged).toHaveNthReturnedWith(47, false);
+          expect(archiveChanged).toHaveNthReturnedWith(48, false);
+          expect(archiveChanged).toHaveNthReturnedWith(49, false);
+          expect(archiveChanged).toHaveNthReturnedWith(50, false);
+          expect(archiveChanged).toHaveNthReturnedWith(51, false);
+          expect(archiveChanged).toHaveNthReturnedWith(52, false);
+        });
+
+        it('should getStatus method not called', (): void => {
+          expect(getStatus).toHaveBeenCalledTimes(2);
+        });
+      });
+    });
+
+    describe('LiveServices new data => PC EU/NA down', (): void => {
+      describe('handle handleLiveServices 4 (down)', (): void => {
+        it('should doHandle method called', async (): Promise<void> => {
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises,no-async-promise-executor
+          await new Promise<void>(async (resolve): Promise<void> => {
+            jest
+              .spyOn(LiveServices, 'getData')
+              .mockImplementation(async (): Promise<RawEsoStatus[]> => {
+                return Promise.resolve(LiveServicesDown);
+              });
+
+            let haveStatusUpdateEu: boolean = false;
+            let haveStatusUpdateNa: boolean = false;
+
+            let haveMaintenanceRemovedEu: boolean = false;
+            let haveMaintenanceRemovedNa: boolean = false;
+
+            let statusUpdateDone: boolean = false;
+            let maintenanceRemovedDone: boolean = false;
+
+            clientSocket.on(
+              'statusUpdate',
+              (data: MaintenanceEsoStatus): void => {
+                if (
+                  !haveStatusUpdateEu &&
+                  JSON.stringify(data) ===
+                    JSON.stringify(LiveServicesPcEuDownEsoStatus)
+                ) {
+                  haveStatusUpdateEu = true;
+                }
+                if (
+                  !haveStatusUpdateNa &&
+                  JSON.stringify(data) ===
+                    JSON.stringify(LiveServicesPcNaDownEsoStatus)
+                ) {
+                  haveStatusUpdateNa = true;
+                }
+                if (haveStatusUpdateEu && haveStatusUpdateNa) {
+                  statusUpdateDone = true;
+
+                  if (statusUpdateDone && maintenanceRemovedDone) {
+                    resolve();
+                  }
+                }
+              },
+            );
+
+            clientSocket.on('maintenanceRemoved', (data: Slug): void => {
+              if (!haveMaintenanceRemovedEu && data === 'server_pc_eu') {
+                haveMaintenanceRemovedEu = true;
+              }
+
+              if (!haveMaintenanceRemovedNa && data === 'server_pc_na') {
+                haveMaintenanceRemovedNa = true;
+              }
+
+              if (haveMaintenanceRemovedEu && haveMaintenanceRemovedNa) {
+                maintenanceRemovedDone = true;
+
+                if (statusUpdateDone && maintenanceRemovedDone) {
+                  resolve();
+                }
+              }
+            });
+
+            await scrapingService.handleLiveServices();
+
+            updateDate = new Date();
+            updateDate.setMilliseconds(0);
+
+            expect(doHandle).toHaveBeenCalledTimes(10);
           });
+        }, 15000);
 
-          scrapingService.doQueue();
+        it('should formatData method called and works correctly', (): void => {
+          expect(formatData).toHaveBeenCalledTimes(10);
+          expect(formatData).toHaveNthReturnedWith(
+            10,
+            LiveServicesDownFormated,
+          );
         });
-      }, 15000);
 
-      it('should pushQueue method called', (): void => {
-        expect(pushQueue).toHaveBeenCalledTimes(1);
-      });
-
-      it('should isQueueEmpty method called and works', (): void => {
-        expect(isQueueEmpty).toHaveBeenCalledTimes(1);
-        expect(isQueueEmpty).toHaveNthReturnedWith(1, false);
-        expect(getQueue).toHaveBeenCalledTimes(7); // +1 cause of test call
-      });
-
-      it('should emptyQueue method called and works', (): void => {
-        expect(emptyQueue).toHaveBeenCalledTimes(1);
-        expect(setQueue).toHaveBeenCalledTimes(3);
-        expect(scrapingService.queueService.getQueue()).toStrictEqual([]);
-        expect(getQueue).toHaveBeenCalledTimes(8); // +2 cause of test call
-      });
-    });
-    describe('handle forum message (up late)', (): void => {
-      it('handle', async (): Promise<void> => {
-        jest
-          .spyOn(ForumMessage, 'getData')
-          .mockImplementation(async (): Promise<RawEsoStatus[]> => {
-            return Promise.resolve(forumMessageUpLate);
-          });
-
-        await scrapingService.handleForumMessage();
-
-        updateDate = new Date();
-        updateDate.setMilliseconds(0);
-
-        expect(true).toEqual(true);
-      }, 15000);
-
-      it('should doHandle method called', (): void => {
-        expect(doHandle).toHaveBeenCalledTimes(2);
-      });
-
-      it('should formatData method called and works correctly', (): void => {
-        expect(formatData).toHaveBeenCalledTimes(2);
-        expect(formatData).toHaveNthReturnedWith(2, <EsoStatus[]>[
-          {
-            raw: {
-              sources: [
-                'https://forums.elderscrollsonline.com/en/categories/pts',
-              ],
-              raw: [
-                '• PC/Mac: NA and EU megaservers for patch maintenance – July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
-              ],
-              rawDate:
-                'July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
-              dates: [
-                moment()
-                  .utc()
-                  .set('years', 2023)
-                  .set('months', 7)
-                  .set('date', 26)
-                  .set('hours', 8)
-                  .set('minutes', 0)
-                  .set('seconds', 0)
-                  .set('milliseconds', 0)
-                  .utcOffset(0),
-                moment()
-                  .utc()
-                  .set('years', 2023)
-                  .set('months', 7)
-                  .set('date', 26)
-                  .set('hours', 12)
-                  .set('minutes', 0)
-                  .set('seconds', 0)
-                  .set('milliseconds', 0)
-                  .utcOffset(0),
-              ],
-              slugs: ['server_pc_eu'],
-              type: 'server',
-              support: 'pc',
-              zone: 'eu',
-              status: 'planned',
-            },
-            slug: 'server_pc_eu',
-            type: 'server',
-            support: 'pc',
-            zone: 'eu',
-            status: 'planned',
-          },
-          {
-            raw: {
-              sources: [
-                'https://forums.elderscrollsonline.com/en/categories/pts',
-              ],
-              raw: [
-                '• PC/Mac: NA and EU megaservers for patch maintenance – July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
-              ],
-              rawDate:
-                'July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
-              dates: [
-                moment()
-                  .utc()
-                  .set('years', 2023)
-                  .set('months', 7)
-                  .set('date', 26)
-                  .set('hours', 8)
-                  .set('minutes', 0)
-                  .set('seconds', 0)
-                  .set('milliseconds', 0)
-                  .utcOffset(0),
-                moment()
-                  .utc()
-                  .set('years', 2023)
-                  .set('months', 7)
-                  .set('date', 26)
-                  .set('hours', 12)
-                  .set('minutes', 0)
-                  .set('seconds', 0)
-                  .set('milliseconds', 0)
-                  .utcOffset(0),
-              ],
-              slugs: ['server_pc_na'],
-              type: 'server',
-              support: 'pc',
-              zone: 'na',
-              status: 'planned',
-            },
-            slug: 'server_pc_na',
-            type: 'server',
-            support: 'pc',
-            zone: 'na',
-            status: 'planned',
-          },
-        ]);
-      });
-
-      it('should update method called', (): void => {
-        expect(update).toHaveBeenCalledTimes(4);
-      });
-
-      it('should isPlannedStatus method called and works', (): void => {
-        expect(isPlannedStatus).toHaveBeenCalledTimes(4);
-        expect(isPlannedStatus).toHaveNthReturnedWith(3, true);
-        expect(isPlannedStatus).toHaveNthReturnedWith(4, true);
-      });
-
-      it('should getService method not called', (): void => {
-        expect(getService).toHaveBeenCalledTimes(2);
-      });
-    });
-    describe('handle doQueue 2', (): void => {
-      it('should queue has expected', (): void => {
-        expectQueue = [];
-
-        expect(scrapingService.queueService.getQueue()).toStrictEqual(
-          expectQueue,
-        );
-      });
-
-      it('should pushQueue method called', (): void => {
-        scrapingService.doQueue();
-        expect(pushQueue).toHaveBeenCalledTimes(2);
-      });
-
-      it('should isQueueEmpty method called and works', (): void => {
-        expect(isQueueEmpty).toHaveBeenCalledTimes(2);
-        expect(isQueueEmpty).toHaveNthReturnedWith(2, true);
-        expect(getQueue).toHaveBeenCalledTimes(10); // +3 cause of test call
-      });
-    });
-    describe('handle service alerts (up late) 1', (): void => {
-      it('handle', async (): Promise<void> => {
-        jest
-          .spyOn(ServiceAlerts, 'getData')
-          .mockImplementation(async (): Promise<RawEsoStatus[]> => {
-            return Promise.resolve(serviceAlertsUpLate);
-          });
-
-        await scrapingService.handleServiceAlerts();
-
-        updateDate = new Date();
-        updateDate.setMilliseconds(0);
-
-        expect(true).toEqual(true);
-      }, 15000);
-
-      it('should doHandle method called', (): void => {
-        expect(doHandle).toHaveBeenCalledTimes(3);
-      });
-
-      it('should formatData method called and works correctly', (): void => {
-        expect(formatData).toHaveBeenCalledTimes(3);
-        expect(formatData).toHaveNthReturnedWith(3, <EsoStatus[]>[
-          {
-            raw: {
-              sources: [
-                'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
-              ],
-              raw: [
-                ' />\n  \n<p>2024.07.19 - 12:15 UTC (08:15 EDT)</p>\n<p>The North American PC/Mac megaserver is currently available.</p>\n<p>The European PC/Mac megaserver is currently available.</p>\n',
-              ],
-              rawData: 'The European PC/Mac megaserver is currently available.',
-              rawDate: ' />  2024.07.19 - 12:15 UTC (08:15 EDT)',
-              dates: [
-                moment()
-                  .utc()
-                  .set('years', 2024)
-                  .set('months', 7)
-                  .set('date', 19)
-                  .set('hours', 12)
-                  .set('minutes', 15)
-                  .set('seconds', 0)
-                  .set('milliseconds', 0)
-                  .utcOffset(0),
-              ],
-              slugs: ['server_pc_eu'],
-              type: 'server',
-              support: 'pc',
-              zone: 'eu',
-              status: 'up',
-            },
-            slug: 'server_pc_eu',
-            type: 'server',
-            support: 'pc',
-            zone: 'eu',
-            status: 'up',
-          },
-          {
-            raw: {
-              sources: [
-                'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
-              ],
-              raw: [
-                ' />\n  \n<p>2024.07.19 - 12:15 UTC (08:15 EDT)</p>\n<p>The North American PC/Mac megaserver is currently available.</p>\n<p>The European PC/Mac megaserver is currently available.</p>\n',
-              ],
-              rawData:
-                'The North American PC/Mac megaserver is currently available.',
-              rawDate: ' />  2024.07.19 - 12:15 UTC (08:15 EDT)',
-              dates: [
-                moment()
-                  .utc()
-                  .set('years', 2024)
-                  .set('months', 7)
-                  .set('date', 19)
-                  .set('hours', 12)
-                  .set('minutes', 15)
-                  .set('seconds', 0)
-                  .set('milliseconds', 0)
-                  .utcOffset(0),
-              ],
-              slugs: ['server_pc_na'],
-              type: 'server',
-              support: 'pc',
-              zone: 'na',
-              status: 'up',
-            },
-            slug: 'server_pc_na',
-            type: 'server',
-            support: 'pc',
-            zone: 'na',
-            status: 'up',
-          },
-        ]);
-      });
-
-      it('should update method called', (): void => {
-        expect(update).toHaveBeenCalledTimes(6);
-      });
-
-      it('should isPlannedStatus method called and works', (): void => {
-        expect(isPlannedStatus).toHaveBeenCalledTimes(6);
-        expect(isPlannedStatus).toHaveNthReturnedWith(5, false);
-        expect(isPlannedStatus).toHaveNthReturnedWith(6, false);
-      });
-
-      it('should getService method called', (): void => {
-        expect(getService).toHaveBeenCalledTimes(4);
-      });
-
-      it('should getArchive method called', (): void => {
-        expect(getArchive).toHaveBeenCalledTimes(4);
-      });
-
-      it('should archiveChanged method called and works', (): void => {
-        expect(archiveChanged).toHaveBeenCalledTimes(4);
-        expect(archiveChanged).toHaveNthReturnedWith(3, false);
-        expect(archiveChanged).toHaveNthReturnedWith(4, false);
-      });
-
-      it('should getStatus method not called', (): void => {
-        expect(getStatus).toHaveBeenCalledTimes(2);
-      });
-    });
-    describe('handle doQueue 3', (): void => {
-      it('should queue has expected', (): void => {
-        expectQueue = [];
-
-        expect(scrapingService.queueService.getQueue()).toStrictEqual(
-          expectQueue,
-        );
-      });
-
-      it('should pushQueue method called', (): void => {
-        scrapingService.doQueue();
-        expect(pushQueue).toHaveBeenCalledTimes(3);
-      });
-
-      it('should isQueueEmpty method called and works', (): void => {
-        expect(isQueueEmpty).toHaveBeenCalledTimes(3);
-        expect(isQueueEmpty).toHaveNthReturnedWith(3, true);
-        expect(getQueue).toHaveBeenCalledTimes(12); // +4 cause of test call
-      });
-    });
-
-    describe('handle live service (down) 2', (): void => {
-      it('handle', async (): Promise<void> => {
-        await scrapingService.handleLiveServices();
-
-        updateDate = new Date();
-        updateDate.setMilliseconds(0);
-
-        expect(true).toEqual(true);
-      }, 15000);
-
-      it('should doHandle method called', (): void => {
-        expect(doHandle).toHaveBeenCalledTimes(4);
-      });
-
-      it('should formatData method called and works correctly', (): void => {
-        expect(formatData).toHaveBeenCalledTimes(4);
-        expect(formatData).toHaveNthReturnedWith(4, <EsoStatus[]>[
-          {
-            raw: {
-              sources: [
-                'https://live-services.elderscrollsonline.com/status/realms',
-              ],
-              raw: ['The Elder Scrolls Online (EU)', 'DOWN'],
-              rawSlug: 'The Elder Scrolls Online (EU)',
-              rawStatus: 'DOWN',
-              slugs: ['server_pc_eu'],
-              support: 'pc',
-              zone: 'eu',
-              status: 'down',
-            },
-            slug: 'server_pc_eu',
-            type: 'server',
-            support: 'pc',
-            zone: 'eu',
-            status: 'down',
-          },
-          {
-            raw: {
-              sources: [
-                'https://live-services.elderscrollsonline.com/status/realms',
-              ],
-              raw: ['The Elder Scrolls Online (NA)', 'DOWN'],
-              rawSlug: 'The Elder Scrolls Online (NA)',
-              rawStatus: 'DOWN',
-              slugs: ['server_pc_na'],
-              support: 'pc',
-              zone: 'na',
-              status: 'down',
-            },
-            slug: 'server_pc_na',
-            type: 'server',
-            support: 'pc',
-            zone: 'na',
-            status: 'down',
-          },
-        ]);
-      });
-
-      it('should update method called', (): void => {
-        expect(update).toHaveBeenCalledTimes(8);
-      });
-
-      it('should isPlannedStatus method called and works', (): void => {
-        expect(isPlannedStatus).toHaveBeenCalledTimes(8);
-        expect(isPlannedStatus).toHaveNthReturnedWith(7, false);
-        expect(isPlannedStatus).toHaveNthReturnedWith(8, false);
-      });
-
-      it('should getService method called', (): void => {
-        expect(getService).toHaveBeenCalledTimes(6);
-      });
-
-      it('should getArchive method called', (): void => {
-        expect(getArchive).toHaveBeenCalledTimes(6);
-      });
-
-      it('should archiveChanged method called and works', (): void => {
-        expect(archiveChanged).toHaveBeenCalledTimes(6);
-        expect(archiveChanged).toHaveNthReturnedWith(5, false);
-        expect(archiveChanged).toHaveNthReturnedWith(6, false);
-      });
-
-      it('should getStatus method not called', (): void => {
-        expect(getStatus).toHaveBeenCalledTimes(2);
-      });
-    });
-    describe('handle doQueue 4', (): void => {
-      it('should queue has expected', (): void => {
-        expectQueue = [];
-
-        expect(scrapingService.queueService.getQueue()).toStrictEqual(
-          expectQueue,
-        );
-      });
-
-      it('should pushQueue method called', (): void => {
-        scrapingService.doQueue();
-        expect(pushQueue).toHaveBeenCalledTimes(4);
-      });
-
-      it('should isQueueEmpty method called and works', (): void => {
-        expect(isQueueEmpty).toHaveBeenCalledTimes(4);
-        expect(isQueueEmpty).toHaveNthReturnedWith(4, true);
-        expect(getQueue).toHaveBeenCalledTimes(14); // +5 cause of test call
-      });
-    });
-    describe('handle forum message (down) 1', (): void => {
-      it('handle', async (): Promise<void> => {
-        jest
-          .spyOn(ForumMessage, 'getData')
-          .mockImplementation(async (): Promise<RawEsoStatus[]> => {
-            return Promise.resolve(forumMessageDown);
-          });
-
-        await scrapingService.handleForumMessage();
-
-        updateDate = new Date();
-        updateDate.setMilliseconds(0);
-
-        expect(true).toEqual(true);
-      }, 15000);
-
-      it('should doHandle method called', (): void => {
-        expect(doHandle).toHaveBeenCalledTimes(5);
-      });
-
-      it('should formatData method called and works correctly', (): void => {
-        expect(formatData).toHaveBeenCalledTimes(5);
-        expect(formatData).toHaveNthReturnedWith(5, <EsoStatus[]>[
-          {
-            raw: {
-              sources: [
-                'https://forums.elderscrollsonline.com/en/categories/pts',
-              ],
-              raw: [
-                '• [IN PROGRESS] PC/Mac: NA and EU megaservers for patch maintenance – July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
-              ],
-              rawDate:
-                'July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
-              dates: [
-                moment()
-                  .utc()
-                  .set('years', 2023)
-                  .set('months', 7)
-                  .set('date', 26)
-                  .set('hours', 8)
-                  .set('minutes', 0)
-                  .set('seconds', 0)
-                  .set('milliseconds', 0)
-                  .utcOffset(0),
-                moment()
-                  .utc()
-                  .set('years', 2023)
-                  .set('months', 7)
-                  .set('date', 26)
-                  .set('hours', 12)
-                  .set('minutes', 0)
-                  .set('seconds', 0)
-                  .set('milliseconds', 0)
-                  .utcOffset(0),
-              ],
-              slugs: ['server_pc_eu'],
-              type: 'server',
-              support: 'pc',
-              zone: 'eu',
-              status: 'down',
-            },
-            slug: 'server_pc_eu',
-            type: 'server',
-            support: 'pc',
-            zone: 'eu',
-            status: 'down',
-          },
-          {
-            raw: {
-              sources: [
-                'https://forums.elderscrollsonline.com/en/categories/pts',
-              ],
-              raw: [
-                '• [IN PROGRESS] PC/Mac: NA and EU megaservers for patch maintenance – July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
-              ],
-              rawDate:
-                'July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
-              dates: [
-                moment()
-                  .utc()
-                  .set('years', 2023)
-                  .set('months', 7)
-                  .set('date', 26)
-                  .set('hours', 8)
-                  .set('minutes', 0)
-                  .set('seconds', 0)
-                  .set('milliseconds', 0)
-                  .utcOffset(0),
-                moment()
-                  .utc()
-                  .set('years', 2023)
-                  .set('months', 7)
-                  .set('date', 26)
-                  .set('hours', 12)
-                  .set('minutes', 0)
-                  .set('seconds', 0)
-                  .set('milliseconds', 0)
-                  .utcOffset(0),
-              ],
-              slugs: ['server_pc_na'],
-              type: 'server',
-              support: 'pc',
-              zone: 'na',
-              status: 'down',
-            },
-            slug: 'server_pc_na',
-            type: 'server',
-            support: 'pc',
-            zone: 'na',
-            status: 'down',
-          },
-        ]);
-      });
-
-      it('should update method called', (): void => {
-        expect(update).toHaveBeenCalledTimes(10);
-      });
-
-      it('should isPlannedStatus method called and works', (): void => {
-        expect(isPlannedStatus).toHaveBeenCalledTimes(10);
-        expect(isPlannedStatus).toHaveNthReturnedWith(9, false);
-        expect(isPlannedStatus).toHaveNthReturnedWith(10, false);
-      });
-
-      it('should getService method called', (): void => {
-        expect(getService).toHaveBeenCalledTimes(8);
-      });
-
-      it('should getArchive method called', (): void => {
-        expect(getArchive).toHaveBeenCalledTimes(8);
-      });
-
-      it('should archiveChanged method called and works', (): void => {
-        expect(archiveChanged).toHaveBeenCalledTimes(8);
-        expect(archiveChanged).toHaveNthReturnedWith(7, true);
-        expect(archiveChanged).toHaveNthReturnedWith(8, true);
-      });
-
-      it('should getStatus method called and works', (): void => {
-        expect(getStatus).toHaveBeenCalledTimes(4);
-      });
-
-      it('should updateArchive method called and works', async (): Promise<void> => {
-        expect(updateArchive).toHaveBeenCalledTimes(4);
-        pcEuForumMessageArchive = await archiveRepository.findOne({
-          where: {
-            serviceId: 6,
-            connector: 'ForumMessage',
-          },
+        it('should prepareUpdate method called', (): void => {
+          expect(prepareUpdate).toHaveBeenCalledTimes(59);
         });
-        expect(pcEuForumMessageArchive.rawData).toEqual(
-          JSON.stringify(<RawEsoStatus>{
-            sources: [
-              'https://forums.elderscrollsonline.com/en/categories/pts',
-            ],
-            raw: [
-              '• [IN PROGRESS] PC/Mac: NA and EU megaservers for patch maintenance – July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
-            ],
-            rawDate: 'July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
-            dates: [
-              moment()
-                .utc()
-                .set('years', 2023)
-                .set('months', 7)
-                .set('date', 26)
-                .set('hours', 8)
-                .set('minutes', 0)
-                .set('seconds', 0)
-                .set('milliseconds', 0)
-                .utcOffset(0),
-              moment()
-                .utc()
-                .set('years', 2023)
-                .set('months', 7)
-                .set('date', 26)
-                .set('hours', 12)
-                .set('minutes', 0)
-                .set('seconds', 0)
-                .set('milliseconds', 0)
-                .utcOffset(0),
-            ],
-            slugs: ['server_pc_eu'],
-            type: 'server',
-            support: 'pc',
-            zone: 'eu',
-            status: 'down',
-          }),
-        );
-        expect(pcEuForumMessageArchive.updatedAt).toStrictEqual(updateDate);
-        expect(pcEuForumMessageArchive.statusId).toEqual(2);
 
-        pcNaForumMessageArchive = await archiveRepository.findOne({
-          where: {
-            serviceId: 5,
-            connector: 'ForumMessage',
-          },
+        it('should getService method called', (): void => {
+          expect(getService).toHaveBeenCalledTimes(59);
         });
-        expect(pcNaForumMessageArchive.rawData).toEqual(
-          JSON.stringify(<RawEsoStatus>{
-            sources: [
-              'https://forums.elderscrollsonline.com/en/categories/pts',
-            ],
-            raw: [
-              '• [IN PROGRESS] PC/Mac: NA and EU megaservers for patch maintenance – July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
-            ],
-            rawDate: 'July 26, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
-            dates: [
-              moment()
-                .utc()
-                .set('years', 2023)
-                .set('months', 7)
-                .set('date', 26)
-                .set('hours', 8)
-                .set('minutes', 0)
-                .set('seconds', 0)
-                .set('milliseconds', 0)
-                .utcOffset(0),
-              moment()
-                .utc()
-                .set('years', 2023)
-                .set('months', 7)
-                .set('date', 26)
-                .set('hours', 12)
-                .set('minutes', 0)
-                .set('seconds', 0)
-                .set('milliseconds', 0)
-                .utcOffset(0),
-            ],
-            slugs: ['server_pc_na'],
-            type: 'server',
-            support: 'pc',
-            zone: 'na',
-            status: 'down',
-          }),
-        );
-        expect(pcNaForumMessageArchive.updatedAt).toStrictEqual(updateDate);
-        expect(pcNaForumMessageArchive.statusId).toEqual(2);
-      }, 15000);
 
-      it('should slugChanged method called and works', (): void => {
-        expect(slugChanged).toHaveBeenCalledTimes(4);
-        expect(slugChanged).toHaveNthReturnedWith(3, false);
-        expect(slugChanged).toHaveNthReturnedWith(4, false);
-      });
+        it('should getArchive method called', (): void => {
+          expect(getArchive).toHaveBeenCalledTimes(59);
+        });
 
-      it('should updateService method not called', (): void => {
-        expect(updateService).toHaveBeenCalledTimes(2);
-      }, 15000);
-    });
-    describe('handle doQueue 5', (): void => {
-      it('should queue has expected', (): void => {
-        expectQueue = [];
+        it('should archiveChanged method called and works', (): void => {
+          expect(archiveChanged).toHaveBeenCalledTimes(59); // TODO check les resultat
+          // expect(archiveChanged).toHaveNthReturnedWith(53, true);
+          // expect(archiveChanged).toHaveNthReturnedWith(54, true);
+          // expect(archiveChanged).toHaveNthReturnedWith(55, false);
+          // expect(archiveChanged).toHaveNthReturnedWith(56, false);
+          // expect(archiveChanged).toHaveNthReturnedWith(57, false);
+          // expect(archiveChanged).toHaveNthReturnedWith(58, false);
+          // expect(archiveChanged).toHaveNthReturnedWith(59, false);
+        });
 
-        expect(scrapingService.queueService.getQueue()).toStrictEqual(
-          expectQueue,
-        );
-      });
+        it('should getStatus method called and works', (): void => {
+          expect(getStatus).toHaveBeenCalledTimes(4);
+        });
 
-      it('should pushQueue method called', (): void => {
-        scrapingService.doQueue();
-        expect(pushQueue).toHaveBeenCalledTimes(5);
-      });
+        it('should updateArchive method called', (): void => {
+          expect(updateArchive).toHaveBeenCalledTimes(4);
+        });
 
-      it('should isQueueEmpty method called and works', (): void => {
-        expect(isQueueEmpty).toHaveBeenCalledTimes(5);
-        expect(isQueueEmpty).toHaveNthReturnedWith(5, true);
-        expect(getQueue).toHaveBeenCalledTimes(16); // +6 cause of test call
-      });
-    });
-    describe('handle service alerts (up late) 2', (): void => {
-      it('handle', async (): Promise<void> => {
-        await scrapingService.handleServiceAlerts();
-
-        updateDate = new Date();
-        updateDate.setMilliseconds(0);
-
-        expect(true).toEqual(true);
-      }, 15000);
-
-      it('should doHandle method called', (): void => {
-        expect(doHandle).toHaveBeenCalledTimes(6);
-      });
-
-      it('should formatData method called and works correctly', (): void => {
-        expect(formatData).toHaveBeenCalledTimes(6);
-        expect(formatData).toHaveNthReturnedWith(6, <EsoStatus[]>[
-          {
-            raw: {
-              sources: [
-                'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
-              ],
-              raw: [
-                ' />\n  \n<p>2024.07.19 - 12:15 UTC (08:15 EDT)</p>\n<p>The North American PC/Mac megaserver is currently available.</p>\n<p>The European PC/Mac megaserver is currently available.</p>\n',
-              ],
-              rawData: 'The European PC/Mac megaserver is currently available.',
-              rawDate: ' />  2024.07.19 - 12:15 UTC (08:15 EDT)',
-              dates: [
-                moment()
-                  .utc()
-                  .set('years', 2024)
-                  .set('months', 7)
-                  .set('date', 19)
-                  .set('hours', 12)
-                  .set('minutes', 15)
-                  .set('seconds', 0)
-                  .set('milliseconds', 0)
-                  .utcOffset(0),
-              ],
-              slugs: ['server_pc_eu'],
-              type: 'server',
-              support: 'pc',
-              zone: 'eu',
-              status: 'up',
-            },
-            slug: 'server_pc_eu',
-            type: 'server',
-            support: 'pc',
-            zone: 'eu',
-            status: 'up',
+        it.each([
+          [5, LiveServicesPcNaDownRaw],
+          [6, LiveServicesPcEuDownRaw],
+        ])(
+          'should updateArchive method works',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const archive = await getArchiveByServiceIdAndConnectorName(
+              serviceId,
+              'LiveServices',
+            );
+            expect(archive.statusId).toEqual(2);
+            expect(archive.rawData).toEqual(JSON.stringify(rawData));
           },
-          {
-            raw: {
-              sources: [
-                'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
-              ],
-              raw: [
-                ' />\n  \n<p>2024.07.19 - 12:15 UTC (08:15 EDT)</p>\n<p>The North American PC/Mac megaserver is currently available.</p>\n<p>The European PC/Mac megaserver is currently available.</p>\n',
-              ],
-              rawData:
-                'The North American PC/Mac megaserver is currently available.',
-              rawDate: ' />  2024.07.19 - 12:15 UTC (08:15 EDT)',
-              dates: [
-                moment()
-                  .utc()
-                  .set('years', 2024)
-                  .set('months', 7)
-                  .set('date', 19)
-                  .set('hours', 12)
-                  .set('minutes', 15)
-                  .set('seconds', 0)
-                  .set('milliseconds', 0)
-                  .utcOffset(0),
-              ],
-              slugs: ['server_pc_na'],
-              type: 'server',
-              support: 'pc',
-              zone: 'na',
-              status: 'up',
-            },
-            slug: 'server_pc_na',
-            type: 'server',
-            support: 'pc',
-            zone: 'na',
-            status: 'up',
+          15000,
+        );
+
+        it('should isPlannedStatus method called and works', (): void => {
+          expect(isPlannedStatus).toHaveBeenCalledTimes(4);
+          expect(isPlannedStatus).toHaveNthReturnedWith(3, false);
+          expect(isPlannedStatus).toHaveNthReturnedWith(4, false);
+        });
+
+        it('should isPlannedStatus method called', (): void => {
+          expect(updateNoMaintenance).toHaveBeenCalledTimes(2);
+        });
+
+        it('should slugChanged method called and works', (): void => {
+          expect(slugChanged).toHaveBeenCalledTimes(2);
+          expect(slugChanged).toHaveNthReturnedWith(2, true);
+          expect(slugChanged).toHaveNthReturnedWith(2, true);
+        });
+
+        it('should updateService method called', (): void => {
+          expect(updateService).toHaveBeenCalledTimes(2);
+        });
+
+        it.each([
+          [5, LiveServicesPcNaDownRaw],
+          [6, LiveServicesPcEuDownRaw],
+        ])(
+          'should updateService method works',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const servie = await getServiceById(serviceId);
+            expect(servie.statusId).toEqual(2);
+            expect(servie.rawData).toEqual(JSON.stringify(rawData));
           },
-        ]);
+          15000,
+        );
+
+        it.each([
+          ['server_pc_eu', LiveServicesPcEuDownRaw],
+          ['server_pc_na', LiveServicesPcNaDownRaw],
+        ])(
+          'should service controller return correct data',
+          async (slug: Slug, rawData: RawEsoStatus): Promise<void> => {
+            const response: EsoStatus = await serviceController.findOne(slug);
+            expect(response.status).toStrictEqual('down');
+            expect(response.raw).toStrictEqual(rawData);
+          },
+          15000,
+        );
+
+        it('should serviceHaveMaintenance method called and works', (): void => {
+          expect(serviceHaveMaintenance).toHaveBeenCalledTimes(2);
+          expect(serviceHaveMaintenance).toHaveNthReturnedWith(1, true);
+          expect(serviceHaveMaintenance).toHaveNthReturnedWith(2, true);
+        });
+
+        it('should detachMaintenanceToService method called and works', (): void => {
+          expect(detachMaintenanceToService).toHaveBeenCalledTimes(2);
+        });
       });
 
-      it('should update method called', (): void => {
-        expect(update).toHaveBeenCalledTimes(12);
+      describe('handle handleForumMessage 4 (planned)', (): void => {
+        it('should doHandle method called', async (): Promise<void> => {
+          await scrapingService.handleForumMessage();
+
+          updateDate = new Date();
+          updateDate.setMilliseconds(0);
+
+          expect(doHandle).toHaveBeenCalledTimes(11);
+        }, 15000);
+
+        it('should formatData method called and works correctly', (): void => {
+          expect(formatData).toHaveBeenCalledTimes(11);
+          expect(formatData).toHaveNthReturnedWith(
+            11,
+            ForumMessagePlannedFormatted,
+          );
+        });
+
+        it('should prepareUpdate method called', (): void => {
+          expect(prepareUpdate).toHaveBeenCalledTimes(61);
+        });
+
+        it('should getService method called', (): void => {
+          expect(getService).toHaveBeenCalledTimes(61);
+        });
+
+        it('should getArchive method called', (): void => {
+          expect(getArchive).toHaveBeenCalledTimes(61);
+        });
+
+        it('should archiveChanged method called and works', (): void => {
+          expect(archiveChanged).toHaveBeenCalledTimes(61);
+          expect(archiveChanged).toHaveNthReturnedWith(60, false);
+          expect(archiveChanged).toHaveNthReturnedWith(61, false);
+        });
+
+        it('should getStatus method not called', (): void => {
+          expect(getStatus).toHaveBeenCalledTimes(4);
+        });
       });
 
-      it('should isPlannedStatus method called and works', (): void => {
-        expect(isPlannedStatus).toHaveBeenCalledTimes(12);
-        expect(isPlannedStatus).toHaveNthReturnedWith(11, false);
-        expect(isPlannedStatus).toHaveNthReturnedWith(12, false);
-      });
+      describe('handle handleServiceAlerts 4 (up)', (): void => {
+        it('should doHandle method called', async (): Promise<void> => {
+          await scrapingService.handleServiceAlerts();
 
-      it('should getService method called', (): void => {
-        expect(getService).toHaveBeenCalledTimes(10);
-      });
+          updateDate = new Date();
+          updateDate.setMilliseconds(0);
 
-      it('should getArchive method called', (): void => {
-        expect(getArchive).toHaveBeenCalledTimes(10);
-      });
+          expect(doHandle).toHaveBeenCalledTimes(12);
+        }, 15000);
 
-      it('should archiveChanged method called and works', (): void => {
-        expect(archiveChanged).toHaveBeenCalledTimes(10);
-        expect(archiveChanged).toHaveNthReturnedWith(9, false);
-        expect(archiveChanged).toHaveNthReturnedWith(10, false);
-      });
+        it('should formatData method called and works correctly', (): void => {
+          expect(formatData).toHaveBeenCalledTimes(12);
+          expect(formatData).toHaveNthReturnedWith(
+            12,
+            ServiceAlertsInitialFormatted,
+          );
+        });
 
-      it('should getStatus method not called', (): void => {
-        expect(getStatus).toHaveBeenCalledTimes(4);
+        it('should prepareUpdate method called', (): void => {
+          expect(prepareUpdate).toHaveBeenCalledTimes(70);
+        });
+
+        it('should getService method called', (): void => {
+          expect(getService).toHaveBeenCalledTimes(70);
+        });
+
+        it('should getArchive method called', (): void => {
+          expect(getArchive).toHaveBeenCalledTimes(70);
+        });
+
+        it('should archiveChanged method called and works', (): void => {
+          expect(archiveChanged).toHaveBeenCalledTimes(70);
+          expect(archiveChanged).toHaveNthReturnedWith(61, false);
+          expect(archiveChanged).toHaveNthReturnedWith(62, false);
+          expect(archiveChanged).toHaveNthReturnedWith(63, false);
+          expect(archiveChanged).toHaveNthReturnedWith(64, false);
+          expect(archiveChanged).toHaveNthReturnedWith(65, false);
+          expect(archiveChanged).toHaveNthReturnedWith(66, false);
+          expect(archiveChanged).toHaveNthReturnedWith(67, false);
+          expect(archiveChanged).toHaveNthReturnedWith(68, false);
+          expect(archiveChanged).toHaveNthReturnedWith(69, false);
+          expect(archiveChanged).toHaveNthReturnedWith(70, false);
+        });
+
+        it('should getStatus method not called', (): void => {
+          expect(getStatus).toHaveBeenCalledTimes(4);
+        });
       });
     });
-    describe('handle doQueue 6', (): void => {
-      it('should queue has expected', (): void => {
-        expectQueue = [];
 
-        expect(scrapingService.queueService.getQueue()).toStrictEqual(
-          expectQueue,
+    describe('ForumMessage still planned / LiveServices still down', (): void => {
+      describe('handle handleLiveServices 5 (down)', (): void => {
+        it('should doHandle method called', async (): Promise<void> => {
+          await scrapingService.handleLiveServices();
+
+          updateDate = new Date();
+          updateDate.setMilliseconds(0);
+
+          expect(doHandle).toHaveBeenCalledTimes(13);
+        }, 15000);
+
+        it('should formatData method called and works correctly', (): void => {
+          expect(formatData).toHaveBeenCalledTimes(13);
+          expect(formatData).toHaveNthReturnedWith(
+            13,
+            LiveServicesDownFormated,
+          );
+        });
+
+        it('should prepareUpdate method called', (): void => {
+          expect(prepareUpdate).toHaveBeenCalledTimes(77);
+        });
+
+        it('should getService method called', (): void => {
+          expect(getService).toHaveBeenCalledTimes(77);
+        });
+
+        it('should getArchive method called', (): void => {
+          expect(getArchive).toHaveBeenCalledTimes(77);
+        });
+
+        it('should archiveChanged method called and works', (): void => {
+          expect(archiveChanged).toHaveBeenCalledTimes(77);
+          expect(archiveChanged).toHaveNthReturnedWith(71, false);
+          expect(archiveChanged).toHaveNthReturnedWith(72, false);
+          expect(archiveChanged).toHaveNthReturnedWith(73, false);
+          expect(archiveChanged).toHaveNthReturnedWith(74, false);
+          expect(archiveChanged).toHaveNthReturnedWith(75, false);
+          expect(archiveChanged).toHaveNthReturnedWith(76, false);
+          expect(archiveChanged).toHaveNthReturnedWith(77, false);
+        });
+
+        it('should getStatus method not called', (): void => {
+          expect(getStatus).toHaveBeenCalledTimes(4);
+        });
+      });
+
+      describe('handle handleForumMessage 5 (planned)', (): void => {
+        it('should doHandle method called', async (): Promise<void> => {
+          await scrapingService.handleForumMessage();
+
+          updateDate = new Date();
+          updateDate.setMilliseconds(0);
+
+          expect(doHandle).toHaveBeenCalledTimes(14);
+        }, 15000);
+
+        it('should formatData method called and works correctly', (): void => {
+          expect(formatData).toHaveBeenCalledTimes(14);
+          expect(formatData).toHaveNthReturnedWith(
+            14,
+            ForumMessagePlannedFormatted,
+          );
+        });
+
+        it('should prepareUpdate method called', (): void => {
+          expect(prepareUpdate).toHaveBeenCalledTimes(79);
+        });
+
+        it('should getService method called', (): void => {
+          expect(getService).toHaveBeenCalledTimes(79);
+        });
+
+        it('should getArchive method called', (): void => {
+          expect(getArchive).toHaveBeenCalledTimes(79);
+        });
+
+        it('should archiveChanged method called and works', (): void => {
+          expect(archiveChanged).toHaveBeenCalledTimes(79);
+          expect(archiveChanged).toHaveNthReturnedWith(79, false);
+          expect(archiveChanged).toHaveNthReturnedWith(79, false);
+        });
+
+        it('should getStatus method not called', (): void => {
+          expect(getStatus).toHaveBeenCalledTimes(4);
+        });
+      });
+
+      describe('handle handleServiceAlerts 5 (up)', (): void => {
+        it('should doHandle method called', async (): Promise<void> => {
+          await scrapingService.handleServiceAlerts();
+
+          updateDate = new Date();
+          updateDate.setMilliseconds(0);
+
+          expect(doHandle).toHaveBeenCalledTimes(15);
+        }, 15000);
+
+        it('should formatData method called and works correctly', (): void => {
+          expect(formatData).toHaveBeenCalledTimes(15);
+          expect(formatData).toHaveNthReturnedWith(
+            15,
+            ServiceAlertsInitialFormatted,
+          );
+        });
+
+        it('should prepareUpdate method called', (): void => {
+          expect(prepareUpdate).toHaveBeenCalledTimes(88);
+        });
+
+        it('should getService method called', (): void => {
+          expect(getService).toHaveBeenCalledTimes(88);
+        });
+
+        it('should getArchive method called', (): void => {
+          expect(getArchive).toHaveBeenCalledTimes(88);
+        });
+
+        it('should archiveChanged method called and works', (): void => {
+          expect(archiveChanged).toHaveBeenCalledTimes(88);
+          expect(archiveChanged).toHaveNthReturnedWith(80, false);
+          expect(archiveChanged).toHaveNthReturnedWith(81, false);
+          expect(archiveChanged).toHaveNthReturnedWith(82, false);
+          expect(archiveChanged).toHaveNthReturnedWith(83, false);
+          expect(archiveChanged).toHaveNthReturnedWith(84, false);
+          expect(archiveChanged).toHaveNthReturnedWith(85, false);
+          expect(archiveChanged).toHaveNthReturnedWith(86, false);
+          expect(archiveChanged).toHaveNthReturnedWith(87, false);
+          expect(archiveChanged).toHaveNthReturnedWith(88, false);
+        });
+
+        it('should getStatus method not called', (): void => {
+          expect(getStatus).toHaveBeenCalledTimes(4);
+        });
+      });
+    });
+
+    describe('ForumMessage down', (): void => {
+      describe('handle handleLiveServices 6 (down)', (): void => {
+        it('should doHandle method called', async (): Promise<void> => {
+          await scrapingService.handleLiveServices();
+
+          updateDate = new Date();
+          updateDate.setMilliseconds(0);
+
+          expect(doHandle).toHaveBeenCalledTimes(16);
+        }, 15000);
+
+        it('should formatData method called and works correctly', (): void => {
+          expect(formatData).toHaveBeenCalledTimes(16);
+          expect(formatData).toHaveNthReturnedWith(
+            16,
+            LiveServicesDownFormated,
+          );
+        });
+
+        it('should prepareUpdate method called', (): void => {
+          expect(prepareUpdate).toHaveBeenCalledTimes(95);
+        });
+
+        it('should getService method called', (): void => {
+          expect(getService).toHaveBeenCalledTimes(95);
+        });
+
+        it('should getArchive method called', (): void => {
+          expect(getArchive).toHaveBeenCalledTimes(95);
+        });
+
+        it('should archiveChanged method called and works', (): void => {
+          expect(archiveChanged).toHaveBeenCalledTimes(95);
+          expect(archiveChanged).toHaveNthReturnedWith(89, false);
+          expect(archiveChanged).toHaveNthReturnedWith(90, false);
+          expect(archiveChanged).toHaveNthReturnedWith(91, false);
+          expect(archiveChanged).toHaveNthReturnedWith(92, false);
+          expect(archiveChanged).toHaveNthReturnedWith(93, false);
+          expect(archiveChanged).toHaveNthReturnedWith(94, false);
+          expect(archiveChanged).toHaveNthReturnedWith(95, false);
+        });
+
+        it('should getStatus method not called', (): void => {
+          expect(getStatus).toHaveBeenCalledTimes(4);
+        });
+      });
+
+      describe('handle handleForumMessage 6 (down)', (): void => {
+        it('should doHandle method called', async (): Promise<void> => {
+          jest
+            .spyOn(ForumMessage, 'getData')
+            .mockImplementation(async (): Promise<RawEsoStatus[]> => {
+              return Promise.resolve(ForumMessageDown);
+            });
+
+          await scrapingService.handleForumMessage();
+
+          updateDate = new Date();
+          updateDate.setMilliseconds(0);
+
+          expect(doHandle).toHaveBeenCalledTimes(17);
+        }, 15000);
+
+        it('should formatData method called and works correctly', (): void => {
+          expect(formatData).toHaveBeenCalledTimes(17);
+          expect(formatData).toHaveNthReturnedWith(
+            17,
+            ForumMessageDownFormatted,
+          );
+        });
+
+        it('should prepareUpdate method called', (): void => {
+          expect(prepareUpdate).toHaveBeenCalledTimes(97);
+        });
+
+        it('should getService method called', (): void => {
+          expect(getService).toHaveBeenCalledTimes(97);
+        });
+
+        it('should getArchive method called', (): void => {
+          expect(getArchive).toHaveBeenCalledTimes(97);
+        });
+
+        it('should archiveChanged method called and works', (): void => {
+          expect(archiveChanged).toHaveBeenCalledTimes(97);
+          expect(archiveChanged).toHaveNthReturnedWith(96, true);
+          expect(archiveChanged).toHaveNthReturnedWith(97, true);
+        });
+
+        it('should getStatus method called', (): void => {
+          expect(getStatus).toHaveBeenCalledTimes(6);
+        });
+
+        it('should updateArchive method called', (): void => {
+          expect(updateArchive).toHaveBeenCalledTimes(6);
+        });
+
+        it.each([
+          [5, ForumMessageDownPcNaRaw],
+          [6, ForumMessageDownPcEuRaw],
+        ])(
+          'should updateArchive method works',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const archive = await getArchiveByServiceIdAndConnectorName(
+              serviceId,
+              'ForumMessage',
+            );
+            expect(archive.statusId).toEqual(2);
+            expect(archive.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
         );
+
+        it('should isPlannedStatus method called and works', (): void => {
+          expect(isPlannedStatus).toHaveBeenCalledTimes(6);
+          expect(isPlannedStatus).toHaveNthReturnedWith(5, false);
+          expect(isPlannedStatus).toHaveNthReturnedWith(6, false);
+        });
+
+        it('should isPlannedStatus method called', (): void => {
+          expect(updateNoMaintenance).toHaveBeenCalledTimes(4);
+        });
+
+        it('should slugChanged method called and works', (): void => {
+          expect(slugChanged).toHaveBeenCalledTimes(4);
+          expect(slugChanged).toHaveNthReturnedWith(3, false);
+          expect(slugChanged).toHaveNthReturnedWith(4, false);
+        });
+
+        it('should updateService method not called', (): void => {
+          expect(updateService).toHaveBeenCalledTimes(2);
+        });
       });
 
-      it('should pushQueue method called', (): void => {
-        scrapingService.doQueue();
-        expect(pushQueue).toHaveBeenCalledTimes(6);
-      });
+      describe('handle handleServiceAlerts 6 (up)', (): void => {
+        it('should doHandle method called', async (): Promise<void> => {
+          await scrapingService.handleServiceAlerts();
 
-      it('should isQueueEmpty method called and works', async (): Promise<void> => {
-        expect(isQueueEmpty).toHaveBeenCalledTimes(6);
-        expect(isQueueEmpty).toHaveNthReturnedWith(6, true);
-        expect(getQueue).toHaveBeenCalledTimes(18); // +7 cause of test call
+          updateDate = new Date();
+          updateDate.setMilliseconds(0);
 
-        await after();
+          expect(doHandle).toHaveBeenCalledTimes(18);
+        }, 15000);
+
+        it('should formatData method called and works correctly', (): void => {
+          expect(formatData).toHaveBeenCalledTimes(18);
+          expect(formatData).toHaveNthReturnedWith(
+            18,
+            ServiceAlertsInitialFormatted,
+          );
+        });
+
+        it('should prepareUpdate method called', (): void => {
+          expect(prepareUpdate).toHaveBeenCalledTimes(106);
+        });
+
+        it('should getService method called', (): void => {
+          expect(getService).toHaveBeenCalledTimes(106);
+        });
+
+        it('should getArchive method called', (): void => {
+          expect(getArchive).toHaveBeenCalledTimes(106);
+        });
+
+        it('should archiveChanged method called and works', (): void => {
+          expect(archiveChanged).toHaveBeenCalledTimes(106);
+          expect(archiveChanged).toHaveNthReturnedWith(98, false);
+          expect(archiveChanged).toHaveNthReturnedWith(99, false);
+          expect(archiveChanged).toHaveNthReturnedWith(100, false);
+          expect(archiveChanged).toHaveNthReturnedWith(101, false);
+          expect(archiveChanged).toHaveNthReturnedWith(102, false);
+          expect(archiveChanged).toHaveNthReturnedWith(103, false);
+          expect(archiveChanged).toHaveNthReturnedWith(104, false);
+          expect(archiveChanged).toHaveNthReturnedWith(105, false);
+          expect(archiveChanged).toHaveNthReturnedWith(106, false);
+        });
+
+        it('should getStatus method not called', async (): Promise<void> => {
+          expect(getStatus).toHaveBeenCalledTimes(6);
+          await after();
+        });
       });
     });
   });

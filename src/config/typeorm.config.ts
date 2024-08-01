@@ -10,6 +10,7 @@ import { SupportSeeder } from '../database/seeds/support.seeder';
 import { TypeSeeder } from '../database/seeds/type.seeder';
 import { ZoneSeeder } from '../database/seeds/zone.seeder';
 import { Archive } from '../resource/archive/entities/archive.entity';
+import { Maintenance } from '../resource/maintenance/entities/maintenance.entity';
 import { Service } from '../resource/service/entities/service.entity';
 import { Slug } from '../resource/slug/entities/slug.entity';
 import { Status } from '../resource/status/entities/status.entity';
@@ -23,7 +24,7 @@ const sqliteDataSourceOptions: DataSourceOptions & SeederOptions = {
   type: <'sqlite'>process.env.DB_TYPE,
   database: process.env.DB_NAME,
   synchronize: false,
-  entities: [Type, Zone, Support, Slug, Status, Service, Archive],
+  entities: [Type, Zone, Support, Slug, Status, Service, Archive, Maintenance],
   migrations: ['dist/database/migrations/*.js'],
   seeds: [
     TypeSeeder,
@@ -48,7 +49,7 @@ const mysqlDataSourceOptions: DataSourceOptions & SeederOptions = {
   password: process.env.DB_USER,
   database: process.env.DB_NAME,
   synchronize: false,
-  entities: [Type, Zone, Support, Slug, Status, Service, Archive],
+  entities: [Type, Zone, Support, Slug, Status, Service, Archive, Maintenance],
   migrations: ['dist/database/migrations/*.js'],
   seeds: [
     TypeSeeder,

@@ -53,7 +53,6 @@ sed -i -e "s/__DB_DEBUG__/$DB_DEBUG/g" ./.env
 sed -i -e "s/__FORUM_MESSAGE_UPDATE_INTERVAL__/$FORUM_MESSAGE_UPDATE_INTERVAL/g" ./.env
 sed -i -e "s/__LIVE_SERVICES_UPDATE_INTERVAL__/$LIVE_SERVICES_UPDATE_INTERVAL/g" ./.env
 sed -i -e "s/__SERVICE_ALERTS_UPDATE_INTERVAL__/$SERVICE_ALERTS_UPDATE_INTERVAL/g" ./.env
-sed -i -e "s/__QUEUE_INTERVAL__/$QUEUE_INTERVAL/g" ./.env
 sed -i -e "s/__AWS_ACCESS_KEY_ID__/$AWS_ACCESS_KEY_ID/g" ./.env
 sed -i -e "s/__AWS_SECRET_ACCESS_KEY__/$AWS_SECRET_ACCESS_KEY/g" ./.env
 sed -i -e "s/__AWS_REGION__/$AWS_REGION/g" ./.env

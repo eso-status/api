@@ -3,6 +3,7 @@ import { LiveServices } from '@eso-status/live-services';
 import { ServiceAlerts } from '@eso-status/service-alerts';
 import {
   EsoStatus,
+  MaintenanceEsoStatus,
   RawEsoStatus,
   Status as EsoStatusStatus,
 } from '@eso-status/types';
@@ -13,12 +14,14 @@ import { config } from 'dotenv';
 
 import { ArchiveService } from '../../resource/archive/archive.service';
 import { Archive } from '../../resource/archive/entities/archive.entity';
+import { Maintenance } from '../../resource/maintenance/entities/maintenance.entity';
+import { MaintenanceService } from '../../resource/maintenance/maintenance.service';
 import { Service } from '../../resource/service/entities/service.entity';
 import { ServiceService } from '../../resource/service/service.service';
 import { Status } from '../../resource/status/entities/status.entity';
 import { StatusService } from '../../resource/status/status.service';
 import { Connector } from '../../type/connector.type';
-import { QueueService } from '../queue/queue.service';
+import { WebsocketService } from '../websocket/websocket.service';
 import { WinstonService } from '../winston/winston.service';
 
 config();
@@ -26,11 +29,12 @@ config();
 @Injectable()
 export class ScrapingService {
   constructor(
-    public readonly queueService: QueueService,
     private readonly serviceService: ServiceService,
     private readonly archiveService: ArchiveService,
+    private readonly maintenanceService: MaintenanceService,
     private readonly statusService: StatusService,
     private readonly winstonService: WinstonService,
+    private readonly websocketService: WebsocketService,
   ) {}
 
   /**
@@ -101,20 +105,118 @@ export class ScrapingService {
     return this.serviceService.update(serviceId, statusId, rawData);
   }
 
+  public async addMaintenance(
+    serviceId: number,
+    rawData: RawEsoStatus,
+  ): Promise<Maintenance> {
+    return this.maintenanceService.add(serviceId, rawData);
+  }
+
+  public serviceHaveMaintenance(service: Service): boolean {
+    return service.maintenances.length > 0;
+  }
+
+  public async detachMaintenanceToService(service: Service): Promise<void> {
+    await this.maintenanceService.delete(service.id);
+  }
+
+  public async updateNoMaintenance(
+    esoStatus: EsoStatus,
+    service: Service,
+    newStatus: Status,
+  ): Promise<void> {
+    // Return function if status not change between new data and database
+    if (!this.slugChanged(esoStatus, service)) {
+      return;
+    }
+
+    // Write log with details (raw data)
+    this.winstonService.log(
+      `New esoStatus change detected: ${JSON.stringify(esoStatus.raw)}`,
+      'ScrapingService.updateNoMaintenance',
+    );
+
+    // Update service status in database
+    await this.updateService(service.id, newStatus.id, esoStatus.raw);
+
+    // Write log with detail (slug, old status and new status)
+    this.winstonService.log(
+      `Service (slug: ${service.slug.slug}) status from ${service.status.status} to ${esoStatus.status}`,
+      'ScrapingService.updateNoMaintenance',
+    );
+
+    // Emit statusUpdate event
+    this.websocketService.getServer().emit('statusUpdate', esoStatus);
+
+    if (this.serviceHaveMaintenance(service)) {
+      await this.detachMaintenanceToService(service);
+
+      this.winstonService.log(
+        `Maintenance detached to service (slug: ${service.slug.slug})`,
+        'ScrapingService.updateNoMaintenance',
+      );
+
+      // Emit maintenanceRemoved event
+      this.websocketService
+        .getServer()
+        .emit('maintenanceRemoved', esoStatus.slug);
+    }
+
+    // Write log with details (slug with new status)
+    this.winstonService.log(
+      `Service (${esoStatus.slug}) status update event emitted`,
+      'ScrapingService.updateNoMaintenance',
+    );
+  }
+
+  public async updateMaintenance(
+    esoStatus: EsoStatus,
+    service: Service,
+  ): Promise<void> {
+    // Write log with details (raw data)
+    this.winstonService.log(
+      `New esoStatus maintenance detected: ${JSON.stringify(esoStatus.raw)}`,
+      'ScrapingService.updateMaintenance',
+    );
+
+    // Update service status in database
+    const maintenance: Maintenance = await this.addMaintenance(
+      service.id,
+      esoStatus.raw,
+    );
+
+    // Write log with detail (slug, old status and new status)
+    this.winstonService.log(
+      `Maintenance attached to service (slug: ${service.slug.slug})`,
+      'ScrapingService.updateMaintenance',
+    );
+
+    // Emit maintenancePlanned event
+    this.websocketService.getServer().emit('maintenancePlanned', <
+      MaintenanceEsoStatus
+    >{
+      raw: esoStatus.raw,
+      slug: esoStatus.slug,
+      beginnerAt: maintenance.beginnerAt.toISOString(),
+      endingAt: maintenance.endingAt.toISOString(),
+    });
+
+    // Write log with details (slug with new status)
+    this.winstonService.log(
+      `Service (${esoStatus.slug}) new maintenance event emitted`,
+      'ScrapingService.updateMaintenance',
+    );
+  }
+
   /**
    * Method used to execute update process of a service
    * @param esoStatus
    * @param connector
    */
-  public async update(
+  public async prepareUpdate(
     esoStatus: EsoStatus,
     connector: Connector,
   ): Promise<void> {
-    // Return function if new status is planned
-    if (this.isPlannedStatus(esoStatus.status)) {
-      return;
-    }
-
     // Get service in database by slug
     const service: Service = await this.getService(esoStatus);
 
@@ -132,28 +234,11 @@ export class ScrapingService {
     // Update archive
     await this.updateArchive(service, esoStatus.raw, connector, newStatus.id);
 
-    // Return function if status not change between new data and database
-    if (!this.slugChanged(esoStatus, service)) {
-      return;
+    if (this.isPlannedStatus(esoStatus.status)) {
+      await this.updateMaintenance(esoStatus, service);
+    } else {
+      await this.updateNoMaintenance(esoStatus, service, newStatus);
     }
-
-    // Write log with details (raw data)
-    this.winstonService.log(
-      `New esoStatus change detected: ${JSON.stringify(esoStatus.raw)}`,
-      'ScrapingService.update',
-    );
-
-    // Update service status in database
-    await this.updateService(service.id, newStatus.id, esoStatus.raw);
-
-    // Write log with detail (slug, old status and new status)
-    this.winstonService.log(
-      `Service (slug: ${service.slug.slug}) status from ${service.status.status} to ${esoStatus.status}`,
-      'ScrapingService.update',
-    );
-
-    // Update queue
-    this.queueService.updateQueue(esoStatus);
   }
 
   public formatData(rawEsoStatusList: RawEsoStatus[]): EsoStatus[] {
@@ -176,7 +261,7 @@ export class ScrapingService {
     await Promise.all(
       this.formatData(rawEsoStatus).map(
         (esoStatus: EsoStatus): Promise<void> => {
-          return this.update(esoStatus, connector);
+          return this.prepareUpdate(esoStatus, connector);
         },
       ),
     );
@@ -195,10 +280,5 @@ export class ScrapingService {
   @Interval(Number(process.env.SERVICE_ALERTS_UPDATE_INTERVAL))
   public async handleServiceAlerts(): Promise<void> {
     await this.doHandle(await ServiceAlerts.getData(), 'ServiceAlerts');
-  }
-
-  @Interval(Number(process.env.QUEUE_INTERVAL))
-  public doQueue(): void {
-    this.queueService.pushQueue();
   }
 }

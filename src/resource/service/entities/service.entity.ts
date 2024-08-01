@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 
 import { Archive } from '../../archive/entities/archive.entity';
+import { Maintenance } from '../../maintenance/entities/maintenance.entity';
 import { Slug } from '../../slug/entities/slug.entity';
 import { Status } from '../../status/entities/status.entity';
 import { Support } from '../../support/entities/support.entity';
@@ -63,4 +64,7 @@ export class Service {
 
   @OneToMany(() => Archive, archive => archive.service)
   archives?: Archive[];
+
+  @OneToMany(() => Maintenance, maintenance => maintenance.service) // TODO mettre en 1 to 1
+  maintenances?: Maintenance[];
 }
