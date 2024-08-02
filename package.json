@@ -1,6 +1,6 @@
 {
   "name": "@eso-status/api",
-  "version": "1.0.0-dev.2",
+  "version": "1.0.0-dev.3",
   "description": "Eso-status api sources code",
   "author": "@dov118 <contact@dov118.dev> (https://dov118.dev)",
   "private": true,
