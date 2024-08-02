@@ -1,0 +1,57 @@
+name: RELEASE
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - "main"
+
+jobs:
+  release:
+    name: RELEASE
+    runs-on: ubuntu-latest
+    if: contains(github.head_ref, 'release/')
+    timeout-minutes: 30
+    steps:
+      - name: Récupération du code
+        uses: actions/checkout@v4.1.7
+
+      - uses: actions/setup-node@v4.0.3
+        with:
+          node-version: 20.16.0
+
+      - name: Get version
+        id: get_version
+        run: |
+          VERSION=`node -p "require('./www/package.json').version"`
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Get Amazon ECS task definition
+        run: |
+          aws ecs describe-task-definition --task-definition ${{ secrets.ECS_TASK_DEFINITION }} --query taskDefinition > task-definition.json
+
+      - name: Fill in the new image ID in the Amazon ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: "task-definition.json"
+          container-name: ${{ secrets.DOCKER_HUB_REGISTRY }}
+          image: ${{ steps.build-image.outputs.image }}
+
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1.4.10
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ secrets.ECS_SERVICE }}
+          cluster: ${{ secrets.ECS_CLUSTER }}
+          wait-for-service-stability: false
+
+      - name: Create release
+        uses: actions/create-release@v1.1.4
+        env:
+          GITHUB_TOKEN: ${{ secrets.CUSTOM_TOKEN }}
+        with:
+          tag_name: ${{ steps.get_version.outputs.version }}
+          release_name: Release ${{ steps.get_version.outputs.version }}
+          draft: false
+          prerelease: false

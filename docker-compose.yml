@@ -7,7 +7,7 @@ services:
           memory: 1G
     env_file: .env.production
     container_name: node_api_eso_status
-    image: dov118/eso_status_api:1.0.0-dev.2
+    image: dov118/eso_status_api:1.0.0-dev.3
 #    build:
 #      context: .
 #      dockerfile: Dockerfile
