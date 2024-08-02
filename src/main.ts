@@ -4,8 +4,6 @@ import { INestApplication } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { config } from 'dotenv';
 
-import { runSeeders } from 'typeorm-extension';
-
 import { AppModule } from './app.module';
 import { dataSource } from './config/typeorm.config';
 import { WinstonService } from './service/winston/winston.service';
@@ -17,7 +15,6 @@ async function bootstrap() {
     await dataSource.initialize();
     await dataSource.dropDatabase();
     await dataSource.runMigrations();
-    await runSeeders(dataSource);
   }
 
   const app: INestApplication = await NestFactory.create(AppModule, {

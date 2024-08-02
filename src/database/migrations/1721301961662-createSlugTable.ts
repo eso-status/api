@@ -1,5 +1,13 @@
+import { config } from 'dotenv';
 import { MigrationInterface, QueryRunner } from 'typeorm';
 import { Table } from 'typeorm/schema-builder/table/Table';
+
+import { runSeeder } from 'typeorm-extension';
+
+import { dataSource } from '../../config/typeorm.config';
+import { SlugSeeder } from '../seeds/slug.seeder';
+
+config();
 
 export class CreateSlugTable1721301961662 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -68,6 +76,10 @@ export class CreateSlugTable1721301961662 implements MigrationInterface {
       }),
       true,
     );
+
+    if (process.env.NODE_ENV !== 'test') {
+      await runSeeder(dataSource, SlugSeeder);
+    }
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

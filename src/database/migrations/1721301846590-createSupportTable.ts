@@ -1,5 +1,13 @@
+import { config } from 'dotenv';
 import { MigrationInterface, QueryRunner } from 'typeorm';
 import { Table } from 'typeorm/schema-builder/table/Table';
+
+import { runSeeder } from 'typeorm-extension';
+
+import { dataSource } from '../../config/typeorm.config';
+import { SupportSeeder } from '../seeds/support.seeder';
+
+config();
 
 export class CreateSupportTable1721301846590 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -24,6 +32,10 @@ export class CreateSupportTable1721301846590 implements MigrationInterface {
       }),
       true,
     );
+
+    if (process.env.NODE_ENV !== 'test') {
+      await runSeeder(dataSource, SupportSeeder);
+    }
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

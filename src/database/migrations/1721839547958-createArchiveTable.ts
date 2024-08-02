@@ -1,5 +1,13 @@
+import { config } from 'dotenv';
 import { MigrationInterface, QueryRunner } from 'typeorm';
 import { Table } from 'typeorm/schema-builder/table/Table';
+
+import { runSeeder } from 'typeorm-extension';
+
+import { dataSource } from '../../config/typeorm.config';
+import { ArchiveSeeder } from '../seeds/archive.seeder';
+
+config();
 
 export class CreateArchiveTable1721839547958 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -64,6 +72,10 @@ export class CreateArchiveTable1721839547958 implements MigrationInterface {
       }),
       true,
     );
+
+    if (process.env.NODE_ENV !== 'test') {
+      await runSeeder(dataSource, ArchiveSeeder);
+    }
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

@@ -65,9 +65,6 @@ jobs:
       - name: Run database migration
         run: npm run migration:run
 
-      - name: Run seeders
-        run: npm run seed
-
       - name: Run test
         run: npm run test:cov
 
