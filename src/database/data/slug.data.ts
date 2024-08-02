@@ -16,19 +16,19 @@ export const slugData: Slug[] = [
     service: {
       id: 1,
       slugId: 1,
-      statusId: 2,
+      statusId: 1,
       typeId: 1,
       supportId: 6,
       zoneId: 2,
       rawData: JSON.stringify(<RawEsoStatus>{
         sources: ['https://live-services.elderscrollsonline.com/status/realms'],
-        raw: ['The Elder Scrolls Online (XBox - US)', 'DOWN'],
+        raw: ['The Elder Scrolls Online (XBox - US)', 'UP'],
+        rawSlug: 'The Elder Scrolls Online (XBox - US)',
+        rawStatus: 'UP',
         slugs: ['server_xbox_na'],
         support: 'xbox',
         zone: 'na',
-        status: 'down',
-        rawSlug: 'The Elder Scrolls Online (XBox - US)',
-        rawStatus: 'DOWN',
+        status: 'up',
       }),
     },
   },
@@ -44,19 +44,19 @@ export const slugData: Slug[] = [
     service: {
       id: 2,
       slugId: 2,
-      statusId: 2,
+      statusId: 1,
       typeId: 1,
       supportId: 6,
       zoneId: 1,
       rawData: JSON.stringify(<RawEsoStatus>{
         sources: ['https://live-services.elderscrollsonline.com/status/realms'],
-        raw: ['The Elder Scrolls Online (XBox - EU)', 'DOWN'],
+        raw: ['The Elder Scrolls Online (XBox - EU)', 'UP'],
+        rawSlug: 'The Elder Scrolls Online (XBox - EU)',
+        rawStatus: 'UP',
         slugs: ['server_xbox_eu'],
         support: 'xbox',
         zone: 'eu',
-        status: 'down',
-        rawSlug: 'The Elder Scrolls Online (XBox - EU)',
-        rawStatus: 'DOWN',
+        status: 'up',
       }),
     },
   },
@@ -72,19 +72,19 @@ export const slugData: Slug[] = [
     service: {
       id: 3,
       slugId: 3,
-      statusId: 2,
+      statusId: 1,
       typeId: 1,
       supportId: 5,
       zoneId: 2,
       rawData: JSON.stringify(<RawEsoStatus>{
         sources: ['https://live-services.elderscrollsonline.com/status/realms'],
-        raw: ['The Elder Scrolls Online (PS4 - US)', 'DOWN'],
+        raw: ['The Elder Scrolls Online (PS4 - US)', 'UP'],
+        rawSlug: 'The Elder Scrolls Online (PS4 - US)',
+        rawStatus: 'UP',
         slugs: ['server_ps_na'],
         support: 'ps',
         zone: 'na',
-        status: 'down',
-        rawSlug: 'The Elder Scrolls Online (PS4 - US)',
-        rawStatus: 'DOWN',
+        status: 'up',
       }),
     },
   },
@@ -100,19 +100,19 @@ export const slugData: Slug[] = [
     service: {
       id: 4,
       slugId: 4,
-      statusId: 2,
+      statusId: 1,
       typeId: 1,
       supportId: 5,
       zoneId: 1,
       rawData: JSON.stringify(<RawEsoStatus>{
         sources: ['https://live-services.elderscrollsonline.com/status/realms'],
-        raw: ['The Elder Scrolls Online (PS4 - EU)', 'DOWN'],
+        raw: ['The Elder Scrolls Online (PS4 - EU)', 'UP'],
+        rawSlug: 'The Elder Scrolls Online (PS4 - EU)',
+        rawStatus: 'UP',
         slugs: ['server_ps_eu'],
         support: 'ps',
         zone: 'eu',
-        status: 'down',
-        rawSlug: 'The Elder Scrolls Online (PS4 - EU)',
-        rawStatus: 'DOWN',
+        status: 'up',
       }),
     },
   },
@@ -128,19 +128,19 @@ export const slugData: Slug[] = [
     service: {
       id: 5,
       slugId: 5,
-      statusId: 2,
+      statusId: 1,
       typeId: 1,
       supportId: 4,
       zoneId: 2,
       rawData: JSON.stringify(<RawEsoStatus>{
         sources: ['https://live-services.elderscrollsonline.com/status/realms'],
-        raw: ['The Elder Scrolls Online (NA)', 'DOWN'],
+        raw: ['The Elder Scrolls Online (NA)', 'UP'],
+        rawSlug: 'The Elder Scrolls Online (NA)',
+        rawStatus: 'UP',
         slugs: ['server_pc_na'],
         support: 'pc',
         zone: 'na',
-        status: 'down',
-        rawSlug: 'The Elder Scrolls Online (NA)',
-        rawStatus: 'DOWN',
+        status: 'up',
       }),
     },
   },
@@ -156,19 +156,19 @@ export const slugData: Slug[] = [
     service: {
       id: 6,
       slugId: 6,
-      statusId: 2,
+      statusId: 1,
       typeId: 1,
       supportId: 4,
       zoneId: 1,
       rawData: JSON.stringify(<RawEsoStatus>{
         sources: ['https://live-services.elderscrollsonline.com/status/realms'],
-        raw: ['The Elder Scrolls Online (EU)', 'DOWN'],
+        raw: ['The Elder Scrolls Online (EU)', 'UP'],
+        rawSlug: 'The Elder Scrolls Online (EU)',
+        rawStatus: 'UP',
         slugs: ['server_pc_eu'],
         support: 'pc',
         zone: 'eu',
-        status: 'down',
-        rawSlug: 'The Elder Scrolls Online (EU)',
-        rawStatus: 'DOWN',
+        status: 'up',
       }),
     },
   },
@@ -184,19 +184,19 @@ export const slugData: Slug[] = [
     service: {
       id: 7,
       slugId: 7,
-      statusId: 2,
+      statusId: 1,
       typeId: 1,
       supportId: 4,
       zoneId: 3,
       rawData: JSON.stringify(<RawEsoStatus>{
         sources: ['https://live-services.elderscrollsonline.com/status/realms'],
-        raw: ['The Elder Scrolls Online (PTS)', 'DOWN'],
+        raw: ['The Elder Scrolls Online (PTS)', 'UP'],
+        rawSlug: 'The Elder Scrolls Online (PTS)',
+        rawStatus: 'UP',
         slugs: ['server_pc_pts'],
         support: 'pc',
         zone: 'pts',
-        status: 'down',
-        rawSlug: 'The Elder Scrolls Online (PTS)',
-        rawStatus: 'DOWN',
+        status: 'up',
       }),
     },
   },
@@ -212,38 +212,28 @@ export const slugData: Slug[] = [
     service: {
       id: 8,
       slugId: 8,
-      statusId: 2,
+      statusId: 1,
       typeId: 2,
       supportId: 1,
       zoneId: 4,
       rawData: JSON.stringify(<RawEsoStatus>{
         sources: [
-          'https://forums.elderscrollsonline.com/,https://forums.elderscrollsonline.com/en/categories/pts',
+          'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
         ],
         raw: [
-          '• [COMPLETE] ESO Website for maintenance – January 26, 3:00PM EST (20:00 UTC) - 8:00PM EST (January 27 - 3:00 UTC)',
+          ' />\n<p>2021.01.14 - 14:45 UTC (9:45 EST)</p>\n\n<p>The ESO Website is currently online.</p>\n\n',
         ],
+        rawDate: ' />2021.01.14 - 14:45 UTC (9:45 EST)',
+        rawData: 'The ESO Website is currently online.',
         slugs: ['service_web_site'],
-        rawDate:
-          'January 26, 3:00PM EST (20:00 UTC) - 8:00PM EST (January 27 - 3:00 UTC)',
         dates: [
           moment()
             .utc()
-            .set('years', 2023)
-            .set('months', 12)
-            .set('date', 31)
-            .set('hours', 0)
-            .set('minutes', 0)
-            .set('seconds', 0)
-            .set('milliseconds', 0)
-            .utcOffset(0),
-          moment()
-            .utc()
-            .set('years', 2023)
-            .set('months', 12)
-            .set('date', 31)
-            .set('hours', 0)
-            .set('minutes', 0)
+            .set('years', 2021)
+            .set('months', 1)
+            .set('date', 14)
+            .set('hours', 14)
+            .set('minutes', 45)
             .set('seconds', 0)
             .set('milliseconds', 0)
             .utcOffset(0),
@@ -267,7 +257,7 @@ export const slugData: Slug[] = [
     service: {
       id: 9,
       slugId: 9,
-      statusId: 2,
+      statusId: 1,
       typeId: 2,
       supportId: 1,
       zoneId: 5,
@@ -275,13 +265,16 @@ export const slugData: Slug[] = [
         sources: [
           'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
         ],
-        raw: ['The ESO Forums are currently available.'],
+        raw: [
+          ' />\n<p>2021.01.03 - 23:00 UTC (18:00 EST)</p>\n\n<p>The ESO Forums are currently available.</p>\n\n',
+        ],
+        rawDate: ' />2021.01.03 - 23:00 UTC (18:00 EST)',
+        rawData: 'The ESO Forums are currently available.',
         slugs: ['service_web_forum'],
-        rawDate: '2021.01.03 - 23:00 UTC (18:00 EST)',
         dates: [
           moment()
             .utc()
-            .set('years', 2012)
+            .set('years', 2021)
             .set('months', 1)
             .set('date', 3)
             .set('hours', 23)
@@ -309,7 +302,7 @@ export const slugData: Slug[] = [
     service: {
       id: 10,
       slugId: 10,
-      statusId: 2,
+      statusId: 1,
       typeId: 2,
       supportId: 2,
       zoneId: 7,
@@ -317,13 +310,16 @@ export const slugData: Slug[] = [
         sources: [
           'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
         ],
-        raw: ['The Crown Store is currently available.'],
+        raw: [
+          ' />\n<p>2021.01.03 - 23:00 UTC (18:00 EST)</p>\n\n<p>The Crown Store is currently available.</p>\n\n',
+        ],
+        rawDate: ' />2021.01.03 - 23:00 UTC (18:00 EST)',
+        rawData: 'The Crown Store is currently available.',
         slugs: ['service_store_crown'],
-        rawDate: '2021.01.03 - 23:00 UTC (18:00 EST)',
         dates: [
           moment()
             .utc()
-            .set('years', 2012)
+            .set('years', 2021)
             .set('months', 1)
             .set('date', 3)
             .set('hours', 23)
@@ -351,36 +347,27 @@ export const slugData: Slug[] = [
     service: {
       id: 11,
       slugId: 11,
-      statusId: 2,
+      statusId: 1,
       typeId: 2,
       supportId: 2,
       zoneId: 6,
       rawData: JSON.stringify(<RawEsoStatus>{
         sources: [
-          'https://forums.elderscrollsonline.com/,https://forums.elderscrollsonline.com/en/categories/pts',
+          'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
         ],
         raw: [
-          '• [COMPLETE] ESO Store and Account System for maintenance – June 22, 8:00AM EDT (12:00 UTC) - 12:00PM EDT (16:00 UTC)',
+          ' />\n<p>2024.07.01 - 12:00 UTC (08:00 EDT)</p>\n\n<p>The North American megaservers are currently available.</p>\n\n<p>The ESO store and account system are currently available.</p>\n\n',
         ],
+        rawDate: ' />2024.07.01 - 12:00 UTC (08:00 EDT)',
+        rawData: 'The ESO store and account system are currently available.',
         slugs: ['service_store_eso'],
-        rawDate: 'June 22, 8:00AM EDT (12:00 UTC) - 12:00PM EDT (16:00 UTC)',
         dates: [
           moment()
             .utc()
-            .set('years', 2023)
-            .set('months', 6)
-            .set('date', 22)
+            .set('years', 2024)
+            .set('months', 7)
+            .set('date', 1)
             .set('hours', 12)
-            .set('minutes', 0)
-            .set('seconds', 0)
-            .set('milliseconds', 0)
-            .utcOffset(0),
-          moment()
-            .utc()
-            .set('years', 2023)
-            .set('months', 6)
-            .set('date', 22)
-            .set('hours', 16)
             .set('minutes', 0)
             .set('seconds', 0)
             .set('milliseconds', 0)
@@ -405,36 +392,27 @@ export const slugData: Slug[] = [
     service: {
       id: 12,
       slugId: 12,
-      statusId: 2,
+      statusId: 1,
       typeId: 2,
       supportId: 3,
       zoneId: 8,
       rawData: JSON.stringify(<RawEsoStatus>{
         sources: [
-          'https://forums.elderscrollsonline.com/,https://forums.elderscrollsonline.com/en/categories/pts',
+          'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
         ],
         raw: [
-          '• [COMPLETE] ESO Store and Account System for maintenance – June 22, 8:00AM EDT (12:00 UTC) - 12:00PM EDT (16:00 UTC)',
+          ' />\n<p>2024.07.01 - 12:00 UTC (08:00 EDT)</p>\n\n<p>The North American megaservers are currently available.</p>\n\n<p>The ESO store and account system are currently available.</p>\n\n',
         ],
+        rawDate: ' />2024.07.01 - 12:00 UTC (08:00 EDT)',
+        rawData: 'The ESO store and account system are currently available.',
         slugs: ['service_system_account'],
-        rawDate: 'June 22, 8:00AM EDT (12:00 UTC) - 12:00PM EDT (16:00 UTC)',
         dates: [
           moment()
             .utc()
-            .set('years', 2023)
-            .set('months', 6)
-            .set('date', 22)
+            .set('years', 2024)
+            .set('months', 7)
+            .set('date', 1)
             .set('hours', 12)
-            .set('minutes', 0)
-            .set('seconds', 0)
-            .set('milliseconds', 0)
-            .utcOffset(0),
-          moment()
-            .utc()
-            .set('years', 2023)
-            .set('months', 6)
-            .set('date', 22)
-            .set('hours', 16)
             .set('minutes', 0)
             .set('seconds', 0)
             .set('milliseconds', 0)

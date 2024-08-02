@@ -8,7 +8,7 @@ export const archiveData: Archive[] = [
     id: 1,
     connector: 'ForumMessage',
     serviceId: 1,
-    statusId: 2,
+    statusId: 1,
     rawData: JSON.stringify(<RawEsoStatus>{
       sources: [
         'https://forums.elderscrollsonline.com/,https://forums.elderscrollsonline.com/en/categories/pts',
@@ -50,40 +50,41 @@ export const archiveData: Archive[] = [
     id: 2,
     connector: 'LiveServices',
     serviceId: 1,
-    statusId: 2,
+    statusId: 1,
     rawData: JSON.stringify(<RawEsoStatus>{
       sources: ['https://live-services.elderscrollsonline.com/status/realms'],
-      raw: ['The Elder Scrolls Online (XBox - US)', 'DOWN'],
+      raw: ['The Elder Scrolls Online (XBox - US)', 'UP'],
       rawSlug: 'The Elder Scrolls Online (XBox - US)',
-      rawStatus: 'DOWN',
+      rawStatus: 'UP',
       slugs: ['server_xbox_na'],
       support: 'xbox',
       zone: 'na',
-      status: 'down',
+      status: 'up',
     }),
   },
   {
     id: 3,
     connector: 'ServiceAlerts',
     serviceId: 1,
-    statusId: 2,
+    statusId: 1,
     rawData: JSON.stringify(<RawEsoStatus>{
       sources: [
         'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
       ],
       raw: [
-        'The North American Xbox megaserver is currently unavailable while we perform maintenance. ',
+        ' />\n  <p>2024.07.24 - 15:35 UTC (11:35 EDT)</p>\n<p>The North American Xbox megaserver is currently available.</p>\n<p>The European Xbox megaserver is currently available.</p>\n<p>The North American PlayStation® megaserver is currently available.</p>\n<p>The European PlayStation® megaserver is currently available.</p>\n',
       ],
+      rawDate: ' />  2024.07.24 - 15:35 UTC (11:35 EDT)',
+      rawData: 'The North American Xbox megaserver is currently available.',
       slugs: ['server_xbox_na'],
-      rawDate: '2021.07.08 - 10:00 UTC (6:00 EDT)',
       dates: [
         moment()
           .utc()
-          .set('years', 2021)
+          .set('years', 2024)
           .set('months', 7)
-          .set('date', 8)
-          .set('hours', 10)
-          .set('minutes', 0)
+          .set('date', 24)
+          .set('hours', 15)
+          .set('minutes', 35)
           .set('seconds', 0)
           .set('milliseconds', 0)
           .utcOffset(0),
@@ -91,14 +92,14 @@ export const archiveData: Archive[] = [
       type: 'server',
       support: 'xbox',
       zone: 'na',
-      status: 'down',
+      status: 'up',
     }),
   },
   {
     id: 4,
     connector: 'ForumMessage',
     serviceId: 2,
-    statusId: 2,
+    statusId: 1,
     rawData: JSON.stringify(<RawEsoStatus>{
       sources: [
         'https://forums.elderscrollsonline.com/,https://forums.elderscrollsonline.com/en/categories/pts',
@@ -138,40 +139,41 @@ export const archiveData: Archive[] = [
     id: 5,
     connector: 'LiveServices',
     serviceId: 2,
-    statusId: 2,
+    statusId: 1,
     rawData: JSON.stringify(<RawEsoStatus>{
       sources: ['https://live-services.elderscrollsonline.com/status/realms'],
-      raw: ['The Elder Scrolls Online (XBox - EU)', 'DOWN'],
+      raw: ['The Elder Scrolls Online (XBox - EU)', 'UP'],
       rawSlug: 'The Elder Scrolls Online (XBox - EU)',
-      rawStatus: 'DOWN',
+      rawStatus: 'UP',
       slugs: ['server_xbox_eu'],
       support: 'xbox',
       zone: 'eu',
-      status: 'down',
+      status: 'up',
     }),
   },
   {
     id: 6,
     connector: 'ServiceAlerts',
     serviceId: 2,
-    statusId: 2,
+    statusId: 1,
     rawData: JSON.stringify(<RawEsoStatus>{
       sources: [
         'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
       ],
       raw: [
-        'The European Xbox megaserver is currently unavailable while we perform maintenance.',
+        ' />\n  <p>2024.07.24 - 15:35 UTC (11:35 EDT)</p>\n<p>The North American Xbox megaserver is currently available.</p>\n<p>The European Xbox megaserver is currently available.</p>\n<p>The North American PlayStation® megaserver is currently available.</p>\n<p>The European PlayStation® megaserver is currently available.</p>\n',
       ],
-      slugs: ['server_xbox_na'],
-      rawDate: '2021.07.08 - 10:00 UTC (6:00 EDT)',
+      rawDate: ' />  2024.07.24 - 15:35 UTC (11:35 EDT)',
+      rawData: 'The European Xbox megaserver is currently available.',
+      slugs: ['server_xbox_eu'],
       dates: [
         moment()
           .utc()
-          .set('years', 2021)
+          .set('years', 2024)
           .set('months', 7)
-          .set('date', 8)
-          .set('hours', 10)
-          .set('minutes', 0)
+          .set('date', 24)
+          .set('hours', 15)
+          .set('minutes', 35)
           .set('seconds', 0)
           .set('milliseconds', 0)
           .utcOffset(0),
@@ -179,14 +181,14 @@ export const archiveData: Archive[] = [
       type: 'server',
       support: 'xbox',
       zone: 'eu',
-      status: 'down',
+      status: 'up',
     }),
   },
   {
     id: 7,
     connector: 'ForumMessage',
     serviceId: 3,
-    statusId: 2,
+    statusId: 1,
     rawData: JSON.stringify(<RawEsoStatus>{
       sources: [
         'https://forums.elderscrollsonline.com/,https://forums.elderscrollsonline.com/en/categories/pts',
@@ -226,40 +228,42 @@ export const archiveData: Archive[] = [
     id: 8,
     connector: 'LiveServices',
     serviceId: 3,
-    statusId: 2,
+    statusId: 1,
     rawData: JSON.stringify(<RawEsoStatus>{
       sources: ['https://live-services.elderscrollsonline.com/status/realms'],
-      raw: ['The Elder Scrolls Online (PS4 - US)', 'DOWN'],
+      raw: ['The Elder Scrolls Online (PS4 - US)', 'UP'],
       rawSlug: 'The Elder Scrolls Online (PS4 - US)',
-      rawStatus: 'DOWN',
+      rawStatus: 'UP',
       slugs: ['server_ps_na'],
       support: 'ps',
       zone: 'na',
-      status: 'down',
+      status: 'up',
     }),
   },
   {
     id: 9,
     connector: 'ServiceAlerts',
     serviceId: 3,
-    statusId: 2,
+    statusId: 1,
     rawData: JSON.stringify(<RawEsoStatus>{
       sources: [
         'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
       ],
       raw: [
-        'The North American PlayStation® megaserver is currently unavailable while we perform maintenance. ',
+        ' />\n  <p>2024.07.24 - 15:35 UTC (11:35 EDT)</p>\n<p>The North American Xbox megaserver is currently available.</p>\n<p>The European Xbox megaserver is currently available.</p>\n<p>The North American PlayStation® megaserver is currently available.</p>\n<p>The European PlayStation® megaserver is currently available.</p>\n',
       ],
+      rawDate: ' />  2024.07.24 - 15:35 UTC (11:35 EDT)',
+      rawData:
+        'The North American PlayStation® megaserver is currently available.',
       slugs: ['server_ps_na'],
-      rawDate: '2021.07.08 - 10:00 UTC (6:00 EDT)',
       dates: [
         moment()
           .utc()
-          .set('years', 2021)
+          .set('years', 2024)
           .set('months', 7)
-          .set('date', 8)
-          .set('hours', 10)
-          .set('minutes', 0)
+          .set('date', 24)
+          .set('hours', 15)
+          .set('minutes', 35)
           .set('seconds', 0)
           .set('milliseconds', 0)
           .utcOffset(0),
@@ -267,14 +271,14 @@ export const archiveData: Archive[] = [
       type: 'server',
       support: 'ps',
       zone: 'na',
-      status: 'down',
+      status: 'up',
     }),
   },
   {
     id: 10,
     connector: 'ForumMessage',
     serviceId: 4,
-    statusId: 2,
+    statusId: 1,
     rawData: JSON.stringify(<RawEsoStatus>{
       sources: [
         'https://forums.elderscrollsonline.com/,https://forums.elderscrollsonline.com/en/categories/pts',
@@ -314,40 +318,41 @@ export const archiveData: Archive[] = [
     id: 11,
     connector: 'LiveServices',
     serviceId: 4,
-    statusId: 2,
+    statusId: 1,
     rawData: JSON.stringify(<RawEsoStatus>{
       sources: ['https://live-services.elderscrollsonline.com/status/realms'],
-      raw: ['The Elder Scrolls Online (PS4 - EU)', 'DOWN'],
+      raw: ['The Elder Scrolls Online (PS4 - EU)', 'UP'],
       rawSlug: 'The Elder Scrolls Online (PS4 - EU)',
-      rawStatus: 'DOWN',
+      rawStatus: 'UP',
       slugs: ['server_ps_eu'],
       support: 'ps',
       zone: 'eu',
-      status: 'down',
+      status: 'up',
     }),
   },
   {
     id: 12,
     connector: 'ServiceAlerts',
     serviceId: 4,
-    statusId: 2,
+    statusId: 1,
     rawData: JSON.stringify(<RawEsoStatus>{
       sources: [
         'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
       ],
       raw: [
-        'The European PlayStation® megaserver is currently unavailable while we perform maintenance.',
+        ' />\n  <p>2024.07.24 - 15:35 UTC (11:35 EDT)</p>\n<p>The North American Xbox megaserver is currently available.</p>\n<p>The European Xbox megaserver is currently available.</p>\n<p>The North American PlayStation® megaserver is currently available.</p>\n<p>The European PlayStation® megaserver is currently available.</p>\n',
       ],
-      slugs: ['server_ps_na'],
-      rawDate: '2021.07.08 - 10:00 UTC (6:00 EDT)',
+      rawDate: ' />  2024.07.24 - 15:35 UTC (11:35 EDT)',
+      rawData: 'The European PlayStation® megaserver is currently available.',
+      slugs: ['server_ps_eu'],
       dates: [
         moment()
           .utc()
-          .set('years', 2021)
+          .set('years', 2024)
           .set('months', 7)
-          .set('date', 8)
-          .set('hours', 10)
-          .set('minutes', 0)
+          .set('date', 24)
+          .set('hours', 15)
+          .set('minutes', 35)
           .set('seconds', 0)
           .set('milliseconds', 0)
           .utcOffset(0),
@@ -355,14 +360,14 @@ export const archiveData: Archive[] = [
       type: 'server',
       support: 'ps',
       zone: 'eu',
-      status: 'down',
+      status: 'up',
     }),
   },
   {
     id: 13,
     connector: 'ForumMessage',
     serviceId: 5,
-    statusId: 2,
+    statusId: 1,
     rawData: JSON.stringify(<RawEsoStatus>{
       sources: [
         'https://forums.elderscrollsonline.com/,https://forums.elderscrollsonline.com/en/categories/pts',
@@ -404,40 +409,41 @@ export const archiveData: Archive[] = [
     id: 14,
     connector: 'LiveServices',
     serviceId: 5,
-    statusId: 2,
+    statusId: 1,
     rawData: JSON.stringify(<RawEsoStatus>{
       sources: ['https://live-services.elderscrollsonline.com/status/realms'],
-      raw: ['The Elder Scrolls Online (NA)', 'DOWN'],
+      raw: ['The Elder Scrolls Online (NA)', 'UP'],
       rawSlug: 'The Elder Scrolls Online (NA)',
-      rawStatus: 'DOWN',
+      rawStatus: 'UP',
       slugs: ['server_pc_na'],
       support: 'pc',
       zone: 'na',
-      status: 'down',
+      status: 'up',
     }),
   },
   {
     id: 15,
     connector: 'ServiceAlerts',
     serviceId: 5,
-    statusId: 2,
+    statusId: 1,
     rawData: JSON.stringify(<RawEsoStatus>{
       sources: [
         'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
       ],
       raw: [
-        'The North American PC/Mac megaserver is currently unavailable while we perform maintenance.',
+        ' />\n<p>2024.07.22 - 12:10 UTC (8:10 EDT)</p>\n<p>The North American PC/Mac megaserver is currently available.</p>\n<p>The European PC/Mac megaserver is currently available.</p>\n',
       ],
+      rawDate: ' />2024.07.22 - 12:10 UTC (8:10 EDT)',
+      rawData: 'The North American PC/Mac megaserver is currently available.',
       slugs: ['server_pc_na'],
-      rawDate: '2021.07.12 - 8:00 UTC (4:00 EDT)',
       dates: [
         moment()
           .utc()
-          .set('years', 2021)
+          .set('years', 2024)
           .set('months', 7)
-          .set('date', 12)
-          .set('hours', 8)
-          .set('minutes', 0)
+          .set('date', 22)
+          .set('hours', 12)
+          .set('minutes', 10)
           .set('seconds', 0)
           .set('milliseconds', 0)
           .utcOffset(0),
@@ -445,14 +451,14 @@ export const archiveData: Archive[] = [
       type: 'server',
       support: 'pc',
       zone: 'na',
-      status: 'down',
+      status: 'up',
     }),
   },
   {
     id: 16,
     connector: 'ForumMessage',
     serviceId: 6,
-    statusId: 2,
+    statusId: 1,
     rawData: JSON.stringify(<RawEsoStatus>{
       sources: [
         'https://forums.elderscrollsonline.com/,https://forums.elderscrollsonline.com/en/categories/pts',
@@ -492,40 +498,41 @@ export const archiveData: Archive[] = [
     id: 17,
     connector: 'LiveServices',
     serviceId: 6,
-    statusId: 2,
+    statusId: 1,
     rawData: JSON.stringify(<RawEsoStatus>{
       sources: ['https://live-services.elderscrollsonline.com/status/realms'],
-      raw: ['The Elder Scrolls Online (EU)', 'DOWN'],
+      raw: ['The Elder Scrolls Online (EU)', 'UP'],
       rawSlug: 'The Elder Scrolls Online (EU)',
-      rawStatus: 'DOWN',
+      rawStatus: 'UP',
       slugs: ['server_pc_eu'],
       support: 'pc',
       zone: 'eu',
-      status: 'down',
+      status: 'up',
     }),
   },
   {
     id: 18,
     connector: 'ServiceAlerts',
     serviceId: 6,
-    statusId: 2,
+    statusId: 1,
     rawData: JSON.stringify(<RawEsoStatus>{
       sources: [
         'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
       ],
       raw: [
-        'The European PC/Mac megaserver is currently unavailable while we perform maintenance.',
+        ' />\n<p>2024.07.22 - 12:10 UTC (8:10 EDT)</p>\n<p>The North American PC/Mac megaserver is currently available.</p>\n<p>The European PC/Mac megaserver is currently available.</p>\n',
       ],
+      rawDate: ' />2024.07.22 - 12:10 UTC (8:10 EDT)',
+      rawData: 'The European PC/Mac megaserver is currently available.',
       slugs: ['server_pc_eu'],
-      rawDate: '2021.07.12 - 8:00 UTC (4:00 EDT)',
       dates: [
         moment()
           .utc()
-          .set('years', 2021)
+          .set('years', 2024)
           .set('months', 7)
-          .set('date', 12)
-          .set('hours', 8)
-          .set('minutes', 0)
+          .set('date', 22)
+          .set('hours', 12)
+          .set('minutes', 10)
           .set('seconds', 0)
           .set('milliseconds', 0)
           .utcOffset(0),
@@ -533,14 +540,14 @@ export const archiveData: Archive[] = [
       type: 'server',
       support: 'pc',
       zone: 'eu',
-      status: 'down',
+      status: 'up',
     }),
   },
   {
     id: 19,
     connector: 'ForumMessage',
     serviceId: 7,
-    statusId: 2,
+    statusId: 1,
     rawData: JSON.stringify(<RawEsoStatus>{
       sources: ['https://forums.elderscrollsonline.com/en/categories/pts'],
       raw: [
@@ -559,37 +566,40 @@ export const archiveData: Archive[] = [
     id: 20,
     connector: 'LiveServices',
     serviceId: 7,
-    statusId: 2,
+    statusId: 1,
     rawData: JSON.stringify(<RawEsoStatus>{
       sources: ['https://live-services.elderscrollsonline.com/status/realms'],
-      raw: ['The Elder Scrolls Online (PTS)', 'DOWN'],
+      raw: ['The Elder Scrolls Online (PTS)', 'UP'],
       rawSlug: 'The Elder Scrolls Online (PTS)',
-      rawStatus: 'DOWN',
+      rawStatus: 'UP',
       slugs: ['server_pc_pts'],
       support: 'pc',
       zone: 'pts',
-      status: 'down',
+      status: 'up',
     }),
   },
   {
     id: 21,
     connector: 'ServiceAlerts',
     serviceId: 7,
-    statusId: 2,
+    statusId: 1,
     rawData: JSON.stringify(<RawEsoStatus>{
       sources: [
         'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
       ],
-      raw: ['The PTS is currently unavailable while we perform maintenance.'],
+      raw: [
+        '<div><!-- ENTER ESO SERVICE ALERTS BELOW THIS LINE -->\n<p>2024.07.29 - 18:00 UTC (14:00 EDT)</p>\n\n<p>The PTS is currently available.</p>\n\n',
+      ],
+      rawDate: '2024.07.29 - 18:00 UTC (14:00 EDT)',
+      rawData: 'The PTS is currently available.',
       slugs: ['server_pc_pts'],
-      rawDate: '2021.07.12 - 6:00 UTC (2:00 EDT)',
       dates: [
         moment()
           .utc()
-          .set('years', 2021)
+          .set('years', 2024)
           .set('months', 7)
-          .set('date', 12)
-          .set('hours', 6)
+          .set('date', 29)
+          .set('hours', 18)
           .set('minutes', 0)
           .set('seconds', 0)
           .set('milliseconds', 0)
@@ -598,14 +608,14 @@ export const archiveData: Archive[] = [
       type: 'server',
       support: 'pc',
       zone: 'pts',
-      status: 'down',
+      status: 'up',
     }),
   },
   {
     id: 22,
     connector: 'ForumMessage',
     serviceId: 8,
-    statusId: 2,
+    statusId: 1,
     rawData: JSON.stringify(<RawEsoStatus>{
       sources: [
         'https://forums.elderscrollsonline.com/,https://forums.elderscrollsonline.com/en/categories/pts',
@@ -645,24 +655,25 @@ export const archiveData: Archive[] = [
     id: 23,
     connector: 'ServiceAlerts',
     serviceId: 8,
-    statusId: 2,
+    statusId: 1,
     rawData: JSON.stringify(<RawEsoStatus>{
       sources: [
         'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
       ],
       raw: [
-        'The ESO Website is currently unavailable while we perform maintenance.',
+        ' />\n<p>2021.01.14 - 14:45 UTC (9:45 EST)</p>\n\n<p>The ESO Website is currently online.</p>\n\n',
       ],
+      rawDate: ' />2021.01.14 - 14:45 UTC (9:45 EST)',
+      rawData: 'The ESO Website is currently online.',
       slugs: ['service_web_site'],
-      rawDate: '2021.01.14 - 12:00 UTC (7:00 EST)',
       dates: [
         moment()
           .utc()
           .set('years', 2021)
           .set('months', 1)
           .set('date', 14)
-          .set('hours', 12)
-          .set('minutes', 0)
+          .set('hours', 14)
+          .set('minutes', 45)
           .set('seconds', 0)
           .set('milliseconds', 0)
           .utcOffset(0),
@@ -670,21 +681,24 @@ export const archiveData: Archive[] = [
       type: 'service',
       support: 'web',
       zone: 'site',
-      status: 'down',
+      status: 'up',
     }),
   },
   {
     id: 24,
     connector: 'ServiceAlerts',
     serviceId: 9,
-    statusId: 2,
+    statusId: 1,
     rawData: JSON.stringify(<RawEsoStatus>{
       sources: [
         'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
       ],
-      raw: ['The ESO Forums are currently unavailable.'],
+      raw: [
+        ' />\n<p>2021.01.03 - 23:00 UTC (18:00 EST)</p>\n\n<p>The ESO Forums are currently available.</p>\n\n',
+      ],
+      rawDate: ' />2021.01.03 - 23:00 UTC (18:00 EST)',
+      rawData: 'The ESO Forums are currently available.',
       slugs: ['service_web_forum'],
-      rawDate: '2021.01.03 - 23:00 UTC (18:00 EST)',
       dates: [
         moment()
           .utc()
@@ -700,21 +714,24 @@ export const archiveData: Archive[] = [
       type: 'service',
       support: 'web',
       zone: 'forum',
-      status: 'down',
+      status: 'up',
     }),
   },
   {
     id: 25,
     connector: 'ServiceAlerts',
     serviceId: 10,
-    statusId: 2,
+    statusId: 1,
     rawData: JSON.stringify(<RawEsoStatus>{
       sources: [
         'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
       ],
-      raw: ['The Crown Store is currently unavailable.'],
+      raw: [
+        ' />\n<p>2021.01.03 - 23:00 UTC (18:00 EST)</p>\n\n<p>The Crown Store is currently available.</p>\n\n',
+      ],
+      rawDate: ' />2021.01.03 - 23:00 UTC (18:00 EST)',
+      rawData: 'The Crown Store is currently available.',
       slugs: ['service_store_crown'],
-      rawDate: '2021.01.03 - 23:00 UTC (18:00 EST)',
       dates: [
         moment()
           .utc()
@@ -730,14 +747,14 @@ export const archiveData: Archive[] = [
       type: 'service',
       support: 'store',
       zone: 'crown',
-      status: 'down',
+      status: 'up',
     }),
   },
   {
     id: 26,
     connector: 'ForumMessage',
     serviceId: 11,
-    statusId: 2,
+    statusId: 1,
     rawData: JSON.stringify(<RawEsoStatus>{
       sources: [
         'https://forums.elderscrollsonline.com/,https://forums.elderscrollsonline.com/en/categories/pts',
@@ -777,24 +794,25 @@ export const archiveData: Archive[] = [
     id: 27,
     connector: 'ServiceAlerts',
     serviceId: 11,
-    statusId: 2,
+    statusId: 1,
     rawData: JSON.stringify(<RawEsoStatus>{
       sources: [
         'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
       ],
       raw: [
-        'The ESO store is currently unavailable while we perform maintenance.',
+        ' />\n<p>2024.07.01 - 12:00 UTC (08:00 EDT)</p>\n\n<p>The North American megaservers are currently available.</p>\n\n<p>The ESO store and account system are currently available.</p>\n\n',
       ],
+      rawDate: ' />2024.07.01 - 12:00 UTC (08:00 EDT)',
+      rawData: 'The ESO store and account system are currently available.',
       slugs: ['service_store_eso'],
-      rawDate: '2022.01.27 - 19:30 UTC (14:30 EST)',
       dates: [
         moment()
           .utc()
-          .set('years', 2022)
-          .set('months', 1)
-          .set('date', 27)
-          .set('hours', 19)
-          .set('minutes', 30)
+          .set('years', 2024)
+          .set('months', 7)
+          .set('date', 1)
+          .set('hours', 12)
+          .set('minutes', 0)
           .set('seconds', 0)
           .set('milliseconds', 0)
           .utcOffset(0),
@@ -802,14 +820,14 @@ export const archiveData: Archive[] = [
       type: 'service',
       support: 'store',
       zone: 'eso',
-      status: 'down',
+      status: 'up',
     }),
   },
   {
     id: 28,
     connector: 'ForumMessage',
     serviceId: 12,
-    statusId: 2,
+    statusId: 1,
     rawData: JSON.stringify(<RawEsoStatus>{
       sources: [
         'https://forums.elderscrollsonline.com/,https://forums.elderscrollsonline.com/en/categories/pts',
@@ -851,23 +869,24 @@ export const archiveData: Archive[] = [
     id: 29,
     connector: 'ServiceAlerts',
     serviceId: 12,
-    statusId: 2,
+    statusId: 1,
 
     rawData: JSON.stringify(<RawEsoStatus>{
       sources: [
         'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
       ],
       raw: [
-        'The ESO store and account system are currently unavailable while we perform maintenance.',
+        ' />\n<p>2024.07.01 - 12:00 UTC (08:00 EDT)</p>\n\n<p>The North American megaservers are currently available.</p>\n\n<p>The ESO store and account system are currently available.</p>\n\n',
       ],
-      slugs: ['service_store_eso', 'service_system_account'],
-      rawDate: '2021.07.13 - 12:00 UTC (8:00 EDT)',
+      rawDate: ' />2024.07.01 - 12:00 UTC (08:00 EDT)',
+      rawData: 'The ESO store and account system are currently available.',
+      slugs: ['service_system_account'],
       dates: [
         moment()
           .utc()
-          .set('years', 2021)
+          .set('years', 2024)
           .set('months', 7)
-          .set('date', 13)
+          .set('date', 1)
           .set('hours', 12)
           .set('minutes', 0)
           .set('seconds', 0)
@@ -877,7 +896,7 @@ export const archiveData: Archive[] = [
       type: 'service',
       support: 'system',
       zone: 'account',
-      status: 'down',
+      status: 'up',
     }),
   },
 ];
