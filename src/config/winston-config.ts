@@ -31,8 +31,6 @@ const winstonLogger: Logger = winston.createLogger({
   ],
 });
 
-if (process.env.NODE_ENV === 'production') {
-  winstonLogger.transports.push(cloudWatch);
-}
+winstonLogger.transports.push(cloudWatch);
 
 export { winstonLogger };
