@@ -37,6 +37,7 @@ jobs:
           npm ci --omit=dev
 
       - name: Build assets
+        if: steps.tag_exist.outputs.exist == 0
         run: npm run build
 
       - name: Set up QEMU
