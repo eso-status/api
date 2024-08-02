@@ -1,6 +1,6 @@
 {
   "name": "@eso-status/api",
-  "version": "0.0.1",
+  "version": "1.0.0-dev.0",
   "description": "Eso-status api sources code",
   "author": "@dov118 <contact@dov118.dev> (https://dov118.dev)",
   "private": true,
@@ -114,6 +114,8 @@
       "node_modules",
       "src"
     ],
-    "modulePaths": ["<rootDir>"]
+    "modulePaths": [
+      "<rootDir>"
+    ]
   }
 }
