@@ -11,7 +11,7 @@ const cloudWatch: WinstonCloudWatch = new WinstonCloudWatch({
   awsRegion: process.env.AWS_REGION,
   awsAccessKeyId: process.env.AWS_ACCESS_KEY_ID,
   awsSecretKey: process.env.AWS_SECRET_ACCESS_KEY,
-  jsonMessage: true, // Option pour formater les messages en JSON pour CloudWatch
+  jsonMessage: true,
 });
 
 const winstonLogger: Logger = winston.createLogger({
