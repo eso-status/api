@@ -12,6 +12,14 @@ export const LiveServicesPcEuUpRaw: RawEsoStatus = {
   zone: 'eu',
   status: 'up',
 };
+export const LiveServicesPcEuUpRawEsoStatus: EsoStatus = {
+  slug: 'server_pc_eu',
+  status: 'up',
+  type: 'server',
+  support: 'pc',
+  zone: 'eu',
+  raw: LiveServicesPcEuUpRaw,
+};
 
 export const LiveServicesPcEuDownRaw: RawEsoStatus = {
   sources: ['https://live-services.elderscrollsonline.com/status/realms'],
@@ -41,6 +49,14 @@ export const LiveServicesPcNaUpRaw: RawEsoStatus = {
   support: 'pc',
   zone: 'na',
   status: 'up',
+};
+export const LiveServicesPcNaUpRawEsoStatus: EsoStatus = {
+  slug: 'server_pc_na',
+  status: 'up',
+  type: 'server',
+  support: 'pc',
+  zone: 'na',
+  raw: LiveServicesPcNaUpRaw,
 };
 
 export const LiveServicesPcNaDownRaw: RawEsoStatus = {
@@ -365,6 +381,31 @@ export const ServiceAlertsInitialPcNaRaw: RawEsoStatus = {
   status: 'up',
 };
 
+export const ServiceAlertsUpPcNaRaw: RawEsoStatus = {
+  sources: ['https://help.elderscrollsonline.com/app/answers/detail/a_id/4320'],
+  raw: [
+    ' />\n<p>2024.07.29 - 12:10 UTC (8:10 EDT)</p>\n<p>The North American PC/Mac megaserver is currently available.</p>\n<p>The European PC/Mac megaserver is currently available.</p>\n',
+  ],
+  rawDate: ' />2024.07.22 - 12:10 UTC (8:10 EDT)',
+  rawData: 'The North American PC/Mac megaserver is currently available.',
+  slugs: ['server_pc_na'],
+  dates: [
+    moment()
+      .utc()
+      .set('years', 2024)
+      .set('months', 7)
+      .set('date', 29)
+      .set('hours', 12)
+      .set('minutes', 10)
+      .set('seconds', 0)
+      .set('milliseconds', 0)
+      .utcOffset(0),
+  ],
+  type: 'server',
+  support: 'pc',
+  zone: 'na',
+  status: 'up',
+};
 export const ServiceAlertsDownPcNaRaw: RawEsoStatus = {
   sources: ['https://help.elderscrollsonline.com/app/answers/detail/a_id/4320'],
   raw: [
@@ -405,6 +446,31 @@ export const ServiceAlertsInitialPcEuRaw: RawEsoStatus = {
       .set('years', 2024)
       .set('months', 7)
       .set('date', 22)
+      .set('hours', 12)
+      .set('minutes', 10)
+      .set('seconds', 0)
+      .set('milliseconds', 0)
+      .utcOffset(0),
+  ],
+  type: 'server',
+  support: 'pc',
+  zone: 'eu',
+  status: 'up',
+};
+export const ServiceAlertsUpPcEuRaw: RawEsoStatus = {
+  sources: ['https://help.elderscrollsonline.com/app/answers/detail/a_id/4320'],
+  raw: [
+    ' />\n<p>2024.07.29 - 12:10 UTC (8:10 EDT)</p>\n<p>The North American PC/Mac megaserver is currently available.</p>\n<p>The European PC/Mac megaserver is currently available.</p>\n',
+  ],
+  rawDate: ' />2024.07.22 - 12:10 UTC (8:10 EDT)',
+  rawData: 'The North American PC/Mac megaserver is currently available.',
+  slugs: ['server_pc_eu'],
+  dates: [
+    moment()
+      .utc()
+      .set('years', 2024)
+      .set('months', 7)
+      .set('date', 29)
       .set('hours', 12)
       .set('minutes', 10)
       .set('seconds', 0)
@@ -509,13 +575,25 @@ export const ServiceAlertsInitial: RawEsoStatus[] = [
 ];
 
 export const ServiceAlertsDown: RawEsoStatus[] = [
+  ServiceAlertsDownPcNaRaw,
+  ServiceAlertsDownPcEuRaw,
   ServiceAlertsInitialPcPtsRaw,
   ServiceAlertsInitialXboxNaRaw,
   ServiceAlertsInitialXboxEuRaw,
   ServiceAlertsInitialPsNaRaw,
   ServiceAlertsInitialPsEuRaw,
-  ServiceAlertsDownPcNaRaw,
-  ServiceAlertsDownPcEuRaw,
+  ServiceAlertsInitialStoreEsoRaw,
+  ServiceAlertsInitialSystemAccountRaw,
+];
+
+export const ServiceAlertsUp: RawEsoStatus[] = [
+  ServiceAlertsUpPcNaRaw,
+  ServiceAlertsUpPcEuRaw,
+  ServiceAlertsInitialPcPtsRaw,
+  ServiceAlertsInitialXboxNaRaw,
+  ServiceAlertsInitialXboxEuRaw,
+  ServiceAlertsInitialPsNaRaw,
+  ServiceAlertsInitialPsEuRaw,
   ServiceAlertsInitialStoreEsoRaw,
   ServiceAlertsInitialSystemAccountRaw,
 ];
@@ -667,6 +745,40 @@ export const ForumMessageDownPcEuRaw: RawEsoStatus = {
   zone: 'eu',
   status: 'down',
 };
+export const ForumMessageUpPcEuRaw: RawEsoStatus = {
+  sources: ['https://forums.elderscrollsonline.com/'],
+  raw: [
+    '• [COMPLETE] PC/Mac: NA and EU megaservers for patch maintenance – July 29, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
+  ],
+  slugs: ['server_pc_eu'],
+  rawDate: 'July 29, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
+  dates: [
+    moment()
+      .utc()
+      .set('years', 2024)
+      .set('months', 7)
+      .set('date', 29)
+      .set('hours', 8)
+      .set('minutes', 0)
+      .set('seconds', 0)
+      .set('milliseconds', 0)
+      .utcOffset(0),
+    moment()
+      .utc()
+      .set('years', 2024)
+      .set('months', 7)
+      .set('date', 29)
+      .set('hours', 12)
+      .set('minutes', 0)
+      .set('seconds', 0)
+      .set('milliseconds', 0)
+      .utcOffset(0),
+  ],
+  type: 'server',
+  support: 'pc',
+  zone: 'eu',
+  status: 'up',
+};
 
 export const ForumMessageDownPcNaRaw: RawEsoStatus = {
   sources: ['https://forums.elderscrollsonline.com/'],
@@ -702,8 +814,47 @@ export const ForumMessageDownPcNaRaw: RawEsoStatus = {
   zone: 'na',
   status: 'down',
 };
+export const ForumMessageUpPcNaRaw: RawEsoStatus = {
+  sources: ['https://forums.elderscrollsonline.com/'],
+  raw: [
+    '• [COMPLETE] PC/Mac: NA and EU megaservers for patch maintenance – July 29, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
+  ],
+  slugs: ['server_pc_na'],
+  rawDate: 'July 29, 4:00AM EDT (8:00 UTC) – 8:00AM EDT (12:00 UTC)',
+  dates: [
+    moment()
+      .utc()
+      .set('years', 2024)
+      .set('months', 7)
+      .set('date', 29)
+      .set('hours', 8)
+      .set('minutes', 0)
+      .set('seconds', 0)
+      .set('milliseconds', 0)
+      .utcOffset(0),
+    moment()
+      .utc()
+      .set('years', 2024)
+      .set('months', 7)
+      .set('date', 29)
+      .set('hours', 12)
+      .set('minutes', 0)
+      .set('seconds', 0)
+      .set('milliseconds', 0)
+      .utcOffset(0),
+  ],
+  type: 'server',
+  support: 'pc',
+  zone: 'na',
+  status: 'up',
+};
 
 export const ForumMessageDown: RawEsoStatus[] = [
   ForumMessageDownPcEuRaw,
   ForumMessageDownPcNaRaw,
+];
+
+export const ForumMessageUp: RawEsoStatus[] = [
+  ForumMessageUpPcEuRaw,
+  ForumMessageUpPcNaRaw,
 ];
