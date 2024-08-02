@@ -36,6 +36,9 @@ jobs:
         run: |
           npm ci --omit=dev
 
+      - name: Build assets
+        run: npm run build
+
       - name: Set up QEMU
         if: steps.tag_exist.outputs.exist == 0
         uses: docker/setup-qemu-action@v3.2.0
