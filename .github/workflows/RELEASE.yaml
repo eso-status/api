@@ -59,7 +59,7 @@ jobs:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
           service: ${{ secrets.ECS_SERVICE }}
           cluster: ${{ secrets.ECS_CLUSTER }}
-          wait-for-service-stability: false
+          wait-for-service-stability: true
 
       - name: Create release
         uses: actions/create-release@v1.1.4
