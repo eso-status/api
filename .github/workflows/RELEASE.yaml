@@ -62,8 +62,5 @@ jobs:
 #          wait-for-service-stability: true
 
       - name: Create release
-        uses: elgohr/Github-Release-Action@v5
-        env:
-          GH_TOKEN: ${{ secrets.CUSTOM_TOKEN }}
-        with:
-          title: Release ${{ steps.get_version.outputs.version }}
+        run: |
+          gh release create ${{ steps.get_version.outputs.version }} --title "Release ${{ steps.get_version.outputs.version }}" --generate-notes --latest
