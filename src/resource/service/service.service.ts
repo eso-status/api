@@ -26,7 +26,7 @@ export class ServiceService {
       formatedEsoStatus.maintenance = {
         raw: <RawEsoStatus>JSON.parse(service.maintenance.rawData),
         slug: service.slug.slug,
-        beginnerAt: service.maintenance.beginnerAt.toISOString(),
+        beginnerAt: service.maintenance.beginnerAt?.toISOString(),
         endingAt: service.maintenance.endingAt?.toISOString(),
       };
     }

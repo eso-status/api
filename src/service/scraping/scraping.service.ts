@@ -197,7 +197,7 @@ export class ScrapingService {
     >{
       raw: esoStatus.raw,
       slug: esoStatus.slug,
-      beginnerAt: maintenance.beginnerAt.toISOString(),
+      beginnerAt: maintenance.beginnerAt?.toISOString(),
       endingAt: maintenance.endingAt?.toISOString(),
     });
 
