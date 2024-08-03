@@ -47,14 +47,14 @@ jobs:
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1.3.0
+        uses: aws-actions/amazon-ecs-render-task-definition@v1.4.0
         with:
           task-definition: "task-definition.json"
           container-name: ${{ secrets.DOCKER_HUB_REGISTRY }}
           image: ${{ steps.login-ecr.outputs.registry }}/${{ secrets.DOCKER_HUB_NAME }}/${{ secrets.DOCKER_HUB_REGISTRY }}:${{ steps.get_version.outputs.version }}
 
       - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1.4.10
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1.60
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
           service: ${{ secrets.ECS_SERVICE }}
@@ -62,11 +62,11 @@ jobs:
           wait-for-service-stability: true
 
       - name: Create release
-        uses: actions/create-release@v1.1.4
         env:
           GITHUB_TOKEN: ${{ secrets.CUSTOM_TOKEN }}
-        with:
-          tag_name: ${{ steps.get_version.outputs.version }}
-          release_name: Release ${{ steps.get_version.outputs.version }}
-          draft: false
-          prerelease: false
+          tag: ${{ steps.get_version.outputs.version }}
+        run: |
+          gh release create "Release $tag" \
+              --repo="$GITHUB_REPOSITORY" \
+              --title="${GITHUB_REPOSITORY#*/} ${tag#v}" \
+              --generate-notes
