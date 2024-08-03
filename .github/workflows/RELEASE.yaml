@@ -14,7 +14,7 @@ jobs:
   release:
     name: RELEASE
     runs-on: ubuntu-latest
-    if: contains(github.head_ref, 'release/')
+#    if: contains(github.head_ref, 'release/')
     timeout-minutes: 30
     steps:
       - name: Récupération du code
