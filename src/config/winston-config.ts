@@ -5,15 +5,6 @@ import * as WinstonCloudWatch from 'winston-cloudwatch';
 
 config();
 
-const cloudWatch: WinstonCloudWatch = new WinstonCloudWatch({
-  logGroupName: process.env.CLOUDWATCH_GROUP_NAME,
-  logStreamName: process.env.CLOUDWATCH_STREAM_NAME,
-  awsRegion: process.env.AWS_REGION,
-  awsAccessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  awsSecretKey: process.env.AWS_SECRET_ACCESS_KEY,
-  jsonMessage: true,
-});
-
 const winstonLogger: Logger = winston.createLogger({
   level: 'info',
   transports: [
@@ -29,11 +20,16 @@ const winstonLogger: Logger = winston.createLogger({
       ),
       silent: process.env.NODE_ENV === 'test',
     }),
+    new WinstonCloudWatch({
+      logGroupName: process.env.CLOUDWATCH_GROUP_NAME,
+      logStreamName: process.env.CLOUDWATCH_STREAM_NAME,
+      awsRegion: process.env.AWS_REGION,
+      awsAccessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      awsSecretKey: process.env.AWS_SECRET_ACCESS_KEY,
+      jsonMessage: true,
+      silent: process.env.NODE_ENV === 'test',
+    }),
   ],
 });
-
-if (process.env.NODE_ENV !== 'test') {
-  winstonLogger.transports.push(cloudWatch);
-}
 
 export { winstonLogger };

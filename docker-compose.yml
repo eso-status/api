@@ -7,7 +7,7 @@ services:
           memory: 1G
     env_file: .env.production
     container_name: node_api_eso_status
-    image: dov118/eso_status_api:1.0.0-dev.3
+    image: dov118/eso_status_api:1.0.0-dev.8
 #    build:
 #      context: .
 #      dockerfile: Dockerfile
@@ -23,7 +23,7 @@ services:
           cpus: '2'
           memory: 1024M
     env_file: .env
-    image: mysql:8.0.28
+    image: mysql:8.0.36
     platform: linux/x86_64
     container_name: mysql_api_eso_status
     environment:
@@ -38,10 +38,14 @@ services:
       interval: 20s
       timeout: 1s
       retries: 30
-#  pma_api_eso_status:
-#    container_name: pma_api_eso_status
-#    image: phpmyadmin:5.2.1
-#    environment:
-#      PMA_HOST: $DB_HOST
-#    ports:
-#      - "80:80"
+  pma_api_eso_status:
+    container_name: pma_api_eso_status
+    image: phpmyadmin:5.2.1
+    env_file: .env
+    depends_on:
+     mysql_api_eso_status:
+      condition: service_healthy
+    environment:
+      PMA_HOST: $DB_HOST
+    ports:
+      - "80:80"
