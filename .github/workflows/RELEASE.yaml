@@ -54,7 +54,7 @@ jobs:
           image: ${{ steps.login-ecr.outputs.registry }}/${{ secrets.DOCKER_HUB_NAME }}/${{ secrets.DOCKER_HUB_REGISTRY }}:${{ steps.get_version.outputs.version }}
 
       - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1.60
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1.6.0
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
           service: ${{ secrets.ECS_SERVICE }}
