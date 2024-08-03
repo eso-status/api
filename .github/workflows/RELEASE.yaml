@@ -40,33 +40,30 @@ jobs:
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2.0.1
-
-      - name: Get Amazon ECS task definition
-        run: |
-          aws ecs describe-task-definition --task-definition ${{ secrets.ECS_TASK_DEFINITION }} --query taskDefinition > task-definition.json
-
-      - name: Fill in the new image ID in the Amazon ECS task definition
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1.4.0
-        with:
-          task-definition: "task-definition.json"
-          container-name: ${{ secrets.DOCKER_HUB_REGISTRY }}
-          image: ${{ steps.login-ecr.outputs.registry }}/${{ secrets.DOCKER_HUB_NAME }}/${{ secrets.DOCKER_HUB_REGISTRY }}:${{ steps.get_version.outputs.version }}
-
-      - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1.6.0
-        with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: ${{ secrets.ECS_SERVICE }}
-          cluster: ${{ secrets.ECS_CLUSTER }}
-          wait-for-service-stability: true
+#
+#      - name: Get Amazon ECS task definition
+#        run: |
+#          aws ecs describe-task-definition --task-definition ${{ secrets.ECS_TASK_DEFINITION }} --query taskDefinition > task-definition.json
+#
+#      - name: Fill in the new image ID in the Amazon ECS task definition
+#        id: task-def
+#        uses: aws-actions/amazon-ecs-render-task-definition@v1.4.0
+#        with:
+#          task-definition: "task-definition.json"
+#          container-name: ${{ secrets.DOCKER_HUB_REGISTRY }}
+#          image: ${{ steps.login-ecr.outputs.registry }}/${{ secrets.DOCKER_HUB_NAME }}/${{ secrets.DOCKER_HUB_REGISTRY }}:${{ steps.get_version.outputs.version }}
+#
+#      - name: Deploy Amazon ECS task definition
+#        uses: aws-actions/amazon-ecs-deploy-task-definition@v1.6.0
+#        with:
+#          task-definition: ${{ steps.task-def.outputs.task-definition }}
+#          service: ${{ secrets.ECS_SERVICE }}
+#          cluster: ${{ secrets.ECS_CLUSTER }}
+#          wait-for-service-stability: true
 
       - name: Create release
+        uses: elgohr/Github-Release-Action@v5
         env:
-          GITHUB_TOKEN: ${{ secrets.CUSTOM_TOKEN }}
-          tag: ${{ steps.get_version.outputs.version }}
-        run: |
-          gh release create "Release $tag" \
-              --repo="$GITHUB_REPOSITORY" \
-              --title="${GITHUB_REPOSITORY#*/} ${tag#v}" \
-              --generate-notes
+          GH_TOKEN: ${{ secrets.CUSTOM_TOKEN }}
+        with:
+          title: Release ${{ steps.get_version.outputs.version }}
