@@ -31,7 +31,6 @@
     "test:cov": "jest --runInBand --coverage --setupFiles",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand --setupFiles",
     "test:e2e": "jest --runInBand --config ./test/jest-e2e.json --setupFiles",
-    "seed": "npm run build && node dist/database/seeds/seed.js",
     "migration:run": "typeorm migration:run -d ./dist/config/typeorm.config.js"
   },
   "dependencies": {
