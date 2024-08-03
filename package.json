@@ -1,6 +1,6 @@
 {
   "name": "@eso-status/api",
-  "version": "0.0.1",
+  "version": "1.0.0-dev.6",
   "description": "Eso-status api sources code",
   "author": "@dov118 <contact@dov118.dev> (https://dov118.dev)",
   "private": true,
@@ -31,11 +31,10 @@
     "test:cov": "jest --runInBand --coverage --setupFiles",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand --setupFiles",
     "test:e2e": "jest --runInBand --config ./test/jest-e2e.json --setupFiles",
-    "seed": "npm run build && node dist/database/seeds/seed.js",
     "migration:run": "typeorm migration:run -d ./dist/config/typeorm.config.js"
   },
   "dependencies": {
-    "@eso-status/forum-message": "1.0.8",
+    "@eso-status/forum-message": "1.0.10",
     "@eso-status/live-services": "1.0.6",
     "@eso-status/service-alerts": "1.0.7",
     "@eso-status/types": "1.0.6",
@@ -114,6 +113,8 @@
       "node_modules",
       "src"
     ],
-    "modulePaths": ["<rootDir>"]
+    "modulePaths": [
+      "<rootDir>"
+    ]
   }
 }

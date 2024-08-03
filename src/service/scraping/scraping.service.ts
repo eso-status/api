@@ -198,7 +198,7 @@ export class ScrapingService {
       raw: esoStatus.raw,
       slug: esoStatus.slug,
       beginnerAt: maintenance.beginnerAt.toISOString(),
-      endingAt: maintenance.endingAt.toISOString(),
+      endingAt: maintenance.endingAt?.toISOString(),
     });
 
     // Write log with details (slug with new status)
