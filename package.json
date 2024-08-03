@@ -1,6 +1,6 @@
 {
   "name": "@eso-status/api",
-  "version": "1.0.0-dev.5",
+  "version": "1.0.0-dev.6",
   "description": "Eso-status api sources code",
   "author": "@dov118 <contact@dov118.dev> (https://dov118.dev)",
   "private": true,
@@ -34,7 +34,7 @@
     "migration:run": "typeorm migration:run -d ./dist/config/typeorm.config.js"
   },
   "dependencies": {
-    "@eso-status/forum-message": "1.0.8",
+    "@eso-status/forum-message": "1.0.10",
     "@eso-status/live-services": "1.0.6",
     "@eso-status/service-alerts": "1.0.7",
     "@eso-status/types": "1.0.6",
