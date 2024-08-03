@@ -1,11 +1,15 @@
 name: RELEASE
 
-on:
-  pull_request:
-    types: [closed]
-    branches:
-      - "main"
+#on:
+#  pull_request:
+#    types: [closed]
+#    branches:
+#      - "main"
 
+on:
+  push:
+    branches:
+      - "*"
 jobs:
   release:
     name: RELEASE
@@ -23,7 +27,7 @@ jobs:
       - name: Get version
         id: get_version
         run: |
-          VERSION=`node -p "require('./www/package.json').version"`
+          VERSION=`node -p "require('./package.json').version"`
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Get Amazon ECS task definition
