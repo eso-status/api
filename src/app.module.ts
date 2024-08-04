@@ -5,6 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSourceOptions } from './config/typeorm.config';
 import { ArchiveService } from './resource/archive/archive.service';
 import { Archive } from './resource/archive/entities/archive.entity';
+import { Log } from './resource/log/entities/log.entity';
+import { LogService } from './resource/log/log.service';
 import { Maintenance } from './resource/maintenance/entities/maintenance.entity';
 import { MaintenanceService } from './resource/maintenance/maintenance.service';
 import { ServiceModule } from './resource/service/service.module';
@@ -29,6 +31,7 @@ import { WinstonService } from './service/winston/winston.service';
       Status,
       Archive,
       Maintenance,
+      Log,
     ]),
     ServiceModule,
     ScheduleModule.forRoot(),
@@ -38,6 +41,7 @@ import { WinstonService } from './service/winston/winston.service';
     StatusService,
     ArchiveService,
     MaintenanceService,
+    LogService,
     WebsocketService,
     WinstonService,
     ScrapingService,
@@ -46,6 +50,7 @@ import { WinstonService } from './service/winston/winston.service';
     StatusService,
     ArchiveService,
     MaintenanceService,
+    LogService,
     WebsocketService,
     WinstonService,
     ScrapingService,
