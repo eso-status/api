@@ -21,6 +21,6 @@ export class Zone {
   @OneToMany(() => Slug, (slug: Slug) => slug.zone)
   slugs?: Slug[];
 
-  @OneToMany(() => Service, (service: Service) => service.slug)
+  @OneToMany(() => Service, (service: Service) => service.zone)
   services?: Service[];
 }

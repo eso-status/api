@@ -19,6 +19,8 @@ import { runSeeders } from 'typeorm-extension';
 import { dataSource, dataSourceOptions } from '../src/config/typeorm.config';
 import { ArchiveService } from '../src/resource/archive/archive.service';
 import { Archive } from '../src/resource/archive/entities/archive.entity';
+import { Log } from '../src/resource/log/entities/log.entity';
+import { LogService } from '../src/resource/log/log.service';
 import { MaintenanceService } from '../src/resource/maintenance/maintenance.service';
 import { Service } from '../src/resource/service/entities/service.entity';
 import { ServiceController } from '../src/resource/service/service.controller';
@@ -86,6 +88,7 @@ let serverSocket: Server;
 let clientSocket: Socket;
 let serviceRepository: Repository<Service>;
 let archiveRepository: Repository<Archive>;
+let logRepository: Repository<Log>;
 let serviceController: ServiceController;
 
 const getServiceById = async (id: number): Promise<Service> => {
@@ -109,11 +112,26 @@ const getArchiveByServiceIdAndConnectorName = async (
   });
 };
 
+const getLogByServiceIdAndConnectorName = async (
+  serviceId: number,
+  connector: Connector,
+): Promise<Log> => {
+  return logRepository.findOne({
+    where: {
+      connector,
+      serviceId,
+    },
+    order: {
+      createdAt: 'DESC',
+    },
+  });
+};
+
 const before = async (): Promise<void> => {
   const module: TestingModule = await Test.createTestingModule({
     imports: [
       TypeOrmModule.forRoot(dataSourceOptions),
-      TypeOrmModule.forFeature([Service, Status, Archive, Maintenance]),
+      TypeOrmModule.forFeature([Service, Status, Archive, Maintenance, Log]),
     ],
     providers: [
       WebsocketService,
@@ -122,6 +140,7 @@ const before = async (): Promise<void> => {
       ServiceService,
       ArchiveService,
       MaintenanceService,
+      LogService,
       StatusService,
       ServiceController,
     ],
@@ -148,6 +167,7 @@ const before = async (): Promise<void> => {
 
   serviceRepository = dataSource.getRepository(Service);
   archiveRepository = dataSource.getRepository(Archive);
+  logRepository = dataSource.getRepository(Log);
 
   await new Promise<void>((resolve): void => {
     clientSocket.on('connect', (): void => {
@@ -249,6 +269,49 @@ describe('ScrapingService (e2e)', (): void => {
       );
 
       it.each([
+        ['LiveServices', 1, 1, LiveServicesXboxNaUpRaw],
+        ['LiveServices', 2, 1, LiveServicesXboxEuUpRaw],
+        ['LiveServices', 3, 1, LiveServicesPsNaUpRaw],
+        ['LiveServices', 4, 1, LiveServicesPsEuUpRaw],
+        ['LiveServices', 5, 1, LiveServicesPcNaUpRaw],
+        ['LiveServices', 6, 1, LiveServicesPcEuUpRaw],
+        ['LiveServices', 7, 1, LiveServicesPcPtsUpRaw],
+
+        ['ForumMessage', 5, 1, ForumMessageInitialPcNaLastUpRaw],
+        ['ForumMessage', 6, 1, ForumMessageInitialPcEuLastUpRaw],
+
+        ['ServiceAlerts', 1, 1, ServiceAlertsInitialXboxNaRaw],
+        ['ServiceAlerts', 2, 1, ServiceAlertsInitialXboxEuRaw],
+        ['ServiceAlerts', 3, 1, ServiceAlertsInitialPsNaRaw],
+        ['ServiceAlerts', 4, 1, ServiceAlertsInitialPsEuRaw],
+        ['ServiceAlerts', 5, 1, ServiceAlertsInitialPcNaRaw],
+        ['ServiceAlerts', 6, 1, ServiceAlertsInitialPcEuRaw],
+        ['ServiceAlerts', 7, 1, ServiceAlertsInitialPcPtsRaw],
+        ['ServiceAlerts', 11, 1, ServiceAlertsInitialStoreEsoRaw],
+        ['ServiceAlerts', 12, 1, ServiceAlertsInitialSystemAccountRaw],
+      ])(
+        'add %s log',
+        async (
+          connector: Connector,
+          serviceId: number,
+          statusId: number,
+          rawData: RawEsoStatus,
+        ): Promise<void> => {
+          let log: Log = logRepository.create({
+            connector,
+            serviceId,
+            statusId,
+            rawData: JSON.stringify(rawData),
+          });
+          await logRepository.save(log);
+          log = await getLogByServiceIdAndConnectorName(serviceId, connector);
+          expect(log.statusId).toEqual(statusId);
+          expect(log.rawData).toEqual(JSON.stringify(rawData));
+        },
+        15000,
+      );
+
+      it.each([
         ['server_pc_eu', LiveServicesPcEuUpRaw, undefined],
         ['server_pc_na', LiveServicesPcNaUpRaw, undefined],
       ])(
@@ -297,6 +360,22 @@ describe('ScrapingService (e2e)', (): void => {
             await scrapingService.handleLiveServices();
           });
         }, 15000);
+
+        it.each([
+          [5, LiveServicesPcNaUpRaw],
+          [6, LiveServicesPcEuUpRaw],
+        ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'LiveServices',
+            );
+            expect(log.statusId).toEqual(1);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
         it.each([
           [5, LiveServicesPcNaUpRaw],
@@ -374,6 +453,22 @@ describe('ScrapingService (e2e)', (): void => {
             await scrapingService.handleForumMessage();
           });
         }, 15000);
+
+        it.each([
+          [5, ForumMessageInitialPcNaLastUpRaw],
+          [6, ForumMessageInitialPcEuLastUpRaw],
+        ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log: Log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'ForumMessage',
+            );
+            expect(log.statusId).toEqual(1);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
         it.each([
           [5, ForumMessageInitialPcNaLastUpRaw],
@@ -457,6 +552,22 @@ describe('ScrapingService (e2e)', (): void => {
           [5, ServiceAlertsInitialPcNaRaw],
           [6, ServiceAlertsInitialPcEuRaw],
         ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log: Log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'ServiceAlerts',
+            );
+            expect(log.statusId).toEqual(1);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
+
+        it.each([
+          [5, ServiceAlertsInitialPcNaRaw],
+          [6, ServiceAlertsInitialPcEuRaw],
+        ])(
           'should archives not changed',
           async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
             const archive: Archive =
@@ -530,6 +641,22 @@ describe('ScrapingService (e2e)', (): void => {
             await scrapingService.handleLiveServices();
           });
         }, 15000);
+
+        it.each([
+          [5, LiveServicesPcNaUpRaw],
+          [6, LiveServicesPcEuUpRaw],
+        ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'LiveServices',
+            );
+            expect(log.statusId).toEqual(1);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
         it.each([
           [5, LiveServicesPcNaUpRaw],
@@ -638,6 +765,22 @@ describe('ScrapingService (e2e)', (): void => {
           [5, ForumMessagePlannedPcNaRaw],
           [6, ForumMessagePlannedPcEuRaw],
         ])(
+          'should logs changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log: Log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'ForumMessage',
+            );
+            expect(log.statusId).toEqual(4);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
+
+        it.each([
+          [5, ForumMessagePlannedPcNaRaw],
+          [6, ForumMessagePlannedPcEuRaw],
+        ])(
           'should archives changed',
           async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
             const archive: Archive =
@@ -719,6 +862,22 @@ describe('ScrapingService (e2e)', (): void => {
             await scrapingService.handleServiceAlerts();
           });
         }, 15000);
+
+        it.each([
+          [5, ServiceAlertsInitialPcNaRaw],
+          [6, ServiceAlertsInitialPcEuRaw],
+        ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log: Log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'ServiceAlerts',
+            );
+            expect(log.statusId).toEqual(1);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
         it.each([
           [5, ServiceAlertsInitialPcNaRaw],
@@ -813,6 +972,22 @@ describe('ScrapingService (e2e)', (): void => {
           [5, LiveServicesPcNaUpRaw],
           [6, LiveServicesPcEuUpRaw],
         ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'LiveServices',
+            );
+            expect(log.statusId).toEqual(1);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
+
+        it.each([
+          [5, LiveServicesPcNaUpRaw],
+          [6, LiveServicesPcEuUpRaw],
+        ])(
           'should archives not changed',
           async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
             const archive = await getArchiveByServiceIdAndConnectorName(
@@ -893,6 +1068,22 @@ describe('ScrapingService (e2e)', (): void => {
             await scrapingService.handleForumMessage();
           });
         }, 15000);
+
+        it.each([
+          [5, ForumMessagePlannedPcNaRaw],
+          [6, ForumMessagePlannedPcEuRaw],
+        ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log: Log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'ForumMessage',
+            );
+            expect(log.statusId).toEqual(4);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
         it.each([
           [5, ForumMessagePlannedPcNaRaw],
@@ -979,6 +1170,22 @@ describe('ScrapingService (e2e)', (): void => {
             await scrapingService.handleServiceAlerts();
           });
         }, 15000);
+
+        it.each([
+          [5, ServiceAlertsInitialPcNaRaw],
+          [6, ServiceAlertsInitialPcEuRaw],
+        ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log: Log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'ServiceAlerts',
+            );
+            expect(log.statusId).toEqual(1);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
         it.each([
           [5, ServiceAlertsInitialPcNaRaw],
@@ -1122,6 +1329,22 @@ describe('ScrapingService (e2e)', (): void => {
           [5, LiveServicesPcNaDownRaw],
           [6, LiveServicesPcEuDownRaw],
         ])(
+          'should logs changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'LiveServices',
+            );
+            expect(log.statusId).toEqual(2);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
+
+        it.each([
+          [5, LiveServicesPcNaDownRaw],
+          [6, LiveServicesPcEuDownRaw],
+        ])(
           'should archives changed',
           async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
             const archive = await getArchiveByServiceIdAndConnectorName(
@@ -1188,6 +1411,22 @@ describe('ScrapingService (e2e)', (): void => {
             await scrapingService.handleForumMessage();
           });
         }, 15000);
+
+        it.each([
+          [5, ForumMessagePlannedPcNaRaw],
+          [6, ForumMessagePlannedPcEuRaw],
+        ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log: Log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'ForumMessage',
+            );
+            expect(log.statusId).toEqual(4);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
         it.each([
           [5, ForumMessagePlannedPcNaRaw],
@@ -1260,6 +1499,22 @@ describe('ScrapingService (e2e)', (): void => {
             await scrapingService.handleServiceAlerts();
           });
         }, 15000);
+
+        it.each([
+          [5, ServiceAlertsInitialPcNaRaw],
+          [6, ServiceAlertsInitialPcEuRaw],
+        ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log: Log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'ServiceAlerts',
+            );
+            expect(log.statusId).toEqual(1);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
         it.each([
           [5, ServiceAlertsInitialPcNaRaw],
@@ -1340,6 +1595,22 @@ describe('ScrapingService (e2e)', (): void => {
           [5, LiveServicesPcNaDownRaw],
           [6, LiveServicesPcEuDownRaw],
         ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'LiveServices',
+            );
+            expect(log.statusId).toEqual(2);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
+
+        it.each([
+          [5, LiveServicesPcNaDownRaw],
+          [6, LiveServicesPcEuDownRaw],
+        ])(
           'should archives not changed',
           async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
             const archive = await getArchiveByServiceIdAndConnectorName(
@@ -1406,6 +1677,22 @@ describe('ScrapingService (e2e)', (): void => {
             await scrapingService.handleForumMessage();
           });
         }, 15000);
+
+        it.each([
+          [5, ForumMessagePlannedPcNaRaw],
+          [6, ForumMessagePlannedPcEuRaw],
+        ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log: Log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'ForumMessage',
+            );
+            expect(log.statusId).toEqual(4);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
         it.each([
           [5, ForumMessagePlannedPcNaRaw],
@@ -1483,6 +1770,22 @@ describe('ScrapingService (e2e)', (): void => {
           [5, ServiceAlertsInitialPcNaRaw],
           [6, ServiceAlertsInitialPcEuRaw],
         ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log: Log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'ServiceAlerts',
+            );
+            expect(log.statusId).toEqual(1);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
+
+        it.each([
+          [5, ServiceAlertsInitialPcNaRaw],
+          [6, ServiceAlertsInitialPcEuRaw],
+        ])(
           'should archives not changed',
           async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
             const archive: Archive =
@@ -1553,6 +1856,22 @@ describe('ScrapingService (e2e)', (): void => {
             await scrapingService.handleLiveServices();
           });
         }, 15000);
+
+        it.each([
+          [5, LiveServicesPcNaDownRaw],
+          [6, LiveServicesPcEuDownRaw],
+        ])(
+          'should logs changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'LiveServices',
+            );
+            expect(log.statusId).toEqual(2);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
         it.each([
           [5, LiveServicesPcNaDownRaw],
@@ -1636,6 +1955,22 @@ describe('ScrapingService (e2e)', (): void => {
           [5, ForumMessageDownPcNaRaw],
           [6, ForumMessageDownPcEuRaw],
         ])(
+          'should logs changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log: Log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'ForumMessage',
+            );
+            expect(log.statusId).toEqual(2);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
+
+        it.each([
+          [5, ForumMessageDownPcNaRaw],
+          [6, ForumMessageDownPcEuRaw],
+        ])(
           'should archives changed',
           async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
             const archive: Archive =
@@ -1703,6 +2038,22 @@ describe('ScrapingService (e2e)', (): void => {
             await scrapingService.handleServiceAlerts();
           });
         }, 15000);
+
+        it.each([
+          [5, ServiceAlertsInitialPcNaRaw],
+          [6, ServiceAlertsInitialPcEuRaw],
+        ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log: Log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'ServiceAlerts',
+            );
+            expect(log.statusId).toEqual(1);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
         it.each([
           [5, ServiceAlertsInitialPcNaRaw],
@@ -1783,6 +2134,22 @@ describe('ScrapingService (e2e)', (): void => {
           [5, LiveServicesPcNaDownRaw],
           [6, LiveServicesPcEuDownRaw],
         ])(
+          'should logs changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'LiveServices',
+            );
+            expect(log.statusId).toEqual(2);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
+
+        it.each([
+          [5, LiveServicesPcNaDownRaw],
+          [6, LiveServicesPcEuDownRaw],
+        ])(
           'should archives changed',
           async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
             const archive = await getArchiveByServiceIdAndConnectorName(
@@ -1849,6 +2216,22 @@ describe('ScrapingService (e2e)', (): void => {
             await scrapingService.handleForumMessage();
           });
         }, 15000);
+
+        it.each([
+          [5, ForumMessageDownPcNaRaw],
+          [6, ForumMessageDownPcEuRaw],
+        ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log: Log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'ForumMessage',
+            );
+            expect(log.statusId).toEqual(2);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
         it.each([
           [5, ForumMessageDownPcNaRaw],
@@ -1921,6 +2304,22 @@ describe('ScrapingService (e2e)', (): void => {
             await scrapingService.handleServiceAlerts();
           });
         }, 15000);
+
+        it.each([
+          [5, ServiceAlertsInitialPcNaRaw],
+          [6, ServiceAlertsInitialPcEuRaw],
+        ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log: Log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'ServiceAlerts',
+            );
+            expect(log.statusId).toEqual(1);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
         it.each([
           [5, ServiceAlertsInitialPcNaRaw],
@@ -2001,6 +2400,22 @@ describe('ScrapingService (e2e)', (): void => {
           [5, LiveServicesPcNaDownRaw],
           [6, LiveServicesPcEuDownRaw],
         ])(
+          'should logs changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'LiveServices',
+            );
+            expect(log.statusId).toEqual(2);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
+
+        it.each([
+          [5, LiveServicesPcNaDownRaw],
+          [6, LiveServicesPcEuDownRaw],
+        ])(
           'should archives changed',
           async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
             const archive = await getArchiveByServiceIdAndConnectorName(
@@ -2067,6 +2482,22 @@ describe('ScrapingService (e2e)', (): void => {
             await scrapingService.handleForumMessage();
           });
         }, 15000);
+
+        it.each([
+          [5, ForumMessageDownPcNaRaw],
+          [6, ForumMessageDownPcEuRaw],
+        ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log: Log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'ForumMessage',
+            );
+            expect(log.statusId).toEqual(2);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
         it.each([
           [5, ForumMessageDownPcNaRaw],
@@ -2151,6 +2582,22 @@ describe('ScrapingService (e2e)', (): void => {
           [5, ServiceAlertsDownPcNaRaw],
           [6, ServiceAlertsDownPcEuRaw],
         ])(
+          'should logs changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log: Log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'ServiceAlerts',
+            );
+            expect(log.statusId).toEqual(2);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
+
+        it.each([
+          [5, ServiceAlertsDownPcNaRaw],
+          [6, ServiceAlertsDownPcEuRaw],
+        ])(
           'should archives changed',
           async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
             const archive: Archive =
@@ -2221,6 +2668,22 @@ describe('ScrapingService (e2e)', (): void => {
             await scrapingService.handleLiveServices();
           });
         }, 15000);
+
+        it.each([
+          [5, LiveServicesPcNaDownRaw],
+          [6, LiveServicesPcEuDownRaw],
+        ])(
+          'should logs changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'LiveServices',
+            );
+            expect(log.statusId).toEqual(2);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
         it.each([
           [5, LiveServicesPcNaDownRaw],
@@ -2297,6 +2760,22 @@ describe('ScrapingService (e2e)', (): void => {
           [5, ForumMessageDownPcNaRaw],
           [6, ForumMessageDownPcEuRaw],
         ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log: Log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'ForumMessage',
+            );
+            expect(log.statusId).toEqual(2);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
+
+        it.each([
+          [5, ForumMessageDownPcNaRaw],
+          [6, ForumMessageDownPcEuRaw],
+        ])(
           'should archives not changed',
           async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
             const archive: Archive =
@@ -2364,6 +2843,22 @@ describe('ScrapingService (e2e)', (): void => {
             await scrapingService.handleServiceAlerts();
           });
         }, 15000);
+
+        it.each([
+          [5, ServiceAlertsDownPcNaRaw],
+          [6, ServiceAlertsDownPcEuRaw],
+        ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log: Log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'ServiceAlerts',
+            );
+            expect(log.statusId).toEqual(2);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
         it.each([
           [5, ServiceAlertsDownPcNaRaw],
@@ -2475,6 +2970,22 @@ describe('ScrapingService (e2e)', (): void => {
           [5, LiveServicesPcNaUpRaw],
           [6, LiveServicesPcEuUpRaw],
         ])(
+          'should logs changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'LiveServices',
+            );
+            expect(log.statusId).toEqual(1);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
+
+        it.each([
+          [5, LiveServicesPcNaUpRaw],
+          [6, LiveServicesPcEuUpRaw],
+        ])(
           'should archives changed',
           async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
             const archive = await getArchiveByServiceIdAndConnectorName(
@@ -2541,6 +3052,22 @@ describe('ScrapingService (e2e)', (): void => {
             await scrapingService.handleForumMessage();
           });
         }, 15000);
+
+        it.each([
+          [5, ForumMessageDownPcNaRaw],
+          [6, ForumMessageDownPcEuRaw],
+        ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log: Log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'ForumMessage',
+            );
+            expect(log.statusId).toEqual(2);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
         it.each([
           [5, ForumMessageDownPcNaRaw],
@@ -2613,6 +3140,22 @@ describe('ScrapingService (e2e)', (): void => {
             await scrapingService.handleServiceAlerts();
           });
         }, 15000);
+
+        it.each([
+          [5, ServiceAlertsDownPcNaRaw],
+          [6, ServiceAlertsDownPcEuRaw],
+        ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log: Log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'ServiceAlerts',
+            );
+            expect(log.statusId).toEqual(2);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
         it.each([
           [5, ServiceAlertsDownPcNaRaw],
@@ -2693,6 +3236,22 @@ describe('ScrapingService (e2e)', (): void => {
           [5, LiveServicesPcNaUpRaw],
           [6, LiveServicesPcEuUpRaw],
         ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'LiveServices',
+            );
+            expect(log.statusId).toEqual(1);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
+
+        it.each([
+          [5, LiveServicesPcNaUpRaw],
+          [6, LiveServicesPcEuUpRaw],
+        ])(
           'should archives not changed',
           async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
             const archive = await getArchiveByServiceIdAndConnectorName(
@@ -2759,6 +3318,22 @@ describe('ScrapingService (e2e)', (): void => {
             await scrapingService.handleForumMessage();
           });
         }, 15000);
+
+        it.each([
+          [5, ForumMessageDownPcNaRaw],
+          [6, ForumMessageDownPcEuRaw],
+        ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log: Log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'ForumMessage',
+            );
+            expect(log.statusId).toEqual(2);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
         it.each([
           [5, ForumMessageDownPcNaRaw],
@@ -2836,6 +3411,22 @@ describe('ScrapingService (e2e)', (): void => {
           [5, ServiceAlertsDownPcNaRaw],
           [6, ServiceAlertsDownPcEuRaw],
         ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log: Log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'ServiceAlerts',
+            );
+            expect(log.statusId).toEqual(2);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
+
+        it.each([
+          [5, ServiceAlertsDownPcNaRaw],
+          [6, ServiceAlertsDownPcEuRaw],
+        ])(
           'should archives not changed',
           async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
             const archive: Archive =
@@ -2906,6 +3497,22 @@ describe('ScrapingService (e2e)', (): void => {
             await scrapingService.handleLiveServices();
           });
         }, 15000);
+
+        it.each([
+          [5, LiveServicesPcNaUpRaw],
+          [6, LiveServicesPcEuUpRaw],
+        ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'LiveServices',
+            );
+            expect(log.statusId).toEqual(1);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
         it.each([
           [5, LiveServicesPcNaUpRaw],
@@ -2989,6 +3596,22 @@ describe('ScrapingService (e2e)', (): void => {
           [5, ForumMessageUpPcNaRaw],
           [6, ForumMessageUpPcEuRaw],
         ])(
+          'should logs changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log: Log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'ForumMessage',
+            );
+            expect(log.statusId).toEqual(1);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
+
+        it.each([
+          [5, ForumMessageUpPcNaRaw],
+          [6, ForumMessageUpPcEuRaw],
+        ])(
           'should archives changed',
           async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
             const archive: Archive =
@@ -3056,6 +3679,22 @@ describe('ScrapingService (e2e)', (): void => {
             await scrapingService.handleServiceAlerts();
           });
         }, 15000);
+
+        it.each([
+          [5, ServiceAlertsDownPcNaRaw],
+          [6, ServiceAlertsDownPcEuRaw],
+        ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log: Log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'ServiceAlerts',
+            );
+            expect(log.statusId).toEqual(2);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
         it.each([
           [5, ServiceAlertsDownPcNaRaw],
@@ -3136,6 +3775,22 @@ describe('ScrapingService (e2e)', (): void => {
           [5, LiveServicesPcNaUpRaw],
           [6, LiveServicesPcEuUpRaw],
         ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'LiveServices',
+            );
+            expect(log.statusId).toEqual(1);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
+
+        it.each([
+          [5, LiveServicesPcNaUpRaw],
+          [6, LiveServicesPcEuUpRaw],
+        ])(
           'should archives not changed',
           async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
             const archive = await getArchiveByServiceIdAndConnectorName(
@@ -3202,6 +3857,22 @@ describe('ScrapingService (e2e)', (): void => {
             await scrapingService.handleForumMessage();
           });
         }, 15000);
+
+        it.each([
+          [5, ForumMessageUpPcNaRaw],
+          [6, ForumMessageUpPcEuRaw],
+        ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log: Log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'ForumMessage',
+            );
+            expect(log.statusId).toEqual(1);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
         it.each([
           [5, ForumMessageUpPcNaRaw],
@@ -3274,6 +3945,22 @@ describe('ScrapingService (e2e)', (): void => {
             await scrapingService.handleServiceAlerts();
           });
         }, 15000);
+
+        it.each([
+          [5, ServiceAlertsDownPcNaRaw],
+          [6, ServiceAlertsDownPcEuRaw],
+        ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log: Log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'ServiceAlerts',
+            );
+            expect(log.statusId).toEqual(2);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
         it.each([
           [5, ServiceAlertsDownPcNaRaw],
@@ -3354,6 +4041,22 @@ describe('ScrapingService (e2e)', (): void => {
           [5, LiveServicesPcNaUpRaw],
           [6, LiveServicesPcEuUpRaw],
         ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'LiveServices',
+            );
+            expect(log.statusId).toEqual(1);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
+
+        it.each([
+          [5, LiveServicesPcNaUpRaw],
+          [6, LiveServicesPcEuUpRaw],
+        ])(
           'should archives not changed',
           async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
             const archive = await getArchiveByServiceIdAndConnectorName(
@@ -3420,6 +4123,22 @@ describe('ScrapingService (e2e)', (): void => {
             await scrapingService.handleForumMessage();
           });
         }, 15000);
+
+        it.each([
+          [5, ForumMessageUpPcNaRaw],
+          [6, ForumMessageUpPcEuRaw],
+        ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log: Log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'ForumMessage',
+            );
+            expect(log.statusId).toEqual(1);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
         it.each([
           [5, ForumMessageUpPcNaRaw],
@@ -3504,6 +4223,22 @@ describe('ScrapingService (e2e)', (): void => {
           [5, ServiceAlertsUpPcNaRaw],
           [6, ServiceAlertsUpPcEuRaw],
         ])(
+          'should logs changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log: Log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'ServiceAlerts',
+            );
+            expect(log.statusId).toEqual(1);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
+
+        it.each([
+          [5, ServiceAlertsUpPcNaRaw],
+          [6, ServiceAlertsUpPcEuRaw],
+        ])(
           'should archives changed',
           async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
             const archive: Archive =
@@ -3574,6 +4309,22 @@ describe('ScrapingService (e2e)', (): void => {
             await scrapingService.handleLiveServices();
           });
         }, 15000);
+
+        it.each([
+          [5, LiveServicesPcNaUpRaw],
+          [6, LiveServicesPcEuUpRaw],
+        ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'LiveServices',
+            );
+            expect(log.statusId).toEqual(1);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
         it.each([
           [5, LiveServicesPcNaUpRaw],
@@ -3650,6 +4401,22 @@ describe('ScrapingService (e2e)', (): void => {
           [5, ForumMessageUpPcNaRaw],
           [6, ForumMessageUpPcEuRaw],
         ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log: Log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'ForumMessage',
+            );
+            expect(log.statusId).toEqual(1);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
+
+        it.each([
+          [5, ForumMessageUpPcNaRaw],
+          [6, ForumMessageUpPcEuRaw],
+        ])(
           'should archives not changed',
           async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
             const archive: Archive =
@@ -3717,6 +4484,22 @@ describe('ScrapingService (e2e)', (): void => {
             await scrapingService.handleServiceAlerts();
           });
         }, 15000);
+
+        it.each([
+          [5, ServiceAlertsUpPcNaRaw],
+          [6, ServiceAlertsUpPcEuRaw],
+        ])(
+          'should logs not changed',
+          async (serviceId: number, rawData: RawEsoStatus): Promise<void> => {
+            const log: Log = await getLogByServiceIdAndConnectorName(
+              serviceId,
+              'ServiceAlerts',
+            );
+            expect(log.statusId).toEqual(1);
+            expect(log.rawData).toEqual(JSON.stringify(rawData));
+          },
+          15000,
+        );
 
         it.each([
           [5, ServiceAlertsUpPcNaRaw],
