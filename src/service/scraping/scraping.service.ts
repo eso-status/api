@@ -14,6 +14,8 @@ import { config } from 'dotenv';
 
 import { ArchiveService } from '../../resource/archive/archive.service';
 import { Archive } from '../../resource/archive/entities/archive.entity';
+import { Log } from '../../resource/log/entities/log.entity';
+import { LogService } from '../../resource/log/log.service';
 import { Maintenance } from '../../resource/maintenance/entities/maintenance.entity';
 import { MaintenanceService } from '../../resource/maintenance/maintenance.service';
 import { Service } from '../../resource/service/entities/service.entity';
@@ -32,6 +34,7 @@ export class ScrapingService {
     private readonly serviceService: ServiceService,
     private readonly archiveService: ArchiveService,
     private readonly maintenanceService: MaintenanceService,
+    private readonly logService: LogService,
     private readonly statusService: StatusService,
     private readonly winstonService: WinstonService,
     private readonly websocketService: WebsocketService,
@@ -110,6 +113,15 @@ export class ScrapingService {
     rawData: RawEsoStatus,
   ): Promise<Maintenance> {
     return this.maintenanceService.add(serviceId, rawData);
+  }
+
+  public async addLog(
+    connector: Connector,
+    serviceId: number,
+    statusId: number,
+    rawEsoStatus: RawEsoStatus,
+  ): Promise<Log> {
+    return this.logService.add(connector, serviceId, statusId, rawEsoStatus);
   }
 
   public serviceHaveMaintenance(service: Service): boolean {
@@ -234,6 +246,9 @@ export class ScrapingService {
 
     // Get status in database by status
     const newStatus: Status = await this.getStatus(esoStatus.status);
+
+    // Create log
+    await this.addLog(connector, service.id, newStatus.id, esoStatus.raw);
 
     // Update archive
     await this.updateArchive(service, esoStatus.raw, connector, newStatus.id);

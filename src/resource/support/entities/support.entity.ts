@@ -21,6 +21,6 @@ export class Support {
   @OneToMany(() => Slug, (slug: Slug) => slug.support)
   slugs?: Slug[];
 
-  @OneToMany(() => Service, (service: Service) => service.slug)
+  @OneToMany(() => Service, (service: Service) => service.support)
   services?: Service[];
 }
