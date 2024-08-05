@@ -21,40 +21,12 @@ import { Zone } from '../resource/zone/entities/zone.entity';
 
 config();
 
-// eslint-disable-next-line unused-imports/no-unused-vars
-const sqliteDataSourceOptions: DataSourceOptions & SeederOptions = {
-  type: <'sqlite'>process.env.DB_TYPE,
-  database: process.env.DB_NAME,
-  synchronize: false,
-  entities: [
-    Type,
-    Zone,
-    Support,
-    Slug,
-    Status,
-    Service,
-    Archive,
-    Maintenance,
-    Log,
-  ],
-  migrations: ['dist/database/migrations/*.js'],
-  seeds: [
-    TypeSeeder,
-    ZoneSeeder,
-    SupportSeeder,
-    StatusSeeder,
-    SlugSeeder,
-    ServiceSeeder,
-    ArchiveSeeder,
-  ],
-  factories: [],
-  migrationsRun: false,
-  logging: process.env.DB_DEBUG === 'true',
-  dropSchema: false,
-};
+const customDataSourceOptions: {
+  mysql: DataSourceOptions & SeederOptions;
+  sqlite: DataSourceOptions & SeederOptions;
+} = { mysql: null, sqlite: null };
 
-// eslint-disable-next-line unused-imports/no-unused-vars
-const mysqlDataSourceOptions: DataSourceOptions & SeederOptions = {
+customDataSourceOptions.mysql = {
   type: <'mysql'>process.env.DB_TYPE,
   host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT),
@@ -89,9 +61,39 @@ const mysqlDataSourceOptions: DataSourceOptions & SeederOptions = {
   dropSchema: false,
 };
 
-// eslint-disable-next-line no-eval,@typescript-eslint/no-unsafe-assignment
-export const dataSourceOptions: DataSourceOptions & SeederOptions = eval(
-  `${process.env.DB_TYPE}DataSourceOptions`,
-);
+customDataSourceOptions.sqlite = {
+  type: <'sqlite'>process.env.DB_TYPE,
+  database: process.env.DB_NAME,
+  synchronize: false,
+  entities: [
+    Type,
+    Zone,
+    Support,
+    Slug,
+    Status,
+    Service,
+    Archive,
+    Maintenance,
+    Log,
+  ],
+  migrations: ['dist/database/migrations/*.js'],
+  seeds: [
+    TypeSeeder,
+    ZoneSeeder,
+    SupportSeeder,
+    StatusSeeder,
+    SlugSeeder,
+    ServiceSeeder,
+    ArchiveSeeder,
+  ],
+  factories: [],
+  migrationsRun: false,
+  logging: process.env.DB_DEBUG === 'true',
+  dropSchema: false,
+};
+
+export const dataSourceOptions: DataSourceOptions & SeederOptions = <
+  DataSourceOptions & SeederOptions
+>customDataSourceOptions[process.env.DB_TYPE];
 
 export const dataSource: DataSource = new DataSource(dataSourceOptions);
