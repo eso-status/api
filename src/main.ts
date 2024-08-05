@@ -24,7 +24,11 @@ export async function bootstrap() {
 
     await app.listen(process.env.APP_PORT);
   } catch (e) {
-    /* empty */
+    new WinstonService().fatal('', '');
+    new WinstonService().error('', '');
+    new WinstonService().warn('');
+    new WinstonService().debug('');
+    new WinstonService().verbose('');
   }
 }
 
