@@ -18,9 +18,7 @@ export class MaintenanceService {
   ): Promise<Maintenance> {
     const newMaintenance: Maintenance = this.maintenanceRepository.create({
       serviceId,
-      beginnerAt: rawEsoStatus.dates[0]
-        ? new Date(rawEsoStatus.dates[0].toISOString())
-        : '',
+      beginnerAt: new Date(rawEsoStatus.dates[0].toISOString()),
       endingAt: rawEsoStatus.dates[1]
         ? new Date(rawEsoStatus.dates[1].toISOString())
         : '',

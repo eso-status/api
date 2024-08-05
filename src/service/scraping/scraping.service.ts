@@ -209,12 +209,8 @@ export class ScrapingService {
     >{
       raw: esoStatus.raw,
       slug: esoStatus.slug,
-      beginnerAt: maintenance.beginnerAt
-        ? maintenance.beginnerAt?.toISOString()
-        : '',
-      endingAt: maintenance.endingAt
-        ? maintenance.beginnerAt?.toISOString()
-        : '',
+      beginnerAt: maintenance.beginnerAt?.toISOString(),
+      endingAt: maintenance.endingAt ? maintenance.endingAt?.toISOString() : '',
     });
 
     // Write log with details (slug with new status)
@@ -250,8 +246,21 @@ export class ScrapingService {
     // Create log
     await this.addLog(connector, service.id, newStatus.id, esoStatus.raw);
 
+    // Write log with details (raw data)
+    // Write log with details (raw data)
+    this.winstonService.log(
+      `New connector (${connector}) log created for serviceId: ${service.id}, newStatusId: ${newStatus.id}, raw: ${JSON.stringify(esoStatus.raw)}`,
+      'ScrapingService.prepareUpdate',
+    );
+
     // Update archive
     await this.updateArchive(service, esoStatus.raw, connector, newStatus.id);
+
+    // Write log with details (raw data)
+    this.winstonService.log(
+      `Archive (${connector}) for serviceId: ${service.id}, newStatusId: ${newStatus.id} update: ${JSON.stringify(esoStatus.raw)}`,
+      'ScrapingService.prepareUpdate',
+    );
 
     if (this.isPlannedStatus(esoStatus.status)) {
       await this.updateMaintenance(esoStatus, service);

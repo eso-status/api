@@ -706,9 +706,35 @@ export const ForumMessagePlannedPcNaMaintenance: CustomMaintenanceEsoStatus = {
   endingAt: ForumMessagePlannedPcNaRaw.dates[1].toISOString(),
 };
 
+export const ForumMessagePlannedPcPTSRaw: RawEsoStatus = {
+  sources: ['https://forums.elderscrollsonline.com/en/categories/pts'],
+  raw: [
+    'We will be performing maintenance for patch 10.1.4 on the PTS on Monday at 10:00AM EDT (14:00 UTC). ',
+  ],
+  slugs: ['server_pc_pts'],
+  rawDate: 'Monday at 10:00AM EDT (14:00 UTC). ',
+  dates: [
+    moment()
+      .utc()
+      .set('years', 2024)
+      .set('months', 8)
+      .set('date', 5)
+      .set('hours', 14)
+      .set('minutes', 0)
+      .set('seconds', 0)
+      .set('milliseconds', 0)
+      .utcOffset(0),
+  ],
+  type: 'server',
+  support: 'pc',
+  zone: 'pts',
+  status: 'planned',
+};
+
 export const ForumMessagePlanned: RawEsoStatus[] = [
   ForumMessagePlannedPcEuRaw,
   ForumMessagePlannedPcNaRaw,
+  ForumMessagePlannedPcPTSRaw,
 ];
 
 export const ForumMessageDownPcEuRaw: RawEsoStatus = {
