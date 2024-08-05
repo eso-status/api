@@ -21,6 +21,7 @@ import { Zone } from '../resource/zone/entities/zone.entity';
 
 config();
 
+// eslint-disable-next-line unused-imports/no-unused-vars
 const sqliteDataSourceOptions: DataSourceOptions & SeederOptions = {
   type: <'sqlite'>process.env.DB_TYPE,
   database: process.env.DB_NAME,
@@ -52,6 +53,7 @@ const sqliteDataSourceOptions: DataSourceOptions & SeederOptions = {
   dropSchema: false,
 };
 
+// eslint-disable-next-line unused-imports/no-unused-vars
 const mysqlDataSourceOptions: DataSourceOptions & SeederOptions = {
   type: <'mysql'>process.env.DB_TYPE,
   host: process.env.DB_HOST,
@@ -87,9 +89,9 @@ const mysqlDataSourceOptions: DataSourceOptions & SeederOptions = {
   dropSchema: false,
 };
 
-export const dataSourceOptions: DataSourceOptions & SeederOptions =
-  process.env.DB_TYPE === 'sqlite'
-    ? sqliteDataSourceOptions
-    : mysqlDataSourceOptions;
+// eslint-disable-next-line no-eval,@typescript-eslint/no-unsafe-assignment
+export const dataSourceOptions: DataSourceOptions & SeederOptions = eval(
+  `${process.env.DB_TYPE}DataSourceOptions`,
+);
 
 export const dataSource: DataSource = new DataSource(dataSourceOptions);
