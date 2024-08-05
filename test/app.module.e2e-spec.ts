@@ -6,7 +6,6 @@ import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from 'dotenv';
-import { Server } from 'socket.io';
 import { Socket, io } from 'socket.io-client';
 
 import { MaintenanceEsoStatus } from 'src/interface/maintenanceEsoStatus.interface';
@@ -82,9 +81,7 @@ import {
 config();
 
 let app: INestApplication;
-let websocketService: WebsocketService;
 let scrapingService: ScrapingService;
-let serverSocket: Server;
 let clientSocket: Socket;
 let serviceRepository: Repository<Service>;
 let archiveRepository: Repository<Archive>;
@@ -147,15 +144,8 @@ const before = async (): Promise<void> => {
   }).compile();
 
   app = module.createNestApplication();
-  websocketService = module.get<WebsocketService>(WebsocketService);
   scrapingService = module.get<ScrapingService>(ScrapingService);
   serviceController = module.get<ServiceController>(ServiceController);
-  serverSocket = new Server(Number(process.env.APP_PORT));
-  websocketService.server = serverSocket;
-
-  jest
-    .spyOn(websocketService, 'getServer')
-    .mockImplementation((): Server => serverSocket);
 
   clientSocket = io(`ws://${process.env.APP_HOST}:${process.env.APP_PORT}`, {
     secure: true,
@@ -163,7 +153,7 @@ const before = async (): Promise<void> => {
     transports: ['websocket'],
   });
 
-  await app.init();
+  await app.listen(process.env.APP_PORT);
 
   serviceRepository = dataSource.getRepository(Service);
   archiveRepository = dataSource.getRepository(Archive);
@@ -185,11 +175,6 @@ const after = async (): Promise<void> => {
   await app.close();
   await dataSource.destroy();
   clientSocket.disconnect();
-  await new Promise<void>((resolve): void => {
-    serverSocket.close((): void => {
-      resolve();
-    });
-  });
 };
 
 describe('ScrapingService (e2e)', (): void => {
