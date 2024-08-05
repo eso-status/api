@@ -158,7 +158,7 @@ export class ScrapingService {
     );
 
     // Emit statusUpdate event
-    this.websocketService.getServer().emit('statusUpdate', esoStatus);
+    this.websocketService.server.emit('statusUpdate', esoStatus);
 
     if (this.serviceHaveMaintenance(service)) {
       await this.detachMaintenanceToService(service);
@@ -169,9 +169,7 @@ export class ScrapingService {
       );
 
       // Emit maintenanceRemoved event
-      this.websocketService
-        .getServer()
-        .emit('maintenanceRemoved', esoStatus.slug);
+      this.websocketService.server.emit('maintenanceRemoved', esoStatus.slug);
     }
 
     // Write log with details (slug with new status)
@@ -204,7 +202,7 @@ export class ScrapingService {
     );
 
     // Emit maintenancePlanned event
-    this.websocketService.getServer().emit('maintenancePlanned', <
+    this.websocketService.server.emit('maintenancePlanned', <
       MaintenanceEsoStatus
     >{
       raw: esoStatus.raw,

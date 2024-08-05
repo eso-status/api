@@ -10,8 +10,4 @@ import { Server } from 'socket.io';
 })
 export class WebsocketService {
   @WebSocketServer() server: Server;
-
-  public getServer(): Server {
-    return this.server;
-  }
 }
