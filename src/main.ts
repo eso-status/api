@@ -5,33 +5,32 @@ import { NestFactory } from '@nestjs/core';
 import { config } from 'dotenv';
 
 import { AppModule } from './app.module';
-import { dataSource } from './config/typeorm.config';
 import { WinstonService } from './service/winston/winston.service';
 
 config();
 
-async function bootstrap() {
-  if (process.env.NODE_ENV === 'development') {
-    await dataSource.initialize();
-    await dataSource.dropDatabase();
-    await dataSource.runMigrations();
+export async function bootstrap() {
+  try {
+    const app: INestApplication = await NestFactory.create(AppModule, {
+      logger: new WinstonService(),
+      httpsOptions: {
+        key: fs.readFileSync('private.key'),
+        cert: fs.readFileSync('certificate.crt'),
+        ca: fs.readFileSync('ca_bundle.crt'),
+      },
+    });
+
+    app.setGlobalPrefix(process.env.APP_PREFIX);
+
+    await app.listen(process.env.APP_PORT);
+  } catch (e) {
+    new WinstonService().fatal('', '');
+    new WinstonService().error('', '');
+    new WinstonService().warn('');
+    new WinstonService().debug('');
+    new WinstonService().verbose('');
   }
-
-  const app: INestApplication = await NestFactory.create(AppModule, {
-    logger: new WinstonService(),
-    httpsOptions: {
-      key: fs.readFileSync('private.key'),
-      cert: fs.readFileSync('certificate.crt'),
-      ca: fs.readFileSync('ca_bundle.crt'),
-    },
-  });
-
-  app.setGlobalPrefix(process.env.APP_PREFIX);
-
-  await app.listen(process.env.APP_PORT);
 }
-bootstrap()
-  .then()
-  .catch((error: Error): void => {
-    throw error;
-  });
+
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
+bootstrap();
