@@ -7,19 +7,17 @@ config();
 
 const winstonLogger: Logger = winston.createLogger({
   level: 'info',
-  transports: [
-    new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.timestamp({
-          format: 'MM/DD/YYYY, hh:mm:ss A',
-        }),
-        winston.format.printf(
-          ({ level, message, timestamp, context }): string =>
-            `[32m[${process.env.APP_NAME}] ${process.pid}  - [39m${timestamp}[32m     ${level.toUpperCase()} [${context}] : ${message}[39m`,
-        ),
-      ),
-      silent: process.env.NODE_ENV === 'test',
+  format: winston.format.combine(
+    winston.format.timestamp({
+      format: 'MM/DD/YYYY, hh:mm:ss A',
     }),
+    winston.format.printf(
+      ({ level, message, timestamp, context }): string =>
+        `[32m[${process.env.APP_NAME}] ${process.pid}  - [39m${timestamp}[32m     ${level.toUpperCase()} [${context}] : ${message}[39m`,
+    ),
+  ),
+  transports: [
+    new winston.transports.Console(),
     new WinstonCloudWatch({
       logGroupName: process.env.CLOUDWATCH_GROUP_NAME,
       logStreamName: process.env.CLOUDWATCH_STREAM_NAME,
