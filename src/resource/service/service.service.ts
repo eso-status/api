@@ -29,10 +29,12 @@ export class ServiceService {
         beginnerAt: service.maintenance.beginnerAt
           ? service.maintenance.beginnerAt.toISOString()
           : '',
-        endingAt: service.maintenance.endingAt
-          ? service.maintenance.endingAt.toISOString()
-          : '',
       };
+
+      if (service.maintenance.endingAt) {
+        formatedEsoStatus.maintenance.endingAt =
+          service.maintenance.endingAt.toISOString();
+      }
     }
 
     return formatedEsoStatus;
