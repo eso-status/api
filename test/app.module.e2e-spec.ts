@@ -1,7 +1,11 @@
 import { ForumMessage } from '@eso-status/forum-message';
 import { LiveServices } from '@eso-status/live-services';
 import { ServiceAlerts } from '@eso-status/service-alerts';
-import { EsoStatus, RawEsoStatus, Slug } from '@eso-status/types';
+import {
+  EsoStatus,
+  RawEsoStatus,
+  Slug as EsoStatusSlug,
+} from '@eso-status/types';
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -10,6 +14,7 @@ import { Socket, io } from 'socket.io-client';
 
 import { MaintenanceEsoStatus } from 'src/interface/maintenanceEsoStatus.interface';
 import { Maintenance } from 'src/resource/maintenance/entities/maintenance.entity';
+import { Slug } from 'src/resource/slug/entities/slug.entity';
 import { Connector } from 'src/type/connector.type';
 import { Repository } from 'typeorm';
 
@@ -24,6 +29,7 @@ import { MaintenanceService } from '../src/resource/maintenance/maintenance.serv
 import { Service } from '../src/resource/service/entities/service.entity';
 import { ServiceController } from '../src/resource/service/service.controller';
 import { ServiceService } from '../src/resource/service/service.service';
+import { SlugService } from '../src/resource/slug/slug.service';
 import { Status } from '../src/resource/status/entities/status.entity';
 import { StatusService } from '../src/resource/status/status.service';
 import { ScrapingService } from '../src/service/scraping/scraping.service';
@@ -128,12 +134,20 @@ const before = async (): Promise<void> => {
   const module: TestingModule = await Test.createTestingModule({
     imports: [
       TypeOrmModule.forRoot(dataSourceOptions),
-      TypeOrmModule.forFeature([Service, Status, Archive, Maintenance, Log]),
+      TypeOrmModule.forFeature([
+        Slug,
+        Service,
+        Status,
+        Archive,
+        Maintenance,
+        Log,
+      ]),
     ],
     providers: [
       WebsocketService,
       WinstonService,
       ScrapingService,
+      SlugService,
       ServiceService,
       ArchiveService,
       MaintenanceService,
@@ -302,7 +316,7 @@ describe('ScrapingService (e2e)', (): void => {
       ])(
         'should service controller return correct data',
         async (
-          slug: Slug,
+          slug: EsoStatusSlug,
           rawData: RawEsoStatus,
           maintenance: MaintenanceEsoStatus | undefined,
         ): Promise<void> => {
@@ -397,7 +411,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -491,7 +505,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -585,7 +599,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -678,7 +692,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -806,7 +820,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -908,7 +922,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -1012,7 +1026,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -1114,7 +1128,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -1216,7 +1230,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -1279,20 +1293,23 @@ describe('ScrapingService (e2e)', (): void => {
               },
             );
             clientSocket.on('maintenancePlanned', maintenancePlannedCalled);
-            clientSocket.on('maintenanceRemoved', (data: Slug): void => {
-              if (
-                !haveMaintenanceRemovedEu &&
-                data === LiveServicesPcEuDownEsoStatus.slug
-              ) {
-                haveMaintenanceRemovedEu = true;
-              }
-              if (
-                !haveMaintenanceRemovedNa &&
-                data === LiveServicesPcNaDownEsoStatus.slug
-              ) {
-                haveMaintenanceRemovedNa = true;
-              }
-            });
+            clientSocket.on(
+              'maintenanceRemoved',
+              (data: EsoStatusSlug): void => {
+                if (
+                  !haveMaintenanceRemovedEu &&
+                  data === LiveServicesPcEuDownEsoStatus.slug
+                ) {
+                  haveMaintenanceRemovedEu = true;
+                }
+                if (
+                  !haveMaintenanceRemovedNa &&
+                  data === LiveServicesPcNaDownEsoStatus.slug
+                ) {
+                  haveMaintenanceRemovedNa = true;
+                }
+              },
+            );
 
             setTimeout((): void => {
               expect(maintenancePlannedCalled).toHaveBeenCalledTimes(0);
@@ -1361,7 +1378,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -1449,7 +1466,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -1537,7 +1554,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -1627,7 +1644,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -1715,7 +1732,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -1803,7 +1820,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -1893,7 +1910,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -1988,7 +2005,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -2076,7 +2093,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -2166,7 +2183,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -2254,7 +2271,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -2342,7 +2359,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -2432,7 +2449,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -2520,7 +2537,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -2615,7 +2632,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -2705,7 +2722,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -2793,7 +2810,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -2881,7 +2898,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -3002,7 +3019,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -3090,7 +3107,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -3178,7 +3195,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -3268,7 +3285,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -3356,7 +3373,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -3444,7 +3461,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -3534,7 +3551,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -3629,7 +3646,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -3717,7 +3734,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -3807,7 +3824,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -3895,7 +3912,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -3983,7 +4000,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -4073,7 +4090,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -4161,7 +4178,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -4256,7 +4273,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -4346,7 +4363,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -4434,7 +4451,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
@@ -4522,7 +4539,7 @@ describe('ScrapingService (e2e)', (): void => {
         ])(
           'should service controller return correct data',
           async (
-            slug: Slug,
+            slug: EsoStatusSlug,
             rawData: RawEsoStatus,
             maintenance: MaintenanceEsoStatus | undefined,
           ): Promise<void> => {
