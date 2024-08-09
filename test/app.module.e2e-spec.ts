@@ -5,7 +5,7 @@ import {
   EsoStatus,
   MaintenanceEsoStatus,
   RawEsoStatus,
-  Slug,
+  Slug as EsoStatusSlug,
 } from '@eso-status/types';
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -16,6 +16,7 @@ import { Socket, io } from 'socket.io-client';
 import { EsoStatus as CustomEsoStatus } from 'src/interface/esoStatus.interface';
 import { MaintenanceEsoStatus as CustomMaintenanceEsoStatus } from 'src/interface/maintenanceEsoStatus.interface';
 import { Maintenance } from 'src/resource/maintenance/entities/maintenance.entity';
+import { Slug } from 'src/resource/slug/entities/slug.entity';
 import { Repository } from 'typeorm';
 import { runSeeders } from 'typeorm-extension';
 
@@ -28,6 +29,7 @@ import { MaintenanceService } from '../src/resource/maintenance/maintenance.serv
 import { Service } from '../src/resource/service/entities/service.entity';
 import { ServiceController } from '../src/resource/service/service.controller';
 import { ServiceService } from '../src/resource/service/service.service';
+import { SlugService } from '../src/resource/slug/slug.service';
 import { Status } from '../src/resource/status/entities/status.entity';
 import { StatusService } from '../src/resource/status/status.service';
 import { ScrapingService } from '../src/service/scraping/scraping.service';
@@ -54,12 +56,20 @@ describe('ScrapingService (e2e)', (): void => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         TypeOrmModule.forRoot(dataSourceOptions),
-        TypeOrmModule.forFeature([Service, Status, Archive, Maintenance, Log]),
+        TypeOrmModule.forFeature([
+          Service,
+          Status,
+          Archive,
+          Maintenance,
+          Log,
+          Slug,
+        ]),
       ],
       providers: [
         WebsocketService,
         WinstonService,
         ScrapingService,
+        SlugService,
         ServiceService,
         ArchiveService,
         MaintenanceService,
@@ -248,9 +258,9 @@ describe('ScrapingService (e2e)', (): void => {
               let maintenancePlannedCalled: boolean = false;
               let maintenanceRemovedCalled: boolean = false;
 
-              const statusUpdateReallyReceived: Slug[] = [];
-              const maintenancePlannedReallyReceived: Slug[] = [];
-              const maintenanceRemovedReallyReceived: Slug[] = [];
+              const statusUpdateReallyReceived: EsoStatusSlug[] = [];
+              const maintenancePlannedReallyReceived: EsoStatusSlug[] = [];
+              const maintenanceRemovedReallyReceived: EsoStatusSlug[] = [];
 
               let statusUpdateCalledNb: number = 0;
               let maintenancePlannedCalledNb: number = 0;
@@ -269,9 +279,11 @@ describe('ScrapingService (e2e)', (): void => {
               );
 
               const maintenanceRemovedReceived = [];
-              step.maintenanceRemovedList.forEach((slug: Slug): void => {
-                maintenanceRemovedReceived[slug] = false;
-              });
+              step.maintenanceRemovedList.forEach(
+                (slug: EsoStatusSlug): void => {
+                  maintenanceRemovedReceived[slug] = false;
+                },
+              );
 
               clientSocket.on('statusUpdate', (esoStatus: EsoStatus): void => {
                 statusUpdateCalled = true;
@@ -317,14 +329,17 @@ describe('ScrapingService (e2e)', (): void => {
                 },
               );
 
-              clientSocket.on('maintenanceRemoved', (slug: Slug): void => {
-                maintenanceRemovedCalled = true;
-                maintenanceRemovedReallyReceived[slug] = true;
-                maintenanceRemovedCalledNb += 1;
-                if (!maintenanceRemovedReceived[slug]) {
-                  maintenanceRemovedReceived[slug] = true;
-                }
-              });
+              clientSocket.on(
+                'maintenanceRemoved',
+                (slug: EsoStatusSlug): void => {
+                  maintenanceRemovedCalled = true;
+                  maintenanceRemovedReallyReceived[slug] = true;
+                  maintenanceRemovedCalledNb += 1;
+                  if (!maintenanceRemovedReceived[slug]) {
+                    maintenanceRemovedReceived[slug] = true;
+                  }
+                },
+              );
 
               setTimeout((): void => {
                 let callUnexpected: boolean = false;
@@ -353,7 +368,7 @@ describe('ScrapingService (e2e)', (): void => {
                 let unexpectedSlug: boolean = false;
 
                 Object.keys(statusUpdateReallyReceived).forEach(
-                  (slug: Slug): void => {
+                  (slug: EsoStatusSlug): void => {
                     if (
                       !unexpectedSlug &&
                       statusUpdateReceived[slug] !== true
@@ -364,7 +379,7 @@ describe('ScrapingService (e2e)', (): void => {
                 );
 
                 Object.keys(maintenancePlannedReallyReceived).forEach(
-                  (slug: Slug): void => {
+                  (slug: EsoStatusSlug): void => {
                     if (
                       !unexpectedSlug &&
                       maintenancePlannedReceived[slug] !== true
@@ -375,7 +390,7 @@ describe('ScrapingService (e2e)', (): void => {
                 );
 
                 Object.keys(maintenanceRemovedReallyReceived).forEach(
-                  (slug: Slug): void => {
+                  (slug: EsoStatusSlug): void => {
                     if (
                       !unexpectedSlug &&
                       maintenanceRemovedReceived[slug] !== true
