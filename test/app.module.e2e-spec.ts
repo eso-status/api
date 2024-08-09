@@ -475,6 +475,10 @@ describe('ScrapingService (e2e)', (): void => {
             15000,
           );
 
+          it('should database has correct log count', async (): Promise<void> => {
+            expect(await logRepository.count()).toEqual(step.logs.length);
+          }, 15000);
+
           it.each(step.archives)(
             'should archive ($serviceId) exist',
             async (archive: Archive): Promise<void> => {
@@ -528,6 +532,12 @@ describe('ScrapingService (e2e)', (): void => {
               15000,
             );
           }
+
+          it('should database has correct maintenance count', async (): Promise<void> => {
+            expect(await maintenanceRepository.count()).toEqual(
+              step.maintenances.length,
+            );
+          }, 15000);
 
           // TODO tester avec une vrai request
           it.each(step.serviceControllerReturn)(
