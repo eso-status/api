@@ -1,4 +1,4 @@
-import { ForumMessage } from '@eso-status/forum-message';
+import { ForumMessage, ForumMessagePTSURL } from '@eso-status/forum-message';
 import { LiveServices } from '@eso-status/live-services';
 import { ServiceAlerts } from '@eso-status/service-alerts';
 import {
@@ -316,6 +316,14 @@ export class ScrapingService {
   @Interval(Number(process.env.FORUM_MESSAGE_UPDATE_INTERVAL))
   public async handleForumMessage(): Promise<void> {
     await this.doHandle(await ForumMessage.getData(), 'ForumMessage');
+  }
+
+  @Interval(Number(process.env.FORUM_MESSAGE_UPDATE_INTERVAL))
+  public async handleForumMessagePts(): Promise<void> {
+    await this.doHandle(
+      await ForumMessage.getData(ForumMessagePTSURL),
+      'ForumMessagePts',
+    );
   }
 
   @Interval(Number(process.env.LIVE_SERVICES_UPDATE_INTERVAL))
