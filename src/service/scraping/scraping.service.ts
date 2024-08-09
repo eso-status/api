@@ -147,25 +147,37 @@ export class ScrapingService {
     await this.updateService(service.id, newStatus.id, esoStatus.raw);
 
     // Write log with detail (old and new status)
-    this.winstonService.log(`[${connector}] [${service.slug.slug}] [Entity] updateService: [from ${service.status.status} to ${newStatus.status}]`, 'ScrapingService.updateNoMaintenance');
+    this.winstonService.log(
+      `[${connector}] [${service.slug.slug}] [Entity] updateService: [from ${service.status.status} to ${newStatus.status}]`,
+      'ScrapingService.updateNoMaintenance',
+    );
 
     // Emit statusUpdate event
     this.websocketService.server.emit('statusUpdate', esoStatus);
 
     // Write log
-    this.winstonService.log(`[${connector}] [${service.slug.slug}] [Event] statusUpdate event emitted`, 'ScrapingService.updateNoMaintenance');
+    this.winstonService.log(
+      `[${connector}] [${service.slug.slug}] [Event] statusUpdate event emitted`,
+      'ScrapingService.updateNoMaintenance',
+    );
 
     if (this.serviceHaveMaintenance(service)) {
       await this.detachMaintenanceToService(service);
 
       // Write log
-      this.winstonService.log(`[${connector}] [${service.slug.slug}] [Entity] maintenance detached`, 'ScrapingService.updateNoMaintenance');
+      this.winstonService.log(
+        `[${connector}] [${service.slug.slug}] [Entity] maintenance detached`,
+        'ScrapingService.updateNoMaintenance',
+      );
 
       // Emit maintenanceRemoved event
       this.websocketService.server.emit('maintenanceRemoved', esoStatus.slug);
 
       // Write log
-      this.winstonService.log(`[${connector}] [${service.slug.slug}] [Event] maintenanceRemoved event emitted`, 'ScrapingService.updateNoMaintenance');
+      this.winstonService.log(
+        `[${connector}] [${service.slug.slug}] [Event] maintenanceRemoved event emitted`,
+        'ScrapingService.updateNoMaintenance',
+      );
     }
   }
 
@@ -181,7 +193,10 @@ export class ScrapingService {
     );
 
     // Write log
-    this.winstonService.log(`[${connector}] [${service.slug.slug}] [Entity] maintenance attached`, 'ScrapingService.updateMaintenance');
+    this.winstonService.log(
+      `[${connector}] [${service.slug.slug}] [Entity] maintenance attached`,
+      'ScrapingService.updateMaintenance',
+    );
 
     // Emit maintenancePlanned event
     this.websocketService.server.emit('maintenancePlanned', <
@@ -194,7 +209,10 @@ export class ScrapingService {
     });
 
     // Write log
-    this.winstonService.log(`[${connector}] [${service.slug.slug}] [Event] maintenancePlanned event emitted`, 'ScrapingService.updateNoMaintenance');
+    this.winstonService.log(
+      `[${connector}] [${service.slug.slug}] [Event] maintenancePlanned event emitted`,
+      'ScrapingService.updateNoMaintenance',
+    );
   }
 
   /**
@@ -221,28 +239,43 @@ export class ScrapingService {
     const newStatus: Status = await this.getStatus(esoStatus.status);
 
     // Write log with detail (raw)
-    this.winstonService.log(`[${connector}] [${service.slug.slug}] [Change] archiveChanged. New raw: ${JSON.stringify(esoStatus.raw)}`, 'ScrapingService.prepareUpdate');
+    this.winstonService.log(
+      `[${connector}] [${service.slug.slug}] [Change] archiveChanged. New raw: ${JSON.stringify(esoStatus.raw)}`,
+      'ScrapingService.prepareUpdate',
+    );
 
     // Create log
     await this.addLog(connector, service.id, newStatus.id, esoStatus.raw);
 
     // Write log
-    this.winstonService.log(`[${connector}] [${service.slug.slug}] [Entity] log created`, 'ScrapingService.prepareUpdate');
+    this.winstonService.log(
+      `[${connector}] [${service.slug.slug}] [Entity] log created`,
+      'ScrapingService.prepareUpdate',
+    );
 
     // Update archive
     await this.updateArchive(service, esoStatus.raw, connector, newStatus.id);
 
     // Write log
-    this.winstonService.log(`[${connector}] [${service.slug.slug}] [Entity] archive updated`, 'ScrapingService.prepareUpdate');
+    this.winstonService.log(
+      `[${connector}] [${service.slug.slug}] [Entity] archive updated`,
+      'ScrapingService.prepareUpdate',
+    );
 
     if (this.isPlannedStatus(esoStatus.status)) {
       // Write log
-      this.winstonService.log(`[${connector}] [${service.slug.slug}] [Status] is planned status`, 'ScrapingService.prepareUpdate');
+      this.winstonService.log(
+        `[${connector}] [${service.slug.slug}] [Status] is planned status`,
+        'ScrapingService.prepareUpdate',
+      );
 
       await this.updateMaintenance(connector, esoStatus, service);
     } else {
       // Write log
-      this.winstonService.log(`[${connector}] [${service.slug.slug}] [Status] is not planned status`, 'ScrapingService.prepareUpdate');
+      this.winstonService.log(
+        `[${connector}] [${service.slug.slug}] [Status] is not planned status`,
+        'ScrapingService.prepareUpdate',
+      );
 
       await this.updateNoMaintenance(connector, esoStatus, service, newStatus);
     }
