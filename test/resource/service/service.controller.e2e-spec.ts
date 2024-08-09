@@ -45,6 +45,12 @@ describe('ServiceController (e2e)', () => {
       expect(response.status).toBe(200);
     });
 
+    it('should return 400 error when bad slug passed', async (): Promise<void> => {
+      expect(
+        (await request(<App>app.getHttpServer()).get('/service/test')).status,
+      ).toBe(400);
+    });
+
     it.each(serviceData)(
       'should return correct data for specific slug',
       (service: Service): void => {
