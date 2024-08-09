@@ -48,6 +48,7 @@ let scrapingService: ScrapingService;
 let clientSocket: Socket;
 let serviceRepository: Repository<Service>;
 let archiveRepository: Repository<Archive>;
+let maintenanceRepository: Repository<Maintenance>;
 let logRepository: Repository<Log>;
 let serviceController: ServiceController;
 
@@ -94,6 +95,7 @@ describe('ScrapingService (e2e)', (): void => {
     serviceRepository = dataSource.getRepository(Service);
     archiveRepository = dataSource.getRepository(Archive);
     logRepository = dataSource.getRepository(Log);
+    maintenanceRepository = dataSource.getRepository(Maintenance);
 
     await new Promise<void>((resolve): void => {
       clientSocket.on('connect', (): void => {
@@ -473,6 +475,10 @@ describe('ScrapingService (e2e)', (): void => {
             15000,
           );
 
+          it('should database has correct log count', async (): Promise<void> => {
+            expect(await logRepository.count()).toEqual(step.logs.length);
+          }, 15000);
+
           it.each(step.archives)(
             'should archive ($serviceId) exist',
             async (archive: Archive): Promise<void> => {
@@ -508,6 +514,30 @@ describe('ScrapingService (e2e)', (): void => {
             },
             15000,
           );
+
+          if (step.maintenances.length > 0) {
+            it.each(step.maintenances)(
+              'should maintenance ($serviceId) exist',
+              async (maintenance: Maintenance): Promise<void> => {
+                expect(
+                  await maintenanceRepository.count({
+                    where: {
+                      serviceId: maintenance.serviceId,
+                      beginnerAt: maintenance.beginnerAt,
+                      rawData: maintenance.rawData,
+                    },
+                  }),
+                ).toEqual(1);
+              },
+              15000,
+            );
+          }
+
+          it('should database has correct maintenance count', async (): Promise<void> => {
+            expect(await maintenanceRepository.count()).toEqual(
+              step.maintenances.length,
+            );
+          }, 15000);
 
           // TODO tester avec une vrai request
           it.each(step.serviceControllerReturn)(

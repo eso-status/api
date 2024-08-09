@@ -7,6 +7,7 @@ import {
 
 import { EsoStatus as CustomEsoStatus } from 'src/interface/esoStatus.interface';
 import { Archive } from 'src/resource/archive/entities/archive.entity';
+import { Maintenance } from 'src/resource/maintenance/entities/maintenance.entity';
 import { Service } from 'src/resource/service/entities/service.entity';
 
 import { Connector } from 'src/type/connector.type';
@@ -22,5 +23,6 @@ export interface Step {
   logs: Log[];
   archives: Archive[];
   services: Service[];
+  maintenances: Maintenance[];
   serviceControllerReturn: CustomEsoStatus[];
 }
