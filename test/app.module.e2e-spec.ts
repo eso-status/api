@@ -13,10 +13,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from 'dotenv';
 import { Socket, io } from 'socket.io-client';
 
-import { EsoStatus as CustomEsoStatus } from 'src/interface/esoStatus.interface';
-import { MaintenanceEsoStatus as CustomMaintenanceEsoStatus } from 'src/interface/maintenanceEsoStatus.interface';
-import { Maintenance } from 'src/resource/maintenance/entities/maintenance.entity';
-import { Slug } from 'src/resource/slug/entities/slug.entity';
 import * as request from 'supertest';
 import supertest from 'supertest';
 import { App } from 'supertest/types';
@@ -24,15 +20,19 @@ import { Repository } from 'typeorm';
 import { runSeeders } from 'typeorm-extension';
 
 import { dataSource, dataSourceOptions } from '../src/config/typeorm.config';
+import { EsoStatus as CustomEsoStatus } from '../src/interface/esoStatus.interface';
+import { MaintenanceEsoStatus as CustomMaintenanceEsoStatus } from '../src/interface/maintenanceEsoStatus.interface';
 import { ArchiveService } from '../src/resource/archive/archive.service';
 import { Archive } from '../src/resource/archive/entities/archive.entity';
 import { Log } from '../src/resource/log/entities/log.entity';
 import { LogService } from '../src/resource/log/log.service';
+import { Maintenance } from '../src/resource/maintenance/entities/maintenance.entity';
 import { MaintenanceService } from '../src/resource/maintenance/maintenance.service';
 import { Service } from '../src/resource/service/entities/service.entity';
 import { ServiceController } from '../src/resource/service/service.controller';
 import { ServiceModule } from '../src/resource/service/service.module';
 import { ServiceService } from '../src/resource/service/service.service';
+import { Slug } from '../src/resource/slug/entities/slug.entity';
 import { SlugService } from '../src/resource/slug/slug.service';
 import { Status } from '../src/resource/status/entities/status.entity';
 import { StatusService } from '../src/resource/status/status.service';
@@ -246,7 +246,10 @@ describe('AppModule (e2e)', (): void => {
                   });
               }
 
-              if (step.connector === 'ForumMessage') {
+              if (
+                step.connector === 'ForumMessage' ||
+                step.connector === 'ForumMessagePts'
+              ) {
                 jest
                   .spyOn(ForumMessage, 'getData')
                   .mockImplementation(async (): Promise<RawEsoStatus[]> => {
@@ -448,7 +451,7 @@ describe('AppModule (e2e)', (): void => {
                 ) {
                   resolve();
                 }
-              }, 1000);
+              }, 100);
 
               if (step.connector === 'LiveServices') {
                 await scrapingService.handleLiveServices();
@@ -456,6 +459,10 @@ describe('AppModule (e2e)', (): void => {
 
               if (step.connector === 'ForumMessage') {
                 await scrapingService.handleForumMessage();
+              }
+
+              if (step.connector === 'ForumMessagePts') {
+                await scrapingService.handleForumMessagePts();
               }
 
               if (step.connector === 'ServiceAlerts') {

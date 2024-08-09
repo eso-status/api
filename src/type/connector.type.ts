@@ -1,1 +1,5 @@
-export type Connector = 'ForumMessage' | 'LiveServices' | 'ServiceAlerts';
+export type Connector =
+  | 'ForumMessage'
+  | 'ForumMessagePts'
+  | 'LiveServices'
+  | 'ServiceAlerts';
