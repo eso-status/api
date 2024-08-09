@@ -14,7 +14,7 @@ export class Maintenance {
   @PrimaryGeneratedColumn({
     type: 'int',
   })
-  id: number;
+  id?: number;
 
   @Column({ type: 'int', nullable: false })
   serviceId?: number;
@@ -27,7 +27,7 @@ export class Maintenance {
   beginnerAt: Date;
 
   @Column({ type: 'datetime', nullable: false })
-  endingAt: Date;
+  endingAt?: Date;
 
   @Column({ type: 'text', nullable: false })
   rawData: string;

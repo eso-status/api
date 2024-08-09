@@ -1,6 +1,7 @@
 import { EsoStatus, RawEsoStatus, Slug } from '@eso-status/types';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { isValidDate } from 'rxjs/internal/util/isDate';
 import { Repository } from 'typeorm';
 
 import { Service } from './entities/service.entity';
@@ -29,7 +30,10 @@ export class ServiceService {
         beginnerAt: service.maintenance.beginnerAt.toISOString(),
       };
 
-      if (service.maintenance.endingAt) {
+      if (
+        service.maintenance.endingAt &&
+        isValidDate(service.maintenance.endingAt)
+      ) {
         formatedEsoStatus.maintenance.endingAt =
           service.maintenance.endingAt.toISOString();
       }
