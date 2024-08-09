@@ -1,3 +1,4 @@
+import { Maintenance } from 'aws-sdk/clients/mediaconnect';
 import { Archive } from 'src/resource/archive/entities/archive.entity';
 import { Service } from 'src/resource/service/entities/service.entity';
 
@@ -8,5 +9,6 @@ export interface Initial {
   logs: Log[];
   archives: Archive[];
   services: Service[];
+  maintenances: Maintenance[];
   serviceControllerReturn: CustomEsoStatus[];
 }

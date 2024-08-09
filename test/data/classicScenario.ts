@@ -926,7 +926,6 @@ const ForumMessageServiceSystemAccountUp: EsoStatus = {
   raw: ForumMessageServiceSystemAccountUpRaw,
 };
 
-// TODO add maintenance table check
 export const classicMaintenance: Scenario = {
   initial: {
     logs: [
@@ -1220,6 +1219,7 @@ export const classicMaintenance: Scenario = {
         rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
       },
     ],
+    maintenances: [],
     serviceControllerReturn: [
       {
         slug: 'server_xbox_na',
@@ -1594,6 +1594,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -1958,6 +1959,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -2331,6 +2333,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -2695,6 +2698,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -3069,6 +3073,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -3442,6 +3447,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -3806,6 +3812,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -4179,6 +4186,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -4543,6 +4551,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -4916,6 +4925,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -5280,6 +5290,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -5654,6 +5665,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -6027,6 +6039,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -6423,6 +6436,25 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [
+        {
+          serviceId: 7,
+          beginnerAt: new Date(ForumMessageServerPcPtsPlanned.beginnerAt),
+          rawData: JSON.stringify(ForumMessageServerPcPtsPlannedRaw),
+        },
+        {
+          serviceId: 11,
+          beginnerAt: new Date(ForumMessageServiceStoreEsoPlanned.beginnerAt),
+          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
+        },
+        {
+          serviceId: 12,
+          beginnerAt: new Date(
+            ForumMessageServiceSystemAccountPlanned.beginnerAt,
+          ),
+          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
+        },
+      ],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -6840,6 +6872,25 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [
+        {
+          serviceId: 7,
+          beginnerAt: new Date(ForumMessageServerPcPtsPlanned.beginnerAt),
+          rawData: JSON.stringify(ForumMessageServerPcPtsPlannedRaw),
+        },
+        {
+          serviceId: 11,
+          beginnerAt: new Date(ForumMessageServiceStoreEsoPlanned.beginnerAt),
+          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
+        },
+        {
+          serviceId: 12,
+          beginnerAt: new Date(
+            ForumMessageServiceSystemAccountPlanned.beginnerAt,
+          ),
+          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
+        },
+      ],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -7250,6 +7301,25 @@ export const classicMaintenance: Scenario = {
           supportId: 3,
           zoneId: 8,
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
+        },
+      ],
+      maintenances: [
+        {
+          serviceId: 7,
+          beginnerAt: new Date(ForumMessageServerPcPtsPlanned.beginnerAt),
+          rawData: JSON.stringify(ForumMessageServerPcPtsPlannedRaw),
+        },
+        {
+          serviceId: 11,
+          beginnerAt: new Date(ForumMessageServiceStoreEsoPlanned.beginnerAt),
+          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
+        },
+        {
+          serviceId: 12,
+          beginnerAt: new Date(
+            ForumMessageServiceSystemAccountPlanned.beginnerAt,
+          ),
+          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
         },
       ],
       serviceControllerReturn: [
@@ -7670,833 +7740,23 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
         },
       ],
-      serviceControllerReturn: [
+      maintenances: [
         {
-          slug: 'server_xbox_na',
-          status: 'up',
-          type: 'server',
-          support: 'xbox',
-          zone: 'na',
-          raw: LiveServicesServerXboxNaUpRawStringDate,
-        },
-        {
-          slug: 'server_xbox_eu',
-          status: 'up',
-          type: 'server',
-          support: 'xbox',
-          zone: 'eu',
-          raw: LiveServicesServerXboxEuUpRawStringDate,
-        },
-        {
-          slug: 'server_ps_na',
-          status: 'up',
-          type: 'server',
-          support: 'ps',
-          zone: 'na',
-          raw: LiveServicesServerPsNaUpRawStringDate,
-        },
-        {
-          slug: 'server_ps_eu',
-          status: 'up',
-          type: 'server',
-          support: 'ps',
-          zone: 'eu',
-          raw: LiveServicesServerPsEuUpRawStringDate,
-        },
-        {
-          slug: 'server_pc_na',
-          status: 'up',
-          type: 'server',
-          support: 'pc',
-          zone: 'na',
-          raw: LiveServicesServerPcNaUpRawStringDate,
-        },
-        {
-          slug: 'server_pc_eu',
-          status: 'up',
-          type: 'server',
-          support: 'pc',
-          zone: 'eu',
-          raw: LiveServicesServerPcEuUpRawStringDate,
-        },
-        {
-          slug: 'server_pc_pts',
-          status: 'up',
-          type: 'server',
-          support: 'pc',
-          zone: 'pts',
-          raw: LiveServicesServerPcPtsUpRawStringDate,
-          maintenance: {
-            raw: ForumMessageServerPcPtsPlannedRawStringDate,
-            slug: ForumMessageServerPcPtsPlannedRaw.slugs[0],
-            beginnerAt: ForumMessageServerPcPtsPlannedRawStringDate.dates[0],
-          },
-        },
-        {
-          slug: 'service_store_eso',
-          status: 'up',
-          type: 'service',
-          support: 'store',
-          zone: 'eso',
-          raw: ServiceAlertsServiceStoreEsoUpRawStringDate,
-          maintenance: {
-            raw: ForumMessageServiceStoreEsoPlannedRawStringDate,
-            slug: ForumMessageServiceStoreEsoPlannedRaw.slugs[0],
-            beginnerAt:
-              ForumMessageServiceStoreEsoPlannedRawStringDate.dates[0],
-            endingAt: ForumMessageServiceStoreEsoPlannedRawStringDate.dates[1],
-          },
-        },
-        {
-          slug: 'service_system_account',
-          status: 'up',
-          type: 'service',
-          support: 'system',
-          zone: 'account',
-          raw: ServiceAlertsServiceSystemAccountUpRawStringDate,
-          maintenance: {
-            raw: ForumMessageServiceSystemAccountPlannedRawStringDate,
-            slug: ForumMessageServiceSystemAccountPlannedRaw.slugs[0],
-            beginnerAt:
-              ForumMessageServiceSystemAccountPlannedRawStringDate.dates[0],
-            endingAt:
-              ForumMessageServiceSystemAccountPlannedRawStringDate.dates[1],
-          },
-        },
-      ],
-    },
-    // Same
-    {
-      connector: 'LiveServices',
-
-      connectorData: [
-        LiveServicesServerPcEuUpRaw,
-        LiveServicesServerPcNaUpRaw,
-        LiveServicesServerPsEuUpRaw,
-        LiveServicesServerPsNaUpRaw,
-        LiveServicesServerPcPtsUpRaw,
-        LiveServicesServerXboxEuUpRaw,
-        LiveServicesServerXboxNaUpRaw,
-      ],
-      statusUpdateList: [],
-      maintenancePlannedList: [],
-      maintenanceRemovedList: [],
-      logs: [
-        {
-          connector: 'LiveServices',
-          serviceId: 1,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerXboxNaUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 2,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerXboxEuUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 3,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPsNaUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 4,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPsEuUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 5,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPcNaUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 6,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPcEuUpRaw),
-        },
-        {
-          connector: 'LiveServices',
           serviceId: 7,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPcPtsUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 1,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerXboxNaUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 2,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerXboxEuUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 3,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPsNaUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 4,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPsEuUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 5,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPcNaUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 6,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPcEuUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 7,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPcPtsUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 11,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServiceStoreEsoUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 12,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
-        },
-        {
-          connector: 'ForumMessage',
-          serviceId: 7,
-          statusId: 4,
+          beginnerAt: new Date(ForumMessageServerPcPtsPlanned.beginnerAt),
           rawData: JSON.stringify(ForumMessageServerPcPtsPlannedRaw),
         },
         {
-          connector: 'ForumMessage',
           serviceId: 11,
-          statusId: 4,
+          beginnerAt: new Date(ForumMessageServiceStoreEsoPlanned.beginnerAt),
           rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
         },
         {
-          connector: 'ForumMessage',
           serviceId: 12,
-          statusId: 4,
+          beginnerAt: new Date(
+            ForumMessageServiceSystemAccountPlanned.beginnerAt,
+          ),
           rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
-        },
-      ],
-      archives: [
-        {
-          connector: 'LiveServices',
-          serviceId: 1,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerXboxNaUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 2,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerXboxEuUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 3,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPsNaUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 4,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPsEuUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 5,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPcNaUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 6,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPcEuUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 7,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPcPtsUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 1,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerXboxNaUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 2,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerXboxEuUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 3,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPsNaUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 4,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPsEuUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 5,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPcNaUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 6,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPcEuUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 7,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPcPtsUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 11,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServiceStoreEsoUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 12,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
-        },
-        {
-          connector: 'ForumMessage',
-          serviceId: 7,
-          statusId: 4,
-          rawData: JSON.stringify(ForumMessageServerPcPtsPlannedRaw),
-        },
-        {
-          connector: 'ForumMessage',
-          serviceId: 11,
-          statusId: 4,
-          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
-        },
-        {
-          connector: 'ForumMessage',
-          serviceId: 12,
-          statusId: 4,
-          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
-        },
-      ],
-      services: [
-        {
-          slugId: 1,
-          statusId: 1,
-          typeId: 1,
-          supportId: 6,
-          zoneId: 2,
-          rawData: JSON.stringify(LiveServicesServerXboxNaUpRaw),
-        },
-        {
-          slugId: 2,
-          statusId: 1,
-          typeId: 1,
-          supportId: 6,
-          zoneId: 1,
-          rawData: JSON.stringify(LiveServicesServerXboxEuUpRaw),
-        },
-        {
-          slugId: 3,
-          statusId: 1,
-          typeId: 1,
-          supportId: 5,
-          zoneId: 2,
-          rawData: JSON.stringify(LiveServicesServerPsNaUpRaw),
-        },
-        {
-          slugId: 4,
-          statusId: 1,
-          typeId: 1,
-          supportId: 5,
-          zoneId: 1,
-          rawData: JSON.stringify(LiveServicesServerPsEuUpRaw),
-        },
-        {
-          slugId: 5,
-          statusId: 1,
-          typeId: 1,
-          supportId: 4,
-          zoneId: 2,
-          rawData: JSON.stringify(LiveServicesServerPcNaUpRaw),
-        },
-        {
-          slugId: 6,
-          statusId: 1,
-          typeId: 1,
-          supportId: 4,
-          zoneId: 1,
-          rawData: JSON.stringify(LiveServicesServerPcEuUpRaw),
-        },
-        {
-          slugId: 7,
-          statusId: 1,
-          typeId: 1,
-          supportId: 4,
-          zoneId: 3,
-          rawData: JSON.stringify(LiveServicesServerPcPtsUpRaw),
-        },
-        {
-          slugId: 11,
-          statusId: 1,
-          typeId: 2,
-          supportId: 2,
-          zoneId: 6,
-          rawData: JSON.stringify(ServiceAlertsServiceStoreEsoUpRaw),
-        },
-        {
-          slugId: 12,
-          statusId: 1,
-          typeId: 2,
-          supportId: 3,
-          zoneId: 8,
-          rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
-        },
-      ],
-      serviceControllerReturn: [
-        {
-          slug: 'server_xbox_na',
-          status: 'up',
-          type: 'server',
-          support: 'xbox',
-          zone: 'na',
-          raw: LiveServicesServerXboxNaUpRawStringDate,
-        },
-        {
-          slug: 'server_xbox_eu',
-          status: 'up',
-          type: 'server',
-          support: 'xbox',
-          zone: 'eu',
-          raw: LiveServicesServerXboxEuUpRawStringDate,
-        },
-        {
-          slug: 'server_ps_na',
-          status: 'up',
-          type: 'server',
-          support: 'ps',
-          zone: 'na',
-          raw: LiveServicesServerPsNaUpRawStringDate,
-        },
-        {
-          slug: 'server_ps_eu',
-          status: 'up',
-          type: 'server',
-          support: 'ps',
-          zone: 'eu',
-          raw: LiveServicesServerPsEuUpRawStringDate,
-        },
-        {
-          slug: 'server_pc_na',
-          status: 'up',
-          type: 'server',
-          support: 'pc',
-          zone: 'na',
-          raw: LiveServicesServerPcNaUpRawStringDate,
-        },
-        {
-          slug: 'server_pc_eu',
-          status: 'up',
-          type: 'server',
-          support: 'pc',
-          zone: 'eu',
-          raw: LiveServicesServerPcEuUpRawStringDate,
-        },
-        {
-          slug: 'server_pc_pts',
-          status: 'up',
-          type: 'server',
-          support: 'pc',
-          zone: 'pts',
-          raw: LiveServicesServerPcPtsUpRawStringDate,
-          maintenance: {
-            raw: ForumMessageServerPcPtsPlannedRawStringDate,
-            slug: ForumMessageServerPcPtsPlannedRaw.slugs[0],
-            beginnerAt: ForumMessageServerPcPtsPlannedRawStringDate.dates[0],
-          },
-        },
-        {
-          slug: 'service_store_eso',
-          status: 'up',
-          type: 'service',
-          support: 'store',
-          zone: 'eso',
-          raw: ServiceAlertsServiceStoreEsoUpRawStringDate,
-          maintenance: {
-            raw: ForumMessageServiceStoreEsoPlannedRawStringDate,
-            slug: ForumMessageServiceStoreEsoPlannedRaw.slugs[0],
-            beginnerAt:
-              ForumMessageServiceStoreEsoPlannedRawStringDate.dates[0],
-            endingAt: ForumMessageServiceStoreEsoPlannedRawStringDate.dates[1],
-          },
-        },
-        {
-          slug: 'service_system_account',
-          status: 'up',
-          type: 'service',
-          support: 'system',
-          zone: 'account',
-          raw: ServiceAlertsServiceSystemAccountUpRawStringDate,
-          maintenance: {
-            raw: ForumMessageServiceSystemAccountPlannedRawStringDate,
-            slug: ForumMessageServiceSystemAccountPlannedRaw.slugs[0],
-            beginnerAt:
-              ForumMessageServiceSystemAccountPlannedRawStringDate.dates[0],
-            endingAt:
-              ForumMessageServiceSystemAccountPlannedRawStringDate.dates[1],
-          },
-        },
-      ],
-    },
-    {
-      connector: 'ForumMessage',
-
-      connectorData: [
-        ForumMessageServerPcPtsPlannedRaw,
-        ForumMessageServiceStoreEsoPlannedRaw,
-        ForumMessageServiceSystemAccountPlannedRaw,
-      ],
-      statusUpdateList: [],
-      maintenancePlannedList: [],
-      maintenanceRemovedList: [],
-      logs: [
-        {
-          connector: 'LiveServices',
-          serviceId: 1,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerXboxNaUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 2,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerXboxEuUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 3,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPsNaUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 4,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPsEuUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 5,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPcNaUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 6,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPcEuUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 7,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPcPtsUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 1,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerXboxNaUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 2,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerXboxEuUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 3,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPsNaUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 4,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPsEuUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 5,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPcNaUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 6,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPcEuUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 7,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPcPtsUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 11,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServiceStoreEsoUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 12,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
-        },
-        {
-          connector: 'ForumMessage',
-          serviceId: 7,
-          statusId: 4,
-          rawData: JSON.stringify(ForumMessageServerPcPtsPlannedRaw),
-        },
-        {
-          connector: 'ForumMessage',
-          serviceId: 11,
-          statusId: 4,
-          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
-        },
-        {
-          connector: 'ForumMessage',
-          serviceId: 12,
-          statusId: 4,
-          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
-        },
-      ],
-      archives: [
-        {
-          connector: 'LiveServices',
-          serviceId: 1,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerXboxNaUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 2,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerXboxEuUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 3,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPsNaUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 4,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPsEuUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 5,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPcNaUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 6,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPcEuUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 7,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPcPtsUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 1,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerXboxNaUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 2,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerXboxEuUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 3,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPsNaUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 4,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPsEuUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 5,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPcNaUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 6,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPcEuUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 7,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPcPtsUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 11,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServiceStoreEsoUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 12,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
-        },
-        {
-          connector: 'ForumMessage',
-          serviceId: 7,
-          statusId: 4,
-          rawData: JSON.stringify(ForumMessageServerPcPtsPlannedRaw),
-        },
-        {
-          connector: 'ForumMessage',
-          serviceId: 11,
-          statusId: 4,
-          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
-        },
-        {
-          connector: 'ForumMessage',
-          serviceId: 12,
-          statusId: 4,
-          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
-        },
-      ],
-      services: [
-        {
-          slugId: 1,
-          statusId: 1,
-          typeId: 1,
-          supportId: 6,
-          zoneId: 2,
-          rawData: JSON.stringify(LiveServicesServerXboxNaUpRaw),
-        },
-        {
-          slugId: 2,
-          statusId: 1,
-          typeId: 1,
-          supportId: 6,
-          zoneId: 1,
-          rawData: JSON.stringify(LiveServicesServerXboxEuUpRaw),
-        },
-        {
-          slugId: 3,
-          statusId: 1,
-          typeId: 1,
-          supportId: 5,
-          zoneId: 2,
-          rawData: JSON.stringify(LiveServicesServerPsNaUpRaw),
-        },
-        {
-          slugId: 4,
-          statusId: 1,
-          typeId: 1,
-          supportId: 5,
-          zoneId: 1,
-          rawData: JSON.stringify(LiveServicesServerPsEuUpRaw),
-        },
-        {
-          slugId: 5,
-          statusId: 1,
-          typeId: 1,
-          supportId: 4,
-          zoneId: 2,
-          rawData: JSON.stringify(LiveServicesServerPcNaUpRaw),
-        },
-        {
-          slugId: 6,
-          statusId: 1,
-          typeId: 1,
-          supportId: 4,
-          zoneId: 1,
-          rawData: JSON.stringify(LiveServicesServerPcEuUpRaw),
-        },
-        {
-          slugId: 7,
-          statusId: 1,
-          typeId: 1,
-          supportId: 4,
-          zoneId: 3,
-          rawData: JSON.stringify(LiveServicesServerPcPtsUpRaw),
-        },
-        {
-          slugId: 11,
-          statusId: 1,
-          typeId: 2,
-          supportId: 2,
-          zoneId: 6,
-          rawData: JSON.stringify(ServiceAlertsServiceStoreEsoUpRaw),
-        },
-        {
-          slugId: 12,
-          statusId: 1,
-          typeId: 2,
-          supportId: 3,
-          zoneId: 8,
-          rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
         },
       ],
       serviceControllerReturn: [
@@ -8916,6 +8176,25 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [
+        {
+          serviceId: 7,
+          beginnerAt: new Date(ForumMessageServerPcPtsPlanned.beginnerAt),
+          rawData: JSON.stringify(ForumMessageServerPcPtsPlannedRaw),
+        },
+        {
+          serviceId: 11,
+          beginnerAt: new Date(ForumMessageServiceStoreEsoPlanned.beginnerAt),
+          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
+        },
+        {
+          serviceId: 12,
+          beginnerAt: new Date(
+            ForumMessageServiceSystemAccountPlanned.beginnerAt,
+          ),
+          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
+        },
+      ],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -9326,6 +8605,25 @@ export const classicMaintenance: Scenario = {
           supportId: 3,
           zoneId: 8,
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
+        },
+      ],
+      maintenances: [
+        {
+          serviceId: 7,
+          beginnerAt: new Date(ForumMessageServerPcPtsPlanned.beginnerAt),
+          rawData: JSON.stringify(ForumMessageServerPcPtsPlannedRaw),
+        },
+        {
+          serviceId: 11,
+          beginnerAt: new Date(ForumMessageServiceStoreEsoPlanned.beginnerAt),
+          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
+        },
+        {
+          serviceId: 12,
+          beginnerAt: new Date(
+            ForumMessageServiceSystemAccountPlanned.beginnerAt,
+          ),
+          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
         },
       ],
       serviceControllerReturn: [
@@ -9745,6 +9043,25 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [
+        {
+          serviceId: 7,
+          beginnerAt: new Date(ForumMessageServerPcPtsPlanned.beginnerAt),
+          rawData: JSON.stringify(ForumMessageServerPcPtsPlannedRaw),
+        },
+        {
+          serviceId: 11,
+          beginnerAt: new Date(ForumMessageServiceStoreEsoPlanned.beginnerAt),
+          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
+        },
+        {
+          serviceId: 12,
+          beginnerAt: new Date(
+            ForumMessageServiceSystemAccountPlanned.beginnerAt,
+          ),
+          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
+        },
+      ],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -10155,6 +9472,892 @@ export const classicMaintenance: Scenario = {
           supportId: 3,
           zoneId: 8,
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
+        },
+      ],
+      maintenances: [
+        {
+          serviceId: 7,
+          beginnerAt: new Date(ForumMessageServerPcPtsPlanned.beginnerAt),
+          rawData: JSON.stringify(ForumMessageServerPcPtsPlannedRaw),
+        },
+        {
+          serviceId: 11,
+          beginnerAt: new Date(ForumMessageServiceStoreEsoPlanned.beginnerAt),
+          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
+        },
+        {
+          serviceId: 12,
+          beginnerAt: new Date(
+            ForumMessageServiceSystemAccountPlanned.beginnerAt,
+          ),
+          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
+        },
+      ],
+      serviceControllerReturn: [
+        {
+          slug: 'server_xbox_na',
+          status: 'up',
+          type: 'server',
+          support: 'xbox',
+          zone: 'na',
+          raw: LiveServicesServerXboxNaUpRawStringDate,
+        },
+        {
+          slug: 'server_xbox_eu',
+          status: 'up',
+          type: 'server',
+          support: 'xbox',
+          zone: 'eu',
+          raw: LiveServicesServerXboxEuUpRawStringDate,
+        },
+        {
+          slug: 'server_ps_na',
+          status: 'up',
+          type: 'server',
+          support: 'ps',
+          zone: 'na',
+          raw: LiveServicesServerPsNaUpRawStringDate,
+        },
+        {
+          slug: 'server_ps_eu',
+          status: 'up',
+          type: 'server',
+          support: 'ps',
+          zone: 'eu',
+          raw: LiveServicesServerPsEuUpRawStringDate,
+        },
+        {
+          slug: 'server_pc_na',
+          status: 'up',
+          type: 'server',
+          support: 'pc',
+          zone: 'na',
+          raw: LiveServicesServerPcNaUpRawStringDate,
+        },
+        {
+          slug: 'server_pc_eu',
+          status: 'up',
+          type: 'server',
+          support: 'pc',
+          zone: 'eu',
+          raw: LiveServicesServerPcEuUpRawStringDate,
+        },
+        {
+          slug: 'server_pc_pts',
+          status: 'up',
+          type: 'server',
+          support: 'pc',
+          zone: 'pts',
+          raw: LiveServicesServerPcPtsUpRawStringDate,
+          maintenance: {
+            raw: ForumMessageServerPcPtsPlannedRawStringDate,
+            slug: ForumMessageServerPcPtsPlannedRaw.slugs[0],
+            beginnerAt: ForumMessageServerPcPtsPlannedRawStringDate.dates[0],
+          },
+        },
+        {
+          slug: 'service_store_eso',
+          status: 'up',
+          type: 'service',
+          support: 'store',
+          zone: 'eso',
+          raw: ServiceAlertsServiceStoreEsoUpRawStringDate,
+          maintenance: {
+            raw: ForumMessageServiceStoreEsoPlannedRawStringDate,
+            slug: ForumMessageServiceStoreEsoPlannedRaw.slugs[0],
+            beginnerAt:
+              ForumMessageServiceStoreEsoPlannedRawStringDate.dates[0],
+            endingAt: ForumMessageServiceStoreEsoPlannedRawStringDate.dates[1],
+          },
+        },
+        {
+          slug: 'service_system_account',
+          status: 'up',
+          type: 'service',
+          support: 'system',
+          zone: 'account',
+          raw: ServiceAlertsServiceSystemAccountUpRawStringDate,
+          maintenance: {
+            raw: ForumMessageServiceSystemAccountPlannedRawStringDate,
+            slug: ForumMessageServiceSystemAccountPlannedRaw.slugs[0],
+            beginnerAt:
+              ForumMessageServiceSystemAccountPlannedRawStringDate.dates[0],
+            endingAt:
+              ForumMessageServiceSystemAccountPlannedRawStringDate.dates[1],
+          },
+        },
+      ],
+    },
+    // Same
+    {
+      connector: 'LiveServices',
+
+      connectorData: [
+        LiveServicesServerPcEuUpRaw,
+        LiveServicesServerPcNaUpRaw,
+        LiveServicesServerPsEuUpRaw,
+        LiveServicesServerPsNaUpRaw,
+        LiveServicesServerPcPtsUpRaw,
+        LiveServicesServerXboxEuUpRaw,
+        LiveServicesServerXboxNaUpRaw,
+      ],
+      statusUpdateList: [],
+      maintenancePlannedList: [],
+      maintenanceRemovedList: [],
+      logs: [
+        {
+          connector: 'LiveServices',
+          serviceId: 1,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerXboxNaUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 2,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerXboxEuUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 3,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPsNaUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 4,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPsEuUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 5,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPcNaUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 6,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPcEuUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 7,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPcPtsUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 1,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerXboxNaUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 2,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerXboxEuUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 3,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPsNaUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 4,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPsEuUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 5,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPcNaUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 6,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPcEuUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 7,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPcPtsUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 11,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServiceStoreEsoUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 12,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
+        },
+        {
+          connector: 'ForumMessage',
+          serviceId: 7,
+          statusId: 4,
+          rawData: JSON.stringify(ForumMessageServerPcPtsPlannedRaw),
+        },
+        {
+          connector: 'ForumMessage',
+          serviceId: 11,
+          statusId: 4,
+          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
+        },
+        {
+          connector: 'ForumMessage',
+          serviceId: 12,
+          statusId: 4,
+          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
+        },
+      ],
+      archives: [
+        {
+          connector: 'LiveServices',
+          serviceId: 1,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerXboxNaUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 2,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerXboxEuUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 3,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPsNaUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 4,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPsEuUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 5,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPcNaUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 6,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPcEuUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 7,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPcPtsUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 1,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerXboxNaUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 2,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerXboxEuUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 3,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPsNaUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 4,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPsEuUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 5,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPcNaUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 6,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPcEuUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 7,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPcPtsUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 11,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServiceStoreEsoUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 12,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
+        },
+        {
+          connector: 'ForumMessage',
+          serviceId: 7,
+          statusId: 4,
+          rawData: JSON.stringify(ForumMessageServerPcPtsPlannedRaw),
+        },
+        {
+          connector: 'ForumMessage',
+          serviceId: 11,
+          statusId: 4,
+          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
+        },
+        {
+          connector: 'ForumMessage',
+          serviceId: 12,
+          statusId: 4,
+          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
+        },
+      ],
+      services: [
+        {
+          slugId: 1,
+          statusId: 1,
+          typeId: 1,
+          supportId: 6,
+          zoneId: 2,
+          rawData: JSON.stringify(LiveServicesServerXboxNaUpRaw),
+        },
+        {
+          slugId: 2,
+          statusId: 1,
+          typeId: 1,
+          supportId: 6,
+          zoneId: 1,
+          rawData: JSON.stringify(LiveServicesServerXboxEuUpRaw),
+        },
+        {
+          slugId: 3,
+          statusId: 1,
+          typeId: 1,
+          supportId: 5,
+          zoneId: 2,
+          rawData: JSON.stringify(LiveServicesServerPsNaUpRaw),
+        },
+        {
+          slugId: 4,
+          statusId: 1,
+          typeId: 1,
+          supportId: 5,
+          zoneId: 1,
+          rawData: JSON.stringify(LiveServicesServerPsEuUpRaw),
+        },
+        {
+          slugId: 5,
+          statusId: 1,
+          typeId: 1,
+          supportId: 4,
+          zoneId: 2,
+          rawData: JSON.stringify(LiveServicesServerPcNaUpRaw),
+        },
+        {
+          slugId: 6,
+          statusId: 1,
+          typeId: 1,
+          supportId: 4,
+          zoneId: 1,
+          rawData: JSON.stringify(LiveServicesServerPcEuUpRaw),
+        },
+        {
+          slugId: 7,
+          statusId: 1,
+          typeId: 1,
+          supportId: 4,
+          zoneId: 3,
+          rawData: JSON.stringify(LiveServicesServerPcPtsUpRaw),
+        },
+        {
+          slugId: 11,
+          statusId: 1,
+          typeId: 2,
+          supportId: 2,
+          zoneId: 6,
+          rawData: JSON.stringify(ServiceAlertsServiceStoreEsoUpRaw),
+        },
+        {
+          slugId: 12,
+          statusId: 1,
+          typeId: 2,
+          supportId: 3,
+          zoneId: 8,
+          rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
+        },
+      ],
+      maintenances: [
+        {
+          serviceId: 7,
+          beginnerAt: new Date(ForumMessageServerPcPtsPlanned.beginnerAt),
+          rawData: JSON.stringify(ForumMessageServerPcPtsPlannedRaw),
+        },
+        {
+          serviceId: 11,
+          beginnerAt: new Date(ForumMessageServiceStoreEsoPlanned.beginnerAt),
+          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
+        },
+        {
+          serviceId: 12,
+          beginnerAt: new Date(
+            ForumMessageServiceSystemAccountPlanned.beginnerAt,
+          ),
+          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
+        },
+      ],
+      serviceControllerReturn: [
+        {
+          slug: 'server_xbox_na',
+          status: 'up',
+          type: 'server',
+          support: 'xbox',
+          zone: 'na',
+          raw: LiveServicesServerXboxNaUpRawStringDate,
+        },
+        {
+          slug: 'server_xbox_eu',
+          status: 'up',
+          type: 'server',
+          support: 'xbox',
+          zone: 'eu',
+          raw: LiveServicesServerXboxEuUpRawStringDate,
+        },
+        {
+          slug: 'server_ps_na',
+          status: 'up',
+          type: 'server',
+          support: 'ps',
+          zone: 'na',
+          raw: LiveServicesServerPsNaUpRawStringDate,
+        },
+        {
+          slug: 'server_ps_eu',
+          status: 'up',
+          type: 'server',
+          support: 'ps',
+          zone: 'eu',
+          raw: LiveServicesServerPsEuUpRawStringDate,
+        },
+        {
+          slug: 'server_pc_na',
+          status: 'up',
+          type: 'server',
+          support: 'pc',
+          zone: 'na',
+          raw: LiveServicesServerPcNaUpRawStringDate,
+        },
+        {
+          slug: 'server_pc_eu',
+          status: 'up',
+          type: 'server',
+          support: 'pc',
+          zone: 'eu',
+          raw: LiveServicesServerPcEuUpRawStringDate,
+        },
+        {
+          slug: 'server_pc_pts',
+          status: 'up',
+          type: 'server',
+          support: 'pc',
+          zone: 'pts',
+          raw: LiveServicesServerPcPtsUpRawStringDate,
+          maintenance: {
+            raw: ForumMessageServerPcPtsPlannedRawStringDate,
+            slug: ForumMessageServerPcPtsPlannedRaw.slugs[0],
+            beginnerAt: ForumMessageServerPcPtsPlannedRawStringDate.dates[0],
+          },
+        },
+        {
+          slug: 'service_store_eso',
+          status: 'up',
+          type: 'service',
+          support: 'store',
+          zone: 'eso',
+          raw: ServiceAlertsServiceStoreEsoUpRawStringDate,
+          maintenance: {
+            raw: ForumMessageServiceStoreEsoPlannedRawStringDate,
+            slug: ForumMessageServiceStoreEsoPlannedRaw.slugs[0],
+            beginnerAt:
+              ForumMessageServiceStoreEsoPlannedRawStringDate.dates[0],
+            endingAt: ForumMessageServiceStoreEsoPlannedRawStringDate.dates[1],
+          },
+        },
+        {
+          slug: 'service_system_account',
+          status: 'up',
+          type: 'service',
+          support: 'system',
+          zone: 'account',
+          raw: ServiceAlertsServiceSystemAccountUpRawStringDate,
+          maintenance: {
+            raw: ForumMessageServiceSystemAccountPlannedRawStringDate,
+            slug: ForumMessageServiceSystemAccountPlannedRaw.slugs[0],
+            beginnerAt:
+              ForumMessageServiceSystemAccountPlannedRawStringDate.dates[0],
+            endingAt:
+              ForumMessageServiceSystemAccountPlannedRawStringDate.dates[1],
+          },
+        },
+      ],
+    },
+    {
+      connector: 'ForumMessage',
+
+      connectorData: [
+        ForumMessageServerPcPtsPlannedRaw,
+        ForumMessageServiceStoreEsoPlannedRaw,
+        ForumMessageServiceSystemAccountPlannedRaw,
+      ],
+      statusUpdateList: [],
+      maintenancePlannedList: [],
+      maintenanceRemovedList: [],
+      logs: [
+        {
+          connector: 'LiveServices',
+          serviceId: 1,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerXboxNaUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 2,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerXboxEuUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 3,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPsNaUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 4,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPsEuUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 5,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPcNaUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 6,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPcEuUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 7,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPcPtsUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 1,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerXboxNaUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 2,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerXboxEuUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 3,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPsNaUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 4,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPsEuUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 5,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPcNaUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 6,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPcEuUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 7,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPcPtsUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 11,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServiceStoreEsoUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 12,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
+        },
+        {
+          connector: 'ForumMessage',
+          serviceId: 7,
+          statusId: 4,
+          rawData: JSON.stringify(ForumMessageServerPcPtsPlannedRaw),
+        },
+        {
+          connector: 'ForumMessage',
+          serviceId: 11,
+          statusId: 4,
+          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
+        },
+        {
+          connector: 'ForumMessage',
+          serviceId: 12,
+          statusId: 4,
+          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
+        },
+      ],
+      archives: [
+        {
+          connector: 'LiveServices',
+          serviceId: 1,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerXboxNaUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 2,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerXboxEuUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 3,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPsNaUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 4,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPsEuUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 5,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPcNaUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 6,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPcEuUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 7,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPcPtsUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 1,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerXboxNaUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 2,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerXboxEuUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 3,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPsNaUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 4,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPsEuUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 5,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPcNaUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 6,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPcEuUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 7,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPcPtsUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 11,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServiceStoreEsoUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 12,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
+        },
+        {
+          connector: 'ForumMessage',
+          serviceId: 7,
+          statusId: 4,
+          rawData: JSON.stringify(ForumMessageServerPcPtsPlannedRaw),
+        },
+        {
+          connector: 'ForumMessage',
+          serviceId: 11,
+          statusId: 4,
+          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
+        },
+        {
+          connector: 'ForumMessage',
+          serviceId: 12,
+          statusId: 4,
+          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
+        },
+      ],
+      services: [
+        {
+          slugId: 1,
+          statusId: 1,
+          typeId: 1,
+          supportId: 6,
+          zoneId: 2,
+          rawData: JSON.stringify(LiveServicesServerXboxNaUpRaw),
+        },
+        {
+          slugId: 2,
+          statusId: 1,
+          typeId: 1,
+          supportId: 6,
+          zoneId: 1,
+          rawData: JSON.stringify(LiveServicesServerXboxEuUpRaw),
+        },
+        {
+          slugId: 3,
+          statusId: 1,
+          typeId: 1,
+          supportId: 5,
+          zoneId: 2,
+          rawData: JSON.stringify(LiveServicesServerPsNaUpRaw),
+        },
+        {
+          slugId: 4,
+          statusId: 1,
+          typeId: 1,
+          supportId: 5,
+          zoneId: 1,
+          rawData: JSON.stringify(LiveServicesServerPsEuUpRaw),
+        },
+        {
+          slugId: 5,
+          statusId: 1,
+          typeId: 1,
+          supportId: 4,
+          zoneId: 2,
+          rawData: JSON.stringify(LiveServicesServerPcNaUpRaw),
+        },
+        {
+          slugId: 6,
+          statusId: 1,
+          typeId: 1,
+          supportId: 4,
+          zoneId: 1,
+          rawData: JSON.stringify(LiveServicesServerPcEuUpRaw),
+        },
+        {
+          slugId: 7,
+          statusId: 1,
+          typeId: 1,
+          supportId: 4,
+          zoneId: 3,
+          rawData: JSON.stringify(LiveServicesServerPcPtsUpRaw),
+        },
+        {
+          slugId: 11,
+          statusId: 1,
+          typeId: 2,
+          supportId: 2,
+          zoneId: 6,
+          rawData: JSON.stringify(ServiceAlertsServiceStoreEsoUpRaw),
+        },
+        {
+          slugId: 12,
+          statusId: 1,
+          typeId: 2,
+          supportId: 3,
+          zoneId: 8,
+          rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
+        },
+      ],
+      maintenances: [
+        {
+          serviceId: 7,
+          beginnerAt: new Date(ForumMessageServerPcPtsPlanned.beginnerAt),
+          rawData: JSON.stringify(ForumMessageServerPcPtsPlannedRaw),
+        },
+        {
+          serviceId: 11,
+          beginnerAt: new Date(ForumMessageServiceStoreEsoPlanned.beginnerAt),
+          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
+        },
+        {
+          serviceId: 12,
+          beginnerAt: new Date(
+            ForumMessageServiceSystemAccountPlanned.beginnerAt,
+          ),
+          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
         },
       ],
       serviceControllerReturn: [
@@ -10573,6 +10776,25 @@ export const classicMaintenance: Scenario = {
           supportId: 3,
           zoneId: 8,
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
+        },
+      ],
+      maintenances: [
+        {
+          serviceId: 7,
+          beginnerAt: new Date(ForumMessageServerPcPtsPlanned.beginnerAt),
+          rawData: JSON.stringify(ForumMessageServerPcPtsPlannedRaw),
+        },
+        {
+          serviceId: 11,
+          beginnerAt: new Date(ForumMessageServiceStoreEsoPlanned.beginnerAt),
+          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
+        },
+        {
+          serviceId: 12,
+          beginnerAt: new Date(
+            ForumMessageServiceSystemAccountPlanned.beginnerAt,
+          ),
+          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
         },
       ],
       serviceControllerReturn: [
@@ -10992,6 +11214,20 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [
+        {
+          serviceId: 11,
+          beginnerAt: new Date(ForumMessageServiceStoreEsoPlanned.beginnerAt),
+          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
+        },
+        {
+          serviceId: 12,
+          beginnerAt: new Date(
+            ForumMessageServiceSystemAccountPlanned.beginnerAt,
+          ),
+          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
+        },
+      ],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -11397,6 +11633,20 @@ export const classicMaintenance: Scenario = {
           supportId: 3,
           zoneId: 8,
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
+        },
+      ],
+      maintenances: [
+        {
+          serviceId: 11,
+          beginnerAt: new Date(ForumMessageServiceStoreEsoPlanned.beginnerAt),
+          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
+        },
+        {
+          serviceId: 12,
+          beginnerAt: new Date(
+            ForumMessageServiceSystemAccountPlanned.beginnerAt,
+          ),
+          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
         },
       ],
       serviceControllerReturn: [
@@ -11811,6 +12061,20 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [
+        {
+          serviceId: 11,
+          beginnerAt: new Date(ForumMessageServiceStoreEsoPlanned.beginnerAt),
+          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
+        },
+        {
+          serviceId: 12,
+          beginnerAt: new Date(
+            ForumMessageServiceSystemAccountPlanned.beginnerAt,
+          ),
+          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
+        },
+      ],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -12216,6 +12480,20 @@ export const classicMaintenance: Scenario = {
           supportId: 3,
           zoneId: 8,
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
+        },
+      ],
+      maintenances: [
+        {
+          serviceId: 11,
+          beginnerAt: new Date(ForumMessageServiceStoreEsoPlanned.beginnerAt),
+          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
+        },
+        {
+          serviceId: 12,
+          beginnerAt: new Date(
+            ForumMessageServiceSystemAccountPlanned.beginnerAt,
+          ),
+          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
         },
       ],
       serviceControllerReturn: [
@@ -12631,823 +12909,18 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
         },
       ],
-      serviceControllerReturn: [
+      maintenances: [
         {
-          slug: 'server_xbox_na',
-          status: 'up',
-          type: 'server',
-          support: 'xbox',
-          zone: 'na',
-          raw: LiveServicesServerXboxNaUpRawStringDate,
-        },
-        {
-          slug: 'server_xbox_eu',
-          status: 'up',
-          type: 'server',
-          support: 'xbox',
-          zone: 'eu',
-          raw: LiveServicesServerXboxEuUpRawStringDate,
-        },
-        {
-          slug: 'server_ps_na',
-          status: 'up',
-          type: 'server',
-          support: 'ps',
-          zone: 'na',
-          raw: LiveServicesServerPsNaUpRawStringDate,
-        },
-        {
-          slug: 'server_ps_eu',
-          status: 'up',
-          type: 'server',
-          support: 'ps',
-          zone: 'eu',
-          raw: LiveServicesServerPsEuUpRawStringDate,
-        },
-        {
-          slug: 'server_pc_na',
-          status: 'up',
-          type: 'server',
-          support: 'pc',
-          zone: 'na',
-          raw: LiveServicesServerPcNaUpRawStringDate,
-        },
-        {
-          slug: 'server_pc_eu',
-          status: 'up',
-          type: 'server',
-          support: 'pc',
-          zone: 'eu',
-          raw: LiveServicesServerPcEuUpRawStringDate,
-        },
-        {
-          slug: 'server_pc_pts',
-          status: 'down',
-          type: 'server',
-          support: 'pc',
-          zone: 'pts',
-          raw: LiveServicesServerPcPtsDownRawStringDate,
-        },
-        {
-          slug: 'service_store_eso',
-          status: 'up',
-          type: 'service',
-          support: 'store',
-          zone: 'eso',
-          raw: ServiceAlertsServiceStoreEsoUpRawStringDate,
-          maintenance: {
-            raw: ForumMessageServiceStoreEsoPlannedRawStringDate,
-            slug: ForumMessageServiceStoreEsoPlannedRaw.slugs[0],
-            beginnerAt:
-              ForumMessageServiceStoreEsoPlannedRawStringDate.dates[0],
-            endingAt: ForumMessageServiceStoreEsoPlannedRawStringDate.dates[1],
-          },
-        },
-        {
-          slug: 'service_system_account',
-          status: 'up',
-          type: 'service',
-          support: 'system',
-          zone: 'account',
-          raw: ServiceAlertsServiceSystemAccountUpRawStringDate,
-          maintenance: {
-            raw: ForumMessageServiceSystemAccountPlannedRawStringDate,
-            slug: ForumMessageServiceSystemAccountPlannedRaw.slugs[0],
-            beginnerAt:
-              ForumMessageServiceSystemAccountPlannedRawStringDate.dates[0],
-            endingAt:
-              ForumMessageServiceSystemAccountPlannedRawStringDate.dates[1],
-          },
-        },
-      ],
-    },
-    // Same
-    {
-      connector: 'LiveServices',
-
-      connectorData: [
-        LiveServicesServerPcEuUpRaw,
-        LiveServicesServerPcNaUpRaw,
-        LiveServicesServerPsEuUpRaw,
-        LiveServicesServerPsNaUpRaw,
-        LiveServicesServerPcPtsDownRaw,
-        LiveServicesServerXboxEuUpRaw,
-        LiveServicesServerXboxNaUpRaw,
-      ],
-      statusUpdateList: [],
-      maintenancePlannedList: [],
-      maintenanceRemovedList: [],
-      logs: [
-        {
-          connector: 'LiveServices',
-          serviceId: 1,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerXboxNaUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 2,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerXboxEuUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 3,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPsNaUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 4,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPsEuUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 5,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPcNaUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 6,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPcEuUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 7,
-          statusId: 2,
-          rawData: JSON.stringify(LiveServicesServerPcPtsDownRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 1,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerXboxNaUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 2,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerXboxEuUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 3,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPsNaUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 4,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPsEuUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 5,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPcNaUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 6,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPcEuUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 7,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPcPtsUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
           serviceId: 11,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServiceStoreEsoUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 12,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
-        },
-        {
-          connector: 'ForumMessage',
-          serviceId: 7,
-          statusId: 4,
-          rawData: JSON.stringify(ForumMessageServerPcPtsPlannedRaw),
-        },
-        {
-          connector: 'ForumMessage',
-          serviceId: 11,
-          statusId: 4,
+          beginnerAt: new Date(ForumMessageServiceStoreEsoPlanned.beginnerAt),
           rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
         },
         {
-          connector: 'ForumMessage',
           serviceId: 12,
-          statusId: 4,
+          beginnerAt: new Date(
+            ForumMessageServiceSystemAccountPlanned.beginnerAt,
+          ),
           rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
-        },
-      ],
-      archives: [
-        {
-          connector: 'LiveServices',
-          serviceId: 1,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerXboxNaUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 2,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerXboxEuUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 3,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPsNaUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 4,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPsEuUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 5,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPcNaUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 6,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPcEuUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 7,
-          statusId: 2,
-          rawData: JSON.stringify(LiveServicesServerPcPtsDownRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 1,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerXboxNaUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 2,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerXboxEuUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 3,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPsNaUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 4,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPsEuUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 5,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPcNaUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 6,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPcEuUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 7,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPcPtsUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 11,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServiceStoreEsoUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 12,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
-        },
-        {
-          connector: 'ForumMessage',
-          serviceId: 7,
-          statusId: 4,
-          rawData: JSON.stringify(ForumMessageServerPcPtsPlannedRaw),
-        },
-        {
-          connector: 'ForumMessage',
-          serviceId: 11,
-          statusId: 4,
-          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
-        },
-        {
-          connector: 'ForumMessage',
-          serviceId: 12,
-          statusId: 4,
-          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
-        },
-      ],
-      services: [
-        {
-          slugId: 1,
-          statusId: 1,
-          typeId: 1,
-          supportId: 6,
-          zoneId: 2,
-          rawData: JSON.stringify(LiveServicesServerXboxNaUpRaw),
-        },
-        {
-          slugId: 2,
-          statusId: 1,
-          typeId: 1,
-          supportId: 6,
-          zoneId: 1,
-          rawData: JSON.stringify(LiveServicesServerXboxEuUpRaw),
-        },
-        {
-          slugId: 3,
-          statusId: 1,
-          typeId: 1,
-          supportId: 5,
-          zoneId: 2,
-          rawData: JSON.stringify(LiveServicesServerPsNaUpRaw),
-        },
-        {
-          slugId: 4,
-          statusId: 1,
-          typeId: 1,
-          supportId: 5,
-          zoneId: 1,
-          rawData: JSON.stringify(LiveServicesServerPsEuUpRaw),
-        },
-        {
-          slugId: 5,
-          statusId: 1,
-          typeId: 1,
-          supportId: 4,
-          zoneId: 2,
-          rawData: JSON.stringify(LiveServicesServerPcNaUpRaw),
-        },
-        {
-          slugId: 6,
-          statusId: 1,
-          typeId: 1,
-          supportId: 4,
-          zoneId: 1,
-          rawData: JSON.stringify(LiveServicesServerPcEuUpRaw),
-        },
-        {
-          slugId: 7,
-          statusId: 2,
-          typeId: 1,
-          supportId: 4,
-          zoneId: 3,
-          rawData: JSON.stringify(LiveServicesServerPcPtsDownRaw),
-        },
-        {
-          slugId: 11,
-          statusId: 1,
-          typeId: 2,
-          supportId: 2,
-          zoneId: 6,
-          rawData: JSON.stringify(ServiceAlertsServiceStoreEsoUpRaw),
-        },
-        {
-          slugId: 12,
-          statusId: 1,
-          typeId: 2,
-          supportId: 3,
-          zoneId: 8,
-          rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
-        },
-      ],
-      serviceControllerReturn: [
-        {
-          slug: 'server_xbox_na',
-          status: 'up',
-          type: 'server',
-          support: 'xbox',
-          zone: 'na',
-          raw: LiveServicesServerXboxNaUpRawStringDate,
-        },
-        {
-          slug: 'server_xbox_eu',
-          status: 'up',
-          type: 'server',
-          support: 'xbox',
-          zone: 'eu',
-          raw: LiveServicesServerXboxEuUpRawStringDate,
-        },
-        {
-          slug: 'server_ps_na',
-          status: 'up',
-          type: 'server',
-          support: 'ps',
-          zone: 'na',
-          raw: LiveServicesServerPsNaUpRawStringDate,
-        },
-        {
-          slug: 'server_ps_eu',
-          status: 'up',
-          type: 'server',
-          support: 'ps',
-          zone: 'eu',
-          raw: LiveServicesServerPsEuUpRawStringDate,
-        },
-        {
-          slug: 'server_pc_na',
-          status: 'up',
-          type: 'server',
-          support: 'pc',
-          zone: 'na',
-          raw: LiveServicesServerPcNaUpRawStringDate,
-        },
-        {
-          slug: 'server_pc_eu',
-          status: 'up',
-          type: 'server',
-          support: 'pc',
-          zone: 'eu',
-          raw: LiveServicesServerPcEuUpRawStringDate,
-        },
-        {
-          slug: 'server_pc_pts',
-          status: 'down',
-          type: 'server',
-          support: 'pc',
-          zone: 'pts',
-          raw: LiveServicesServerPcPtsDownRawStringDate,
-        },
-        {
-          slug: 'service_store_eso',
-          status: 'up',
-          type: 'service',
-          support: 'store',
-          zone: 'eso',
-          raw: ServiceAlertsServiceStoreEsoUpRawStringDate,
-          maintenance: {
-            raw: ForumMessageServiceStoreEsoPlannedRawStringDate,
-            slug: ForumMessageServiceStoreEsoPlannedRaw.slugs[0],
-            beginnerAt:
-              ForumMessageServiceStoreEsoPlannedRawStringDate.dates[0],
-            endingAt: ForumMessageServiceStoreEsoPlannedRawStringDate.dates[1],
-          },
-        },
-        {
-          slug: 'service_system_account',
-          status: 'up',
-          type: 'service',
-          support: 'system',
-          zone: 'account',
-          raw: ServiceAlertsServiceSystemAccountUpRawStringDate,
-          maintenance: {
-            raw: ForumMessageServiceSystemAccountPlannedRawStringDate,
-            slug: ForumMessageServiceSystemAccountPlannedRaw.slugs[0],
-            beginnerAt:
-              ForumMessageServiceSystemAccountPlannedRawStringDate.dates[0],
-            endingAt:
-              ForumMessageServiceSystemAccountPlannedRawStringDate.dates[1],
-          },
-        },
-      ],
-    },
-    {
-      connector: 'ForumMessage',
-
-      connectorData: [
-        ForumMessageServerPcPtsPlannedRaw,
-        ForumMessageServiceStoreEsoPlannedRaw,
-        ForumMessageServiceSystemAccountPlannedRaw,
-      ],
-      statusUpdateList: [],
-      maintenancePlannedList: [],
-      maintenanceRemovedList: [],
-      logs: [
-        {
-          connector: 'LiveServices',
-          serviceId: 1,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerXboxNaUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 2,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerXboxEuUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 3,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPsNaUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 4,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPsEuUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 5,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPcNaUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 6,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPcEuUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 7,
-          statusId: 2,
-          rawData: JSON.stringify(LiveServicesServerPcPtsDownRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 1,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerXboxNaUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 2,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerXboxEuUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 3,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPsNaUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 4,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPsEuUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 5,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPcNaUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 6,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPcEuUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 7,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPcPtsUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 11,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServiceStoreEsoUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 12,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
-        },
-        {
-          connector: 'ForumMessage',
-          serviceId: 7,
-          statusId: 4,
-          rawData: JSON.stringify(ForumMessageServerPcPtsPlannedRaw),
-        },
-        {
-          connector: 'ForumMessage',
-          serviceId: 11,
-          statusId: 4,
-          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
-        },
-        {
-          connector: 'ForumMessage',
-          serviceId: 12,
-          statusId: 4,
-          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
-        },
-      ],
-      archives: [
-        {
-          connector: 'LiveServices',
-          serviceId: 1,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerXboxNaUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 2,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerXboxEuUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 3,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPsNaUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 4,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPsEuUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 5,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPcNaUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 6,
-          statusId: 1,
-          rawData: JSON.stringify(LiveServicesServerPcEuUpRaw),
-        },
-        {
-          connector: 'LiveServices',
-          serviceId: 7,
-          statusId: 2,
-          rawData: JSON.stringify(LiveServicesServerPcPtsDownRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 1,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerXboxNaUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 2,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerXboxEuUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 3,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPsNaUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 4,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPsEuUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 5,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPcNaUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 6,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPcEuUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 7,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServerPcPtsUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 11,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServiceStoreEsoUpRaw),
-        },
-        {
-          connector: 'ServiceAlerts',
-          serviceId: 12,
-          statusId: 1,
-          rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
-        },
-        {
-          connector: 'ForumMessage',
-          serviceId: 7,
-          statusId: 4,
-          rawData: JSON.stringify(ForumMessageServerPcPtsPlannedRaw),
-        },
-        {
-          connector: 'ForumMessage',
-          serviceId: 11,
-          statusId: 4,
-          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
-        },
-        {
-          connector: 'ForumMessage',
-          serviceId: 12,
-          statusId: 4,
-          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
-        },
-      ],
-      services: [
-        {
-          slugId: 1,
-          statusId: 1,
-          typeId: 1,
-          supportId: 6,
-          zoneId: 2,
-          rawData: JSON.stringify(LiveServicesServerXboxNaUpRaw),
-        },
-        {
-          slugId: 2,
-          statusId: 1,
-          typeId: 1,
-          supportId: 6,
-          zoneId: 1,
-          rawData: JSON.stringify(LiveServicesServerXboxEuUpRaw),
-        },
-        {
-          slugId: 3,
-          statusId: 1,
-          typeId: 1,
-          supportId: 5,
-          zoneId: 2,
-          rawData: JSON.stringify(LiveServicesServerPsNaUpRaw),
-        },
-        {
-          slugId: 4,
-          statusId: 1,
-          typeId: 1,
-          supportId: 5,
-          zoneId: 1,
-          rawData: JSON.stringify(LiveServicesServerPsEuUpRaw),
-        },
-        {
-          slugId: 5,
-          statusId: 1,
-          typeId: 1,
-          supportId: 4,
-          zoneId: 2,
-          rawData: JSON.stringify(LiveServicesServerPcNaUpRaw),
-        },
-        {
-          slugId: 6,
-          statusId: 1,
-          typeId: 1,
-          supportId: 4,
-          zoneId: 1,
-          rawData: JSON.stringify(LiveServicesServerPcEuUpRaw),
-        },
-        {
-          slugId: 7,
-          statusId: 2,
-          typeId: 1,
-          supportId: 4,
-          zoneId: 3,
-          rawData: JSON.stringify(LiveServicesServerPcPtsDownRaw),
-        },
-        {
-          slugId: 11,
-          statusId: 1,
-          typeId: 2,
-          supportId: 2,
-          zoneId: 6,
-          rawData: JSON.stringify(ServiceAlertsServiceStoreEsoUpRaw),
-        },
-        {
-          slugId: 12,
-          statusId: 1,
-          typeId: 2,
-          supportId: 3,
-          zoneId: 8,
-          rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
         },
       ],
       serviceControllerReturn: [
@@ -13862,6 +13335,20 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [
+        {
+          serviceId: 11,
+          beginnerAt: new Date(ForumMessageServiceStoreEsoPlanned.beginnerAt),
+          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
+        },
+        {
+          serviceId: 12,
+          beginnerAt: new Date(
+            ForumMessageServiceSystemAccountPlanned.beginnerAt,
+          ),
+          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
+        },
+      ],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -14267,6 +13754,20 @@ export const classicMaintenance: Scenario = {
           supportId: 3,
           zoneId: 8,
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
+        },
+      ],
+      maintenances: [
+        {
+          serviceId: 11,
+          beginnerAt: new Date(ForumMessageServiceStoreEsoPlanned.beginnerAt),
+          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
+        },
+        {
+          serviceId: 12,
+          beginnerAt: new Date(
+            ForumMessageServiceSystemAccountPlanned.beginnerAt,
+          ),
+          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
         },
       ],
       serviceControllerReturn: [
@@ -14681,6 +14182,20 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [
+        {
+          serviceId: 11,
+          beginnerAt: new Date(ForumMessageServiceStoreEsoPlanned.beginnerAt),
+          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
+        },
+        {
+          serviceId: 12,
+          beginnerAt: new Date(
+            ForumMessageServiceSystemAccountPlanned.beginnerAt,
+          ),
+          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
+        },
+      ],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -15086,6 +14601,867 @@ export const classicMaintenance: Scenario = {
           supportId: 3,
           zoneId: 8,
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
+        },
+      ],
+      maintenances: [
+        {
+          serviceId: 11,
+          beginnerAt: new Date(ForumMessageServiceStoreEsoPlanned.beginnerAt),
+          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
+        },
+        {
+          serviceId: 12,
+          beginnerAt: new Date(
+            ForumMessageServiceSystemAccountPlanned.beginnerAt,
+          ),
+          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
+        },
+      ],
+      serviceControllerReturn: [
+        {
+          slug: 'server_xbox_na',
+          status: 'up',
+          type: 'server',
+          support: 'xbox',
+          zone: 'na',
+          raw: LiveServicesServerXboxNaUpRawStringDate,
+        },
+        {
+          slug: 'server_xbox_eu',
+          status: 'up',
+          type: 'server',
+          support: 'xbox',
+          zone: 'eu',
+          raw: LiveServicesServerXboxEuUpRawStringDate,
+        },
+        {
+          slug: 'server_ps_na',
+          status: 'up',
+          type: 'server',
+          support: 'ps',
+          zone: 'na',
+          raw: LiveServicesServerPsNaUpRawStringDate,
+        },
+        {
+          slug: 'server_ps_eu',
+          status: 'up',
+          type: 'server',
+          support: 'ps',
+          zone: 'eu',
+          raw: LiveServicesServerPsEuUpRawStringDate,
+        },
+        {
+          slug: 'server_pc_na',
+          status: 'up',
+          type: 'server',
+          support: 'pc',
+          zone: 'na',
+          raw: LiveServicesServerPcNaUpRawStringDate,
+        },
+        {
+          slug: 'server_pc_eu',
+          status: 'up',
+          type: 'server',
+          support: 'pc',
+          zone: 'eu',
+          raw: LiveServicesServerPcEuUpRawStringDate,
+        },
+        {
+          slug: 'server_pc_pts',
+          status: 'down',
+          type: 'server',
+          support: 'pc',
+          zone: 'pts',
+          raw: LiveServicesServerPcPtsDownRawStringDate,
+        },
+        {
+          slug: 'service_store_eso',
+          status: 'up',
+          type: 'service',
+          support: 'store',
+          zone: 'eso',
+          raw: ServiceAlertsServiceStoreEsoUpRawStringDate,
+          maintenance: {
+            raw: ForumMessageServiceStoreEsoPlannedRawStringDate,
+            slug: ForumMessageServiceStoreEsoPlannedRaw.slugs[0],
+            beginnerAt:
+              ForumMessageServiceStoreEsoPlannedRawStringDate.dates[0],
+            endingAt: ForumMessageServiceStoreEsoPlannedRawStringDate.dates[1],
+          },
+        },
+        {
+          slug: 'service_system_account',
+          status: 'up',
+          type: 'service',
+          support: 'system',
+          zone: 'account',
+          raw: ServiceAlertsServiceSystemAccountUpRawStringDate,
+          maintenance: {
+            raw: ForumMessageServiceSystemAccountPlannedRawStringDate,
+            slug: ForumMessageServiceSystemAccountPlannedRaw.slugs[0],
+            beginnerAt:
+              ForumMessageServiceSystemAccountPlannedRawStringDate.dates[0],
+            endingAt:
+              ForumMessageServiceSystemAccountPlannedRawStringDate.dates[1],
+          },
+        },
+      ],
+    },
+    // Same
+    {
+      connector: 'LiveServices',
+
+      connectorData: [
+        LiveServicesServerPcEuUpRaw,
+        LiveServicesServerPcNaUpRaw,
+        LiveServicesServerPsEuUpRaw,
+        LiveServicesServerPsNaUpRaw,
+        LiveServicesServerPcPtsDownRaw,
+        LiveServicesServerXboxEuUpRaw,
+        LiveServicesServerXboxNaUpRaw,
+      ],
+      statusUpdateList: [],
+      maintenancePlannedList: [],
+      maintenanceRemovedList: [],
+      logs: [
+        {
+          connector: 'LiveServices',
+          serviceId: 1,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerXboxNaUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 2,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerXboxEuUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 3,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPsNaUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 4,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPsEuUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 5,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPcNaUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 6,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPcEuUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 7,
+          statusId: 2,
+          rawData: JSON.stringify(LiveServicesServerPcPtsDownRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 1,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerXboxNaUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 2,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerXboxEuUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 3,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPsNaUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 4,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPsEuUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 5,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPcNaUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 6,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPcEuUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 7,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPcPtsUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 11,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServiceStoreEsoUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 12,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
+        },
+        {
+          connector: 'ForumMessage',
+          serviceId: 7,
+          statusId: 4,
+          rawData: JSON.stringify(ForumMessageServerPcPtsPlannedRaw),
+        },
+        {
+          connector: 'ForumMessage',
+          serviceId: 11,
+          statusId: 4,
+          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
+        },
+        {
+          connector: 'ForumMessage',
+          serviceId: 12,
+          statusId: 4,
+          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
+        },
+      ],
+      archives: [
+        {
+          connector: 'LiveServices',
+          serviceId: 1,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerXboxNaUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 2,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerXboxEuUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 3,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPsNaUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 4,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPsEuUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 5,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPcNaUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 6,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPcEuUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 7,
+          statusId: 2,
+          rawData: JSON.stringify(LiveServicesServerPcPtsDownRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 1,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerXboxNaUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 2,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerXboxEuUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 3,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPsNaUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 4,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPsEuUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 5,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPcNaUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 6,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPcEuUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 7,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPcPtsUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 11,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServiceStoreEsoUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 12,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
+        },
+        {
+          connector: 'ForumMessage',
+          serviceId: 7,
+          statusId: 4,
+          rawData: JSON.stringify(ForumMessageServerPcPtsPlannedRaw),
+        },
+        {
+          connector: 'ForumMessage',
+          serviceId: 11,
+          statusId: 4,
+          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
+        },
+        {
+          connector: 'ForumMessage',
+          serviceId: 12,
+          statusId: 4,
+          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
+        },
+      ],
+      services: [
+        {
+          slugId: 1,
+          statusId: 1,
+          typeId: 1,
+          supportId: 6,
+          zoneId: 2,
+          rawData: JSON.stringify(LiveServicesServerXboxNaUpRaw),
+        },
+        {
+          slugId: 2,
+          statusId: 1,
+          typeId: 1,
+          supportId: 6,
+          zoneId: 1,
+          rawData: JSON.stringify(LiveServicesServerXboxEuUpRaw),
+        },
+        {
+          slugId: 3,
+          statusId: 1,
+          typeId: 1,
+          supportId: 5,
+          zoneId: 2,
+          rawData: JSON.stringify(LiveServicesServerPsNaUpRaw),
+        },
+        {
+          slugId: 4,
+          statusId: 1,
+          typeId: 1,
+          supportId: 5,
+          zoneId: 1,
+          rawData: JSON.stringify(LiveServicesServerPsEuUpRaw),
+        },
+        {
+          slugId: 5,
+          statusId: 1,
+          typeId: 1,
+          supportId: 4,
+          zoneId: 2,
+          rawData: JSON.stringify(LiveServicesServerPcNaUpRaw),
+        },
+        {
+          slugId: 6,
+          statusId: 1,
+          typeId: 1,
+          supportId: 4,
+          zoneId: 1,
+          rawData: JSON.stringify(LiveServicesServerPcEuUpRaw),
+        },
+        {
+          slugId: 7,
+          statusId: 2,
+          typeId: 1,
+          supportId: 4,
+          zoneId: 3,
+          rawData: JSON.stringify(LiveServicesServerPcPtsDownRaw),
+        },
+        {
+          slugId: 11,
+          statusId: 1,
+          typeId: 2,
+          supportId: 2,
+          zoneId: 6,
+          rawData: JSON.stringify(ServiceAlertsServiceStoreEsoUpRaw),
+        },
+        {
+          slugId: 12,
+          statusId: 1,
+          typeId: 2,
+          supportId: 3,
+          zoneId: 8,
+          rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
+        },
+      ],
+      maintenances: [
+        {
+          serviceId: 11,
+          beginnerAt: new Date(ForumMessageServiceStoreEsoPlanned.beginnerAt),
+          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
+        },
+        {
+          serviceId: 12,
+          beginnerAt: new Date(
+            ForumMessageServiceSystemAccountPlanned.beginnerAt,
+          ),
+          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
+        },
+      ],
+      serviceControllerReturn: [
+        {
+          slug: 'server_xbox_na',
+          status: 'up',
+          type: 'server',
+          support: 'xbox',
+          zone: 'na',
+          raw: LiveServicesServerXboxNaUpRawStringDate,
+        },
+        {
+          slug: 'server_xbox_eu',
+          status: 'up',
+          type: 'server',
+          support: 'xbox',
+          zone: 'eu',
+          raw: LiveServicesServerXboxEuUpRawStringDate,
+        },
+        {
+          slug: 'server_ps_na',
+          status: 'up',
+          type: 'server',
+          support: 'ps',
+          zone: 'na',
+          raw: LiveServicesServerPsNaUpRawStringDate,
+        },
+        {
+          slug: 'server_ps_eu',
+          status: 'up',
+          type: 'server',
+          support: 'ps',
+          zone: 'eu',
+          raw: LiveServicesServerPsEuUpRawStringDate,
+        },
+        {
+          slug: 'server_pc_na',
+          status: 'up',
+          type: 'server',
+          support: 'pc',
+          zone: 'na',
+          raw: LiveServicesServerPcNaUpRawStringDate,
+        },
+        {
+          slug: 'server_pc_eu',
+          status: 'up',
+          type: 'server',
+          support: 'pc',
+          zone: 'eu',
+          raw: LiveServicesServerPcEuUpRawStringDate,
+        },
+        {
+          slug: 'server_pc_pts',
+          status: 'down',
+          type: 'server',
+          support: 'pc',
+          zone: 'pts',
+          raw: LiveServicesServerPcPtsDownRawStringDate,
+        },
+        {
+          slug: 'service_store_eso',
+          status: 'up',
+          type: 'service',
+          support: 'store',
+          zone: 'eso',
+          raw: ServiceAlertsServiceStoreEsoUpRawStringDate,
+          maintenance: {
+            raw: ForumMessageServiceStoreEsoPlannedRawStringDate,
+            slug: ForumMessageServiceStoreEsoPlannedRaw.slugs[0],
+            beginnerAt:
+              ForumMessageServiceStoreEsoPlannedRawStringDate.dates[0],
+            endingAt: ForumMessageServiceStoreEsoPlannedRawStringDate.dates[1],
+          },
+        },
+        {
+          slug: 'service_system_account',
+          status: 'up',
+          type: 'service',
+          support: 'system',
+          zone: 'account',
+          raw: ServiceAlertsServiceSystemAccountUpRawStringDate,
+          maintenance: {
+            raw: ForumMessageServiceSystemAccountPlannedRawStringDate,
+            slug: ForumMessageServiceSystemAccountPlannedRaw.slugs[0],
+            beginnerAt:
+              ForumMessageServiceSystemAccountPlannedRawStringDate.dates[0],
+            endingAt:
+              ForumMessageServiceSystemAccountPlannedRawStringDate.dates[1],
+          },
+        },
+      ],
+    },
+    {
+      connector: 'ForumMessage',
+
+      connectorData: [
+        ForumMessageServerPcPtsPlannedRaw,
+        ForumMessageServiceStoreEsoPlannedRaw,
+        ForumMessageServiceSystemAccountPlannedRaw,
+      ],
+      statusUpdateList: [],
+      maintenancePlannedList: [],
+      maintenanceRemovedList: [],
+      logs: [
+        {
+          connector: 'LiveServices',
+          serviceId: 1,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerXboxNaUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 2,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerXboxEuUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 3,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPsNaUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 4,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPsEuUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 5,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPcNaUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 6,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPcEuUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 7,
+          statusId: 2,
+          rawData: JSON.stringify(LiveServicesServerPcPtsDownRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 1,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerXboxNaUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 2,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerXboxEuUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 3,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPsNaUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 4,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPsEuUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 5,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPcNaUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 6,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPcEuUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 7,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPcPtsUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 11,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServiceStoreEsoUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 12,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
+        },
+        {
+          connector: 'ForumMessage',
+          serviceId: 7,
+          statusId: 4,
+          rawData: JSON.stringify(ForumMessageServerPcPtsPlannedRaw),
+        },
+        {
+          connector: 'ForumMessage',
+          serviceId: 11,
+          statusId: 4,
+          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
+        },
+        {
+          connector: 'ForumMessage',
+          serviceId: 12,
+          statusId: 4,
+          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
+        },
+      ],
+      archives: [
+        {
+          connector: 'LiveServices',
+          serviceId: 1,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerXboxNaUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 2,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerXboxEuUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 3,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPsNaUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 4,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPsEuUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 5,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPcNaUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 6,
+          statusId: 1,
+          rawData: JSON.stringify(LiveServicesServerPcEuUpRaw),
+        },
+        {
+          connector: 'LiveServices',
+          serviceId: 7,
+          statusId: 2,
+          rawData: JSON.stringify(LiveServicesServerPcPtsDownRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 1,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerXboxNaUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 2,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerXboxEuUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 3,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPsNaUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 4,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPsEuUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 5,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPcNaUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 6,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPcEuUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 7,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServerPcPtsUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 11,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServiceStoreEsoUpRaw),
+        },
+        {
+          connector: 'ServiceAlerts',
+          serviceId: 12,
+          statusId: 1,
+          rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
+        },
+        {
+          connector: 'ForumMessage',
+          serviceId: 7,
+          statusId: 4,
+          rawData: JSON.stringify(ForumMessageServerPcPtsPlannedRaw),
+        },
+        {
+          connector: 'ForumMessage',
+          serviceId: 11,
+          statusId: 4,
+          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
+        },
+        {
+          connector: 'ForumMessage',
+          serviceId: 12,
+          statusId: 4,
+          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
+        },
+      ],
+      services: [
+        {
+          slugId: 1,
+          statusId: 1,
+          typeId: 1,
+          supportId: 6,
+          zoneId: 2,
+          rawData: JSON.stringify(LiveServicesServerXboxNaUpRaw),
+        },
+        {
+          slugId: 2,
+          statusId: 1,
+          typeId: 1,
+          supportId: 6,
+          zoneId: 1,
+          rawData: JSON.stringify(LiveServicesServerXboxEuUpRaw),
+        },
+        {
+          slugId: 3,
+          statusId: 1,
+          typeId: 1,
+          supportId: 5,
+          zoneId: 2,
+          rawData: JSON.stringify(LiveServicesServerPsNaUpRaw),
+        },
+        {
+          slugId: 4,
+          statusId: 1,
+          typeId: 1,
+          supportId: 5,
+          zoneId: 1,
+          rawData: JSON.stringify(LiveServicesServerPsEuUpRaw),
+        },
+        {
+          slugId: 5,
+          statusId: 1,
+          typeId: 1,
+          supportId: 4,
+          zoneId: 2,
+          rawData: JSON.stringify(LiveServicesServerPcNaUpRaw),
+        },
+        {
+          slugId: 6,
+          statusId: 1,
+          typeId: 1,
+          supportId: 4,
+          zoneId: 1,
+          rawData: JSON.stringify(LiveServicesServerPcEuUpRaw),
+        },
+        {
+          slugId: 7,
+          statusId: 2,
+          typeId: 1,
+          supportId: 4,
+          zoneId: 3,
+          rawData: JSON.stringify(LiveServicesServerPcPtsDownRaw),
+        },
+        {
+          slugId: 11,
+          statusId: 1,
+          typeId: 2,
+          supportId: 2,
+          zoneId: 6,
+          rawData: JSON.stringify(ServiceAlertsServiceStoreEsoUpRaw),
+        },
+        {
+          slugId: 12,
+          statusId: 1,
+          typeId: 2,
+          supportId: 3,
+          zoneId: 8,
+          rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
+        },
+      ],
+      maintenances: [
+        {
+          serviceId: 11,
+          beginnerAt: new Date(ForumMessageServiceStoreEsoPlanned.beginnerAt),
+          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
+        },
+        {
+          serviceId: 12,
+          beginnerAt: new Date(
+            ForumMessageServiceSystemAccountPlanned.beginnerAt,
+          ),
+          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
         },
       ],
       serviceControllerReturn: [
@@ -15499,6 +15875,20 @@ export const classicMaintenance: Scenario = {
           supportId: 3,
           zoneId: 8,
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
+        },
+      ],
+      maintenances: [
+        {
+          serviceId: 11,
+          beginnerAt: new Date(ForumMessageServiceStoreEsoPlanned.beginnerAt),
+          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
+        },
+        {
+          serviceId: 12,
+          beginnerAt: new Date(
+            ForumMessageServiceSystemAccountPlanned.beginnerAt,
+          ),
+          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
         },
       ],
       serviceControllerReturn: [
@@ -15913,6 +16303,20 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ServiceAlertsServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [
+        {
+          serviceId: 11,
+          beginnerAt: new Date(ForumMessageServiceStoreEsoPlanned.beginnerAt),
+          rawData: JSON.stringify(ForumMessageServiceStoreEsoPlannedRaw),
+        },
+        {
+          serviceId: 12,
+          beginnerAt: new Date(
+            ForumMessageServiceSystemAccountPlanned.beginnerAt,
+          ),
+          rawData: JSON.stringify(ForumMessageServiceSystemAccountPlannedRaw),
+        },
+      ],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -16323,6 +16727,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -16720,6 +17125,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -17112,6 +17518,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -17510,6 +17917,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -17907,6 +18315,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -18299,6 +18708,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -18696,6 +19106,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -19088,6 +19499,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -19485,6 +19897,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -19877,6 +20290,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -20274,6 +20688,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -20671,6 +21086,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -21063,6 +21479,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -21460,6 +21877,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -21852,6 +22270,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -22249,6 +22668,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -22641,6 +23061,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -23038,6 +23459,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -23435,6 +23857,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -23827,6 +24250,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -24224,6 +24648,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -24616,6 +25041,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -25013,6 +25439,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -25405,6 +25832,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -25802,6 +26230,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -26199,6 +26628,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -26591,6 +27021,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -26987,6 +27418,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -27378,6 +27810,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -27775,6 +28208,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -28171,6 +28605,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -28562,6 +28997,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -28958,6 +29394,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -29349,6 +29786,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -29745,6 +30183,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -30136,6 +30575,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -30533,6 +30973,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -30929,6 +31370,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountDownRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -31323,6 +31765,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -31719,6 +32162,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -32110,6 +32554,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -32507,6 +32952,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -32903,6 +33349,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -33294,6 +33741,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -33690,6 +34138,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -34081,6 +34530,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -34477,6 +34927,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -34868,6 +35319,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -35265,6 +35717,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -35661,6 +36114,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -36052,6 +36506,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -36448,6 +36903,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -36839,6 +37295,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -37235,6 +37692,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -37626,6 +38084,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -38023,6 +38482,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -38419,6 +38879,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -38810,6 +39271,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -39206,6 +39668,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -39597,6 +40060,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -39993,6 +40457,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -40384,6 +40849,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
@@ -40781,6 +41247,7 @@ export const classicMaintenance: Scenario = {
           rawData: JSON.stringify(ForumMessageServiceSystemAccountUpRaw),
         },
       ],
+      maintenances: [],
       serviceControllerReturn: [
         {
           slug: 'server_xbox_na',
