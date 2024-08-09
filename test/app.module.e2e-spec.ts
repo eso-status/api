@@ -17,6 +17,9 @@ import { EsoStatus as CustomEsoStatus } from 'src/interface/esoStatus.interface'
 import { MaintenanceEsoStatus as CustomMaintenanceEsoStatus } from 'src/interface/maintenanceEsoStatus.interface';
 import { Maintenance } from 'src/resource/maintenance/entities/maintenance.entity';
 import { Slug } from 'src/resource/slug/entities/slug.entity';
+import * as request from 'supertest';
+import supertest from 'supertest';
+import { App } from 'supertest/types';
 import { Repository } from 'typeorm';
 import { runSeeders } from 'typeorm-extension';
 
@@ -28,6 +31,7 @@ import { LogService } from '../src/resource/log/log.service';
 import { MaintenanceService } from '../src/resource/maintenance/maintenance.service';
 import { Service } from '../src/resource/service/entities/service.entity';
 import { ServiceController } from '../src/resource/service/service.controller';
+import { ServiceModule } from '../src/resource/service/service.module';
 import { ServiceService } from '../src/resource/service/service.service';
 import { SlugService } from '../src/resource/slug/slug.service';
 import { Status } from '../src/resource/status/entities/status.entity';
@@ -50,9 +54,8 @@ let serviceRepository: Repository<Service>;
 let archiveRepository: Repository<Archive>;
 let maintenanceRepository: Repository<Maintenance>;
 let logRepository: Repository<Log>;
-let serviceController: ServiceController;
 
-describe('ScrapingService (e2e)', (): void => {
+describe('AppModule (e2e)', (): void => {
   beforeAll(async (): Promise<void> => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
@@ -65,6 +68,7 @@ describe('ScrapingService (e2e)', (): void => {
           Log,
           Slug,
         ]),
+        ServiceModule,
       ],
       providers: [
         WebsocketService,
@@ -82,7 +86,6 @@ describe('ScrapingService (e2e)', (): void => {
 
     app = module.createNestApplication();
     scrapingService = module.get<ScrapingService>(ScrapingService);
-    serviceController = module.get<ServiceController>(ServiceController);
 
     clientSocket = io(`ws://${process.env.APP_HOST}:${process.env.APP_PORT}`, {
       secure: true,
@@ -209,17 +212,20 @@ describe('ScrapingService (e2e)', (): void => {
       it.each(scenario.initial.serviceControllerReturn)(
         'should service ($slug) controller return exact data',
         async (serviceControllerData: CustomEsoStatus): Promise<void> => {
-          const response: EsoStatus = await serviceController.findOne(
-            serviceControllerData.slug,
+          const singleResponse: supertest.Response = await request(
+            <App>app.getHttpServer(),
+          ).get(`/service/${serviceControllerData.slug}`);
+          expect(singleResponse.status).toBe(200);
+          expect(JSON.stringify(singleResponse.body)).toContain(
+            JSON.stringify(serviceControllerData),
           );
-          expect(response.slug).toStrictEqual(serviceControllerData.slug);
-          expect(response.status).toStrictEqual(serviceControllerData.status);
-          expect(response.type).toStrictEqual(serviceControllerData.type);
-          expect(response.support).toStrictEqual(serviceControllerData.support);
-          expect(response.zone).toStrictEqual(serviceControllerData.zone);
-          expect(response.raw).toStrictEqual(serviceControllerData.raw);
-          expect(response.maintenance).toStrictEqual(
-            serviceControllerData.maintenance,
+
+          const response: supertest.Response = await request(
+            <App>app.getHttpServer(),
+          ).get(`/service`);
+          expect(response.status).toBe(200);
+          expect(JSON.stringify(response.body)).toContain(
+            JSON.stringify(serviceControllerData),
           );
         },
         15000,
@@ -539,25 +545,23 @@ describe('ScrapingService (e2e)', (): void => {
             );
           }, 15000);
 
-          // TODO tester avec une vrai request
           it.each(step.serviceControllerReturn)(
             'should service ($slug) controller return exact data',
             async (serviceControllerData: CustomEsoStatus): Promise<void> => {
-              const response: EsoStatus = await serviceController.findOne(
-                serviceControllerData.slug,
+              const singleResponse: supertest.Response = await request(
+                <App>app.getHttpServer(),
+              ).get(`/service/${serviceControllerData.slug}`);
+              expect(singleResponse.status).toBe(200);
+              expect(JSON.stringify(singleResponse.body)).toContain(
+                JSON.stringify(serviceControllerData),
               );
-              expect(response.slug).toStrictEqual(serviceControllerData.slug);
-              expect(response.status).toStrictEqual(
-                serviceControllerData.status,
-              );
-              expect(response.type).toStrictEqual(serviceControllerData.type);
-              expect(response.support).toStrictEqual(
-                serviceControllerData.support,
-              );
-              expect(response.zone).toStrictEqual(serviceControllerData.zone);
-              expect(response.raw).toStrictEqual(serviceControllerData.raw);
-              expect(response.maintenance).toStrictEqual(
-                serviceControllerData.maintenance,
+
+              const response: supertest.Response = await request(
+                <App>app.getHttpServer(),
+              ).get(`/service`);
+              expect(response.status).toBe(200);
+              expect(JSON.stringify(response.body)).toContain(
+                JSON.stringify(serviceControllerData),
               );
             },
             15000,
