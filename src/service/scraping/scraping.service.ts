@@ -198,15 +198,21 @@ export class ScrapingService {
       'ScrapingService.updateMaintenance',
     );
 
-    // Emit maintenancePlanned event
-    this.websocketService.server.emit('maintenancePlanned', <
-      MaintenanceEsoStatus
-    >{
+    const maintenanceFormated: MaintenanceEsoStatus = {
       raw: esoStatus.raw,
       slug: esoStatus.slug,
-      beginnerAt: maintenance.beginnerAt?.toISOString(),
-      endingAt: maintenance.endingAt ? maintenance.endingAt?.toISOString() : '',
-    });
+      beginnerAt: maintenance.beginnerAt.toISOString(),
+    };
+
+    if (maintenance.endingAt) {
+      maintenanceFormated.endingAt = maintenance.endingAt.toISOString();
+    }
+
+    // Emit maintenancePlanned event
+    this.websocketService.server.emit(
+      'maintenancePlanned',
+      maintenanceFormated,
+    );
 
     // Write log
     this.winstonService.log(

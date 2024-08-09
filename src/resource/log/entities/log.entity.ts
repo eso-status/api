@@ -15,7 +15,7 @@ export class Log {
   @PrimaryGeneratedColumn({
     type: 'int',
   })
-  id: number;
+  id?: number;
 
   @Column({
     type: 'varchar',
