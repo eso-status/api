@@ -72,7 +72,7 @@ jobs:
 
       - name: Build and push docker image
         if: steps.tag_exist.outputs.exist == 0
-        uses: docker/build-push-action@v6.5.0
+        uses: docker/build-push-action@v6.6.1
         with:
           context: .
           platforms: linux/arm64

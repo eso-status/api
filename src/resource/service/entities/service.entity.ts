@@ -22,7 +22,7 @@ export class Service {
   @PrimaryColumn({
     type: 'int',
   })
-  id: number;
+  id?: number;
 
   @Column({ type: 'int', nullable: false })
   slugId?: number;
