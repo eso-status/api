@@ -8,18 +8,17 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from 'dotenv';
 import { Socket, io } from 'socket.io-client';
 
-import { MaintenanceEsoStatus } from 'src/interface/maintenanceEsoStatus.interface';
-import { Maintenance } from 'src/resource/maintenance/entities/maintenance.entity';
-import { Connector } from 'src/type/connector.type';
 import { Repository } from 'typeorm';
 
 import { runSeeders } from 'typeorm-extension';
 
 import { dataSource, dataSourceOptions } from '../src/config/typeorm.config';
+import { MaintenanceEsoStatus } from '../src/interface/maintenanceEsoStatus.interface';
 import { ArchiveService } from '../src/resource/archive/archive.service';
 import { Archive } from '../src/resource/archive/entities/archive.entity';
 import { Log } from '../src/resource/log/entities/log.entity';
 import { LogService } from '../src/resource/log/log.service';
+import { Maintenance } from '../src/resource/maintenance/entities/maintenance.entity';
 import { MaintenanceService } from '../src/resource/maintenance/maintenance.service';
 import { Service } from '../src/resource/service/entities/service.entity';
 import { ServiceController } from '../src/resource/service/service.controller';
@@ -29,6 +28,7 @@ import { StatusService } from '../src/resource/status/status.service';
 import { ScrapingService } from '../src/service/scraping/scraping.service';
 import { WebsocketService } from '../src/service/websocket/websocket.service';
 import { WinstonService } from '../src/service/winston/winston.service';
+import { Connector } from '../src/type/connector.type';
 
 import {
   ForumMessageDown,
