@@ -25,7 +25,7 @@ export class CreateArchiveTable1721839547958 implements MigrationInterface {
           {
             name: 'connector',
             type: 'varchar',
-            length: '15',
+            length: '13',
             isNullable: false,
           },
           {
