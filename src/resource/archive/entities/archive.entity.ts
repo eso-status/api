@@ -19,7 +19,7 @@ export class Archive {
 
   @Column({
     type: 'varchar',
-    length: 7,
+    length: 15,
     nullable: false,
   })
   connector: Connector;

@@ -1,5 +1,7 @@
 #!/bin/sh
 
+trap '/tmp/stop.sh; exit 0' SIGTERM SIGINT
+
 ## GENERATE SSL CERT
 private_lines=$(echo $SSL_PRIVATE | tr " " "\n")
 echo "-----BEGIN RSA PRIVATE KEY-----" >> ./private.key

@@ -22,7 +22,7 @@ export class CreateLogTable1722802362091 implements MigrationInterface {
           {
             name: 'connector',
             type: 'varchar',
-            length: '13',
+            length: '15',
             isNullable: false,
           },
           {
