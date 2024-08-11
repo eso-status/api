@@ -1,4 +1,5 @@
 #!/bin/sh
 
 ## STOP APPLICATION
-npm run stop:prod
+echo "Stopping application..."
+killall node -SIGINT

@@ -66,3 +66,7 @@ npm run migration:run
 
 ## START APPLICATION
 npm run start:prod
+
+while true; do
+    sleep 1
+done
