@@ -5,7 +5,7 @@ services:
         limits:
           cpus: '0.5'
           memory: 1G
-    env_file: .env.production
+    env_file: .env
     container_name: node_api_eso_status
     image: dov118/eso_status_api:1.0.0-dev.8
 #    build:

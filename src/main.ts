@@ -22,6 +22,8 @@ export async function bootstrap() {
 
     app.setGlobalPrefix(process.env.APP_PREFIX);
 
+    app.enableShutdownHooks();
+
     await app.listen(process.env.APP_PORT);
   } catch (e) {
     new WinstonService().fatal('', '');

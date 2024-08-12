@@ -40,9 +40,9 @@ sed -i -e "s/__APP_PREFIX__/$APP_PREFIX/g" ./.env
 sed -i -e "s/__APP_PROTOCOL__/$APP_PROTOCOL/g" ./.env
 sed -i -e "s/__APP_HOST__/$APP_HOST/g" ./.env
 sed -i -e "s/__APP_PORT__/$APP_PORT/g" ./.env
-sed -i -e "s/__SSL_PRIVATE__/$SSL_PRIVATE/g" ./.env
-sed -i -e "s/__SSL_CERTIFICATE__/$SSL_CERTIFICATE/g" ./.env
-sed -i -e "s/__SSL_CA_BUNDLE__/$SSL_CA_BUNDLE/g" ./.env
+sed -i -e "s#__SSL_PRIVATE__#$SSL_PRIVATE#g" ./.env
+sed -i -e "s#__SSL_CERTIFICATE__#$SSL_CERTIFICATE#g" ./.env
+sed -i -e "s#__SSL_CA_BUNDLE__#$SSL_CA_BUNDLE#g" ./.env
 sed -i -e "s/__DB_TYPE__/$DB_TYPE/g" ./.env
 sed -i -e "s/__DB_HOST__/$DB_HOST/g" ./.env
 sed -i -e "s/__DB_PORT__/$DB_PORT/g" ./.env
@@ -56,7 +56,7 @@ sed -i -e "s/__SERVICE_ALERTS_UPDATE_INTERVAL__/$SERVICE_ALERTS_UPDATE_INTERVAL/
 sed -i -e "s/__AWS_ACCESS_KEY_ID__/$AWS_ACCESS_KEY_ID/g" ./.env
 sed -i -e "s/__AWS_SECRET_ACCESS_KEY__/$AWS_SECRET_ACCESS_KEY/g" ./.env
 sed -i -e "s/__AWS_REGION__/$AWS_REGION/g" ./.env
-sed -i -e "s/__CLOUDWATCH_GROUP_NAME__/$CLOUDWATCH_GROUP_NAME/g" ./.env
+sed -i -e "s#__CLOUDWATCH_GROUP_NAME__#$CLOUDWATCH_GROUP_NAME#g" ./.env
 sed -i -e "s/__CLOUDWATCH_STREAM_NAME__/$CLOUDWATCH_STREAM_NAME/g" ./.env
 
 ## RUN DATABASE MIGRATION
