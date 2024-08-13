@@ -44,6 +44,7 @@ jobs:
           sed -i -e "s/__SSL_PRIVATE__//g" ./.env
           sed -i -e "s/__SSL_CERTIFICATE__//g" ./.env
           sed -i -e "s/__SSL_CA_BUNDLE__//g" ./.env
+          sed -i -e "s/__PING_INTERVAL__//g" ./.env
           sed -i -e "s/__DB_TYPE__/sqlite/g" ./.env
           sed -i -e "s/__DB_HOST__//g" ./.env
           sed -i -e "s/__DB_PORT__//g" ./.env

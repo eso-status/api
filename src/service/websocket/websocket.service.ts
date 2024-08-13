@@ -1,6 +1,10 @@
-import { Injectable, OnModuleDestroy } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { Interval } from '@nestjs/schedule';
 import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { config } from 'dotenv';
 import { Server } from 'socket.io';
+
+config();
 
 @WebSocketGateway({
   cors: {
@@ -10,10 +14,11 @@ import { Server } from 'socket.io';
   transports: ['websocket'],
 })
 @Injectable()
-export class WebsocketService implements OnModuleDestroy {
+export class WebsocketService {
   @WebSocketServer() server: Server;
 
-  onModuleDestroy(): void {
-    this.server.close();
+  @Interval(Number(process.env.PING_INTERVAL))
+  public ping(): void {
+    this.server.emit('ping');
   }
 }

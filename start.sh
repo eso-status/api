@@ -43,6 +43,7 @@ sed -i -e "s/__APP_PORT__/$APP_PORT/g" ./.env
 sed -i -e "s#__SSL_PRIVATE__#$SSL_PRIVATE#g" ./.env
 sed -i -e "s#__SSL_CERTIFICATE__#$SSL_CERTIFICATE#g" ./.env
 sed -i -e "s#__SSL_CA_BUNDLE__#$SSL_CA_BUNDLE#g" ./.env
+sed -i -e "s/__PING_INTERVAL__/$PING_INTERVAL/g" ./.env
 sed -i -e "s/__DB_TYPE__/$DB_TYPE/g" ./.env
 sed -i -e "s/__DB_HOST__/$DB_HOST/g" ./.env
 sed -i -e "s/__DB_PORT__/$DB_PORT/g" ./.env
