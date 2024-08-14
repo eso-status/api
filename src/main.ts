@@ -10,28 +10,20 @@ import { WinstonService } from './service/winston/winston.service';
 config();
 
 export async function bootstrap() {
-  try {
-    const app: INestApplication = await NestFactory.create(AppModule, {
-      logger: new WinstonService(),
-      httpsOptions: {
-        key: fs.readFileSync('private.key'),
-        cert: fs.readFileSync('certificate.crt'),
-        ca: fs.readFileSync('ca_bundle.crt'),
-      },
-    });
+  const app: INestApplication = await NestFactory.create(AppModule, {
+    logger: new WinstonService(),
+    httpsOptions: {
+      key: fs.readFileSync('private.key'),
+      cert: fs.readFileSync('certificate.crt'),
+      ca: fs.readFileSync('ca_bundle.crt'),
+    },
+  });
 
-    app.setGlobalPrefix(process.env.APP_PREFIX);
+  app.setGlobalPrefix(process.env.APP_PREFIX);
 
-    app.enableShutdownHooks();
+  app.enableShutdownHooks();
 
-    await app.listen(process.env.APP_PORT);
-  } catch (e) {
-    new WinstonService().fatal('', '');
-    new WinstonService().error('', '');
-    new WinstonService().warn('');
-    new WinstonService().debug('');
-    new WinstonService().verbose('');
-  }
+  await app.listen(process.env.APP_PORT);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
