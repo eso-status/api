@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner, TableColumn } from 'typeorm';
 
-export class UpdateArchiveConnectorTable1723385689641
+export class UpdateArchiveConnectorTable1723216114429
   implements MigrationInterface
 {
   public async up(queryRunner: QueryRunner): Promise<void> {
