@@ -12,6 +12,10 @@ import { Injectable } from '@nestjs/common';
 import { Interval } from '@nestjs/schedule';
 import { config } from 'dotenv';
 
+import { Moment } from 'moment';
+import * as moment from 'moment/moment';
+
+import { RawEsoStatus as CustomRawEsoStatus } from '../../interface/rawEsoStatus.interface';
 import { ArchiveService } from '../../resource/archive/archive.service';
 import { Archive } from '../../resource/archive/entities/archive.entity';
 import { Log } from '../../resource/log/entities/log.entity';
@@ -62,6 +66,52 @@ export class ScrapingService {
     return (
       archive.rawData !== JSON.stringify(esoStatusFromScraping.raw) &&
       archive.status.status !== esoStatusFromScraping.status
+    );
+  }
+
+  public maintenanceChanged(
+    esoStatusFromScraping: EsoStatus,
+    maintenance?: Maintenance,
+  ): boolean {
+    const modifiedEsoStatusFromScrapingRaw: CustomRawEsoStatus = {
+      sources: [],
+      raw: esoStatusFromScraping.raw.raw,
+      slugs: esoStatusFromScraping.raw.slugs,
+      rawDate: esoStatusFromScraping.raw.rawDate,
+      rawData: esoStatusFromScraping.raw.rawData,
+      dates: esoStatusFromScraping.raw.dates.map((date: Moment): string => {
+        return moment(date).toISOString();
+      }),
+      type: esoStatusFromScraping.raw.type,
+      support: esoStatusFromScraping.raw.support,
+      zone: esoStatusFromScraping.raw.zone,
+      status: esoStatusFromScraping.raw.status,
+      rawSlug: esoStatusFromScraping.raw.rawSlug,
+      rawStatus: esoStatusFromScraping.raw.rawStatus,
+    };
+
+    const maintenanceRawData: CustomRawEsoStatus = <CustomRawEsoStatus>(
+      JSON.parse(maintenance.rawData)
+    );
+
+    const modifiedMaintenanceRawData: CustomRawEsoStatus = {
+      sources: [],
+      raw: maintenanceRawData.raw,
+      slugs: maintenanceRawData.slugs,
+      rawDate: maintenanceRawData.rawDate,
+      rawData: maintenanceRawData.rawData,
+      dates: maintenanceRawData.dates,
+      type: maintenanceRawData.type,
+      support: maintenanceRawData.support,
+      zone: maintenanceRawData.zone,
+      status: maintenanceRawData.status,
+      rawSlug: maintenanceRawData.rawSlug,
+      rawStatus: maintenanceRawData.rawStatus,
+    };
+
+    return (
+      JSON.stringify(modifiedMaintenanceRawData) !==
+      JSON.stringify(modifiedEsoStatusFromScrapingRaw)
     );
   }
 
@@ -186,6 +236,20 @@ export class ScrapingService {
     esoStatus: EsoStatus,
     service: Service,
   ): Promise<void> {
+    // Check if maintenance already exist for this service
+    if (this.serviceHaveMaintenance(service)) {
+      // Write log
+      this.winstonService.log(
+        `[${connector}] [${service.slug.slug}] [Entity] maintenance already exist`,
+        'ScrapingService.updateMaintenance',
+      );
+
+      // Return function if maintenance don't change
+      if (!this.maintenanceChanged(esoStatus, service.maintenance)) {
+        return;
+      }
+    }
+
     // Update service status in database
     const maintenance: Maintenance = await this.addMaintenance(
       service.id,
