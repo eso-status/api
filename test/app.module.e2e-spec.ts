@@ -42,6 +42,7 @@ import { WinstonService } from '../src/service/winston/winston.service';
 
 import { classicMaintenance } from './data/classicScenario';
 
+import { classicScenario } from './data/doubleMaintenance';
 import { Scenario } from './interface/scenario.interface';
 import { Step } from './interface/step.interface';
 
@@ -118,7 +119,7 @@ describe('AppModule (e2e)', (): void => {
     clientSocket.disconnect();
   });
 
-  describe.each([classicMaintenance])(
+  describe.each([classicMaintenance, classicScenario])(
     'Should scenario works',
     (scenario: Scenario): void => {
       it('reset database', async (): Promise<void> => {
