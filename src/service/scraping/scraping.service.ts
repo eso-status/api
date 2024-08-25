@@ -64,7 +64,7 @@ export class ScrapingService {
     archive?: Archive,
   ): boolean {
     return (
-      archive.rawData !== JSON.stringify(esoStatusFromScraping.raw) &&
+      archive.rawData !== JSON.stringify(esoStatusFromScraping.raw) ||
       archive.status.status !== esoStatusFromScraping.status
     );
   }
