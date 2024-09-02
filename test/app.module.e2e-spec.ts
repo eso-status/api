@@ -48,15 +48,62 @@ import { Step } from './interface/step.interface';
 
 config();
 
-let app: INestApplication;
-let scrapingService: ScrapingService;
-let clientSocket: Socket;
-let serviceRepository: Repository<Service>;
-let archiveRepository: Repository<Archive>;
-let maintenanceRepository: Repository<Maintenance>;
-let logRepository: Repository<Log>;
-
 describe('AppModule (e2e)', (): void => {
+  let app: INestApplication;
+  let scrapingService: ScrapingService;
+  let clientSocket: Socket;
+  let serviceRepository: Repository<Service>;
+  let archiveRepository: Repository<Archive>;
+  let maintenanceRepository: Repository<Maintenance>;
+  let logRepository: Repository<Log>;
+
+  const mockConnectorData = (step: Step): void => {
+    if (step.connector === 'LiveServices') {
+      jest
+        .spyOn(LiveServices, 'getData')
+        .mockImplementation(async (): Promise<RawEsoStatus[]> => {
+          return Promise.resolve(step.connectorData);
+        });
+    }
+
+    if (
+      step.connector === 'ForumMessage' ||
+      step.connector === 'ForumMessagePts'
+    ) {
+      jest
+        .spyOn(ForumMessage, 'getData')
+        .mockImplementation(async (): Promise<RawEsoStatus[]> => {
+          return Promise.resolve(step.connectorData);
+        });
+    }
+
+    if (step.connector === 'ServiceAlerts') {
+      jest
+        .spyOn(ServiceAlerts, 'getData')
+        .mockImplementation(async (): Promise<RawEsoStatus[]> => {
+          return Promise.resolve(step.connectorData);
+        });
+    }
+  };
+
+  const callHandler = async (step: Step): Promise<void> => {
+    if (step.connector === 'LiveServices') {
+      await scrapingService.handleLiveServices();
+    }
+
+    if (step.connector === 'ForumMessage') {
+      await scrapingService.handleForumMessage();
+    }
+
+    if (step.connector === 'ForumMessagePts') {
+      await scrapingService.handleForumMessagePts();
+    }
+
+    if (step.connector === 'ServiceAlerts') {
+      await scrapingService.handleServiceAlerts();
+    }
+  };
+
   beforeAll(async (): Promise<void> => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
@@ -239,236 +286,71 @@ describe('AppModule (e2e)', (): void => {
           it('should doHandle method called', async (): Promise<void> => {
             // eslint-disable-next-line @typescript-eslint/no-misused-promises,no-async-promise-executor
             await new Promise<void>(async (resolve): Promise<void> => {
-              if (step.connector === 'LiveServices') {
-                jest
-                  .spyOn(LiveServices, 'getData')
-                  .mockImplementation(async (): Promise<RawEsoStatus[]> => {
-                    return Promise.resolve(step.connectorData);
-                  });
-              }
+              mockConnectorData(step);
 
-              if (
-                step.connector === 'ForumMessage' ||
-                step.connector === 'ForumMessagePts'
-              ) {
-                jest
-                  .spyOn(ForumMessage, 'getData')
-                  .mockImplementation(async (): Promise<RawEsoStatus[]> => {
-                    return Promise.resolve(step.connectorData);
-                  });
-              }
-
-              if (step.connector === 'ServiceAlerts') {
-                jest
-                  .spyOn(ServiceAlerts, 'getData')
-                  .mockImplementation(async (): Promise<RawEsoStatus[]> => {
-                    return Promise.resolve(step.connectorData);
-                  });
-              }
-
-              let statusUpdateCalled: boolean = false;
-              let maintenancePlannedCalled: boolean = false;
-              let maintenanceRemovedCalled: boolean = false;
-
-              const statusUpdateReallyReceived: EsoStatusSlug[] = [];
-              const maintenancePlannedReallyReceived: EsoStatusSlug[] = [];
-              const maintenanceRemovedReallyReceived: EsoStatusSlug[] = [];
-
-              let statusUpdateCalledNb: number = 0;
-              let maintenancePlannedCalledNb: number = 0;
-              let maintenanceRemovedCalledNb: number = 0;
-
-              const statusUpdateReceived = [];
-              step.statusUpdateList.forEach((esoStatus: EsoStatus): void => {
-                statusUpdateReceived[esoStatus.slug] = false;
-              });
-
-              const maintenancePlannedReceived = [];
-              step.maintenancePlannedList.forEach(
-                (maintenanceEsoStatus: MaintenanceEsoStatus): void => {
-                  maintenancePlannedReceived[maintenanceEsoStatus.slug] = false;
-                },
-              );
-
-              const maintenanceRemovedReceived = [];
-              step.maintenanceRemovedList.forEach(
-                (slug: EsoStatusSlug): void => {
-                  maintenanceRemovedReceived[slug] = false;
-                },
-              );
+              const statusUpdateDataReceived: string[] = [];
+              const maintenancePlannedDataReceived: string[] = [];
+              const maintenanceRemovedDataReceived: string[] = [];
 
               clientSocket.on('statusUpdate', (esoStatus: EsoStatus): void => {
-                statusUpdateCalled = true;
-                statusUpdateReallyReceived[esoStatus.slug] = true;
-                statusUpdateCalledNb += 1;
-                if (
-                  !statusUpdateReceived[esoStatus.slug] &&
-                  JSON.stringify(esoStatus) ===
-                    JSON.stringify(
-                      step.statusUpdateList.find(
-                        (esoStatusItem: EsoStatus): boolean =>
-                          esoStatusItem.slug === esoStatus.slug,
-                      ),
-                    )
-                ) {
-                  statusUpdateReceived[esoStatus.slug] = true;
-                }
+                statusUpdateDataReceived.push(JSON.stringify(esoStatus));
               });
 
               clientSocket.on(
                 'maintenancePlanned',
                 (maintenanceEsoStatus: CustomMaintenanceEsoStatus): void => {
-                  maintenancePlannedCalled = true;
-                  maintenancePlannedCalledNb += 1;
-                  maintenancePlannedReallyReceived[maintenanceEsoStatus.slug] =
-                    true;
-                  if (
-                    !maintenancePlannedReceived[maintenanceEsoStatus.slug] &&
-                    JSON.stringify(maintenanceEsoStatus) ===
-                      JSON.stringify(
-                        step.maintenancePlannedList.find(
-                          (
-                            maintenanceEsoStatusItem: MaintenanceEsoStatus,
-                          ): boolean =>
-                            maintenanceEsoStatusItem.slug ===
-                            maintenanceEsoStatus.slug,
-                        ),
-                      )
-                  ) {
-                    maintenancePlannedReceived[maintenanceEsoStatus.slug] =
-                      true;
-                  }
+                  maintenancePlannedDataReceived.push(
+                    JSON.stringify(maintenanceEsoStatus),
+                  );
                 },
               );
 
               clientSocket.on(
                 'maintenanceRemoved',
                 (slug: EsoStatusSlug): void => {
-                  maintenanceRemovedCalled = true;
-                  maintenanceRemovedReallyReceived[slug] = true;
-                  maintenanceRemovedCalledNb += 1;
-                  if (!maintenanceRemovedReceived[slug]) {
-                    maintenanceRemovedReceived[slug] = true;
-                  }
+                  maintenanceRemovedDataReceived.push(slug);
                 },
               );
 
               setTimeout((): void => {
-                let callUnexpected: boolean = false;
-                if (
-                  !callUnexpected &&
-                  step.statusUpdateList.length === 0 &&
-                  statusUpdateCalled
-                ) {
-                  callUnexpected = true;
-                }
-                if (
-                  !callUnexpected &&
-                  step.maintenancePlannedList.length === 0 &&
-                  maintenancePlannedCalled
-                ) {
-                  callUnexpected = true;
-                }
-                if (
-                  !callUnexpected &&
-                  step.maintenanceRemovedList.length === 0 &&
-                  maintenanceRemovedCalled
-                ) {
-                  callUnexpected = true;
-                }
-
-                let unexpectedSlug: boolean = false;
-
-                Object.keys(statusUpdateReallyReceived).forEach(
-                  (slug: EsoStatusSlug): void => {
-                    if (
-                      !unexpectedSlug &&
-                      statusUpdateReceived[slug] !== true
-                    ) {
-                      unexpectedSlug = true;
-                    }
-                  },
+                statusUpdateDataReceived.map((esoStatus: string): void =>
+                  expect(
+                    step.statusUpdateList.map(
+                      (stepEsoStatus: EsoStatus): string =>
+                        JSON.stringify(stepEsoStatus),
+                    ),
+                  ).toContain(esoStatus),
+                );
+                expect(statusUpdateDataReceived.length).toEqual(
+                  step.statusUpdateList.length,
                 );
 
-                Object.keys(maintenancePlannedReallyReceived).forEach(
-                  (slug: EsoStatusSlug): void => {
-                    if (
-                      !unexpectedSlug &&
-                      maintenancePlannedReceived[slug] !== true
-                    ) {
-                      unexpectedSlug = true;
-                    }
-                  },
+                maintenancePlannedDataReceived.map(
+                  (maintenanceEsoStatus: string): void =>
+                    expect(
+                      step.maintenancePlannedList.map(
+                        (
+                          stepMaintenancePlannedList: MaintenanceEsoStatus,
+                        ): string => JSON.stringify(stepMaintenancePlannedList),
+                      ),
+                    ).toContain(maintenanceEsoStatus),
+                );
+                expect(maintenancePlannedDataReceived.length).toEqual(
+                  step.maintenancePlannedList.length,
                 );
 
-                Object.keys(maintenanceRemovedReallyReceived).forEach(
-                  (slug: EsoStatusSlug): void => {
-                    if (
-                      !unexpectedSlug &&
-                      maintenanceRemovedReceived[slug] !== true
-                    ) {
-                      unexpectedSlug = true;
-                    }
-                  },
+                maintenanceRemovedDataReceived.map(
+                  (slug: EsoStatusSlug): void =>
+                    expect(step.maintenanceRemovedList).toContain(slug),
+                );
+                expect(maintenanceRemovedDataReceived.length).toEqual(
+                  step.maintenanceRemovedList.length,
                 );
 
-                let unexpectedCallNb: boolean = false;
-                if (
-                  !unexpectedCallNb &&
-                  statusUpdateCalledNb !== step.statusUpdateList.length
-                ) {
-                  unexpectedCallNb = true;
-                }
-
-                if (
-                  !unexpectedCallNb &&
-                  maintenancePlannedCalledNb !==
-                    step.maintenancePlannedList.length
-                ) {
-                  unexpectedCallNb = true;
-                }
-
-                if (
-                  !unexpectedCallNb &&
-                  maintenanceRemovedCalledNb !==
-                    step.maintenanceRemovedList.length
-                ) {
-                  unexpectedCallNb = true;
-                }
-
-                if (
-                  Object.values(statusUpdateReceived).filter(
-                    (received: boolean): boolean => received === false,
-                  ).length === 0 &&
-                  Object.values(maintenancePlannedReceived).filter(
-                    (received: boolean): boolean => received === false,
-                  ).length === 0 &&
-                  Object.values(maintenanceRemovedReceived).filter(
-                    (received: boolean): boolean => received === false,
-                  ).length === 0 &&
-                  !callUnexpected &&
-                  !unexpectedSlug &&
-                  !unexpectedCallNb
-                ) {
-                  resolve();
-                }
+                resolve();
               }, 100);
 
-              if (step.connector === 'LiveServices') {
-                await scrapingService.handleLiveServices();
-              }
-
-              if (step.connector === 'ForumMessage') {
-                await scrapingService.handleForumMessage();
-              }
-
-              if (step.connector === 'ForumMessagePts') {
-                await scrapingService.handleForumMessagePts();
-              }
-
-              if (step.connector === 'ServiceAlerts') {
-                await scrapingService.handleServiceAlerts();
-              }
+              await callHandler(step);
             });
           }, 15000);
 
