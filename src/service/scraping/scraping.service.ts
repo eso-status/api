@@ -263,11 +263,11 @@ export class ScrapingService {
 
     const maintenanceFormated: EsoStatusMaintenance = {
       rawDataList: [esoStatus.rawData],
-      beginnerAt: maintenance.beginnerAt.toISOString(),
+      beginnerAt: moment(maintenance.beginnerAt.toISOString()),
     };
 
     if (maintenance.endingAt) {
-      maintenanceFormated.endingAt = maintenance.endingAt.toISOString();
+      maintenanceFormated.endingAt = moment(maintenance.endingAt.toISOString());
     }
 
     // Emit maintenancePlanned event
