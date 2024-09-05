@@ -1,10 +1,10 @@
-import { ForumMessage } from '@eso-status/forum-message';
+import ForumMessage from '@eso-status/forum-message';
 import { LiveServices } from '@eso-status/live-services';
 import { ServiceAlerts } from '@eso-status/service-alerts';
 import {
   EsoStatus,
-  MaintenanceEsoStatus,
-  RawEsoStatus,
+  EsoStatusMaintenance,
+  EsoStatusRawData,
   Slug as EsoStatusSlug,
 } from '@eso-status/types';
 import { INestApplication } from '@nestjs/common';
@@ -21,7 +21,7 @@ import { runSeeders } from 'typeorm-extension';
 
 import { dataSource, dataSourceOptions } from '../src/config/typeorm.config';
 import { EsoStatus as CustomEsoStatus } from '../src/interface/esoStatus.interface';
-import { MaintenanceEsoStatus as CustomMaintenanceEsoStatus } from '../src/interface/maintenanceEsoStatus.interface';
+import { EsoStatusMaintenance as CustomEsoStatusMaintenance } from '../src/interface/esoStatusMaintenance.interface';
 import { ArchiveService } from '../src/resource/archive/archive.service';
 import { Archive } from '../src/resource/archive/entities/archive.entity';
 import { Log } from '../src/resource/log/entities/log.entity';
@@ -40,9 +40,8 @@ import { ScrapingService } from '../src/service/scraping/scraping.service';
 import { WebsocketService } from '../src/service/websocket/websocket.service';
 import { WinstonService } from '../src/service/winston/winston.service';
 
-import { classicMaintenance } from './data/classicScenario';
-
-import { classicScenario } from './data/doubleMaintenance';
+import { classicScenario } from './data/classicScenario';
+import { doubleMaintenance } from './data/doubleMaintenance';
 import { Scenario } from './interface/scenario.interface';
 import { Step } from './interface/step.interface';
 
@@ -61,7 +60,7 @@ describe('AppModule (e2e)', (): void => {
     if (step.connector === 'LiveServices') {
       jest
         .spyOn(LiveServices, 'getData')
-        .mockImplementation(async (): Promise<RawEsoStatus[]> => {
+        .mockImplementation(async (): Promise<EsoStatusRawData[]> => {
           return Promise.resolve(step.connectorData);
         });
     }
@@ -72,7 +71,7 @@ describe('AppModule (e2e)', (): void => {
     ) {
       jest
         .spyOn(ForumMessage, 'getData')
-        .mockImplementation(async (): Promise<RawEsoStatus[]> => {
+        .mockImplementation(async (): Promise<EsoStatusRawData[]> => {
           return Promise.resolve(step.connectorData);
         });
     }
@@ -80,7 +79,7 @@ describe('AppModule (e2e)', (): void => {
     if (step.connector === 'ServiceAlerts') {
       jest
         .spyOn(ServiceAlerts, 'getData')
-        .mockImplementation(async (): Promise<RawEsoStatus[]> => {
+        .mockImplementation(async (): Promise<EsoStatusRawData[]> => {
           return Promise.resolve(step.connectorData);
         });
     }
@@ -166,7 +165,7 @@ describe('AppModule (e2e)', (): void => {
     clientSocket.disconnect();
   });
 
-  describe.each([classicMaintenance, classicScenario])(
+  describe.each([doubleMaintenance, classicScenario])(
     'Should scenario works',
     (scenario: Scenario): void => {
       it('reset database', async (): Promise<void> => {
@@ -298,7 +297,7 @@ describe('AppModule (e2e)', (): void => {
 
               clientSocket.on(
                 'maintenancePlanned',
-                (maintenanceEsoStatus: CustomMaintenanceEsoStatus): void => {
+                (maintenanceEsoStatus: CustomEsoStatusMaintenance): void => {
                   maintenancePlannedDataReceived.push(
                     JSON.stringify(maintenanceEsoStatus),
                   );
@@ -330,7 +329,7 @@ describe('AppModule (e2e)', (): void => {
                     expect(
                       step.maintenancePlannedList.map(
                         (
-                          stepMaintenancePlannedList: MaintenanceEsoStatus,
+                          stepMaintenancePlannedList: EsoStatusMaintenance,
                         ): string => JSON.stringify(stepMaintenancePlannedList),
                       ),
                     ).toContain(maintenanceEsoStatus),

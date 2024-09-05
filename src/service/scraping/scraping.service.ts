@@ -1,10 +1,11 @@
-import { ForumMessage, ForumMessagePTSURL } from '@eso-status/forum-message';
+import ForumMessage from '@eso-status/forum-message';
+import { ForumMessagePTSURL } from '@eso-status/forum-message/lib/const';
 import { LiveServices } from '@eso-status/live-services';
 import { ServiceAlerts } from '@eso-status/service-alerts';
 import {
   EsoStatus,
-  MaintenanceEsoStatus,
-  RawEsoStatus,
+  EsoStatusMaintenance,
+  EsoStatusRawData,
   Status as EsoStatusStatus,
 } from '@eso-status/types';
 import { Injectable } from '@nestjs/common';
@@ -13,9 +14,9 @@ import { Interval } from '@nestjs/schedule';
 import { config } from 'dotenv';
 
 import { Moment } from 'moment';
-import * as moment from 'moment/moment';
+import * as moment from 'moment';
 
-import { RawEsoStatus as CustomRawEsoStatus } from '../../interface/rawEsoStatus.interface';
+import { EsoStatusRawData as CustomEsoStatusRawData } from '../../interface/esoStatusRawData.interface';
 import { ArchiveService } from '../../resource/archive/archive.service';
 import { Archive } from '../../resource/archive/entities/archive.entity';
 import { Log } from '../../resource/log/entities/log.entity';
@@ -64,7 +65,7 @@ export class ScrapingService {
     archive?: Archive,
   ): boolean {
     return (
-      archive.rawData !== JSON.stringify(esoStatusFromScraping.raw) ||
+      archive.rawData !== JSON.stringify(esoStatusFromScraping.rawData) ||
       archive.status.status !== esoStatusFromScraping.status
     );
   }
@@ -73,33 +74,31 @@ export class ScrapingService {
     esoStatusFromScraping: EsoStatus,
     maintenance?: Maintenance,
   ): boolean {
-    const modifiedEsoStatusFromScrapingRaw: CustomRawEsoStatus = {
-      sources: [],
-      raw: esoStatusFromScraping.raw.raw,
-      slugs: esoStatusFromScraping.raw.slugs,
-      rawDate: esoStatusFromScraping.raw.rawDate,
-      rawData: esoStatusFromScraping.raw.rawData,
-      dates: esoStatusFromScraping.raw.dates.map((date: Moment): string => {
+    const modifiedEsoStatusFromScrapingRaw: CustomEsoStatusRawData = {
+      source: '',
+      raw: esoStatusFromScraping.rawData.raw,
+      slug: esoStatusFromScraping.rawData.slug,
+      rawDate: esoStatusFromScraping.rawData.rawDate,
+      dates: esoStatusFromScraping.rawData.dates.map((date: Moment): string => {
         return moment(date).toISOString();
       }),
-      type: esoStatusFromScraping.raw.type,
-      support: esoStatusFromScraping.raw.support,
-      zone: esoStatusFromScraping.raw.zone,
-      status: esoStatusFromScraping.raw.status,
-      rawSlug: esoStatusFromScraping.raw.rawSlug,
-      rawStatus: esoStatusFromScraping.raw.rawStatus,
+      type: esoStatusFromScraping.rawData.type,
+      support: esoStatusFromScraping.rawData.support,
+      zone: esoStatusFromScraping.rawData.zone,
+      status: esoStatusFromScraping.rawData.status,
+      rawSlug: esoStatusFromScraping.rawData.rawSlug,
+      rawStatus: esoStatusFromScraping.rawData.rawStatus,
     };
 
-    const maintenanceRawData: CustomRawEsoStatus = <CustomRawEsoStatus>(
+    const maintenanceRawData: CustomEsoStatusRawData = <CustomEsoStatusRawData>(
       JSON.parse(maintenance.rawData)
     );
 
-    const modifiedMaintenanceRawData: CustomRawEsoStatus = {
-      sources: [],
+    const modifiedMaintenanceRawData: CustomEsoStatusRawData = {
+      source: '',
       raw: maintenanceRawData.raw,
-      slugs: maintenanceRawData.slugs,
+      slug: maintenanceRawData.slug,
       rawDate: maintenanceRawData.rawDate,
-      rawData: maintenanceRawData.rawData,
       dates: maintenanceRawData.dates,
       type: maintenanceRawData.type,
       support: maintenanceRawData.support,
@@ -139,7 +138,7 @@ export class ScrapingService {
 
   public async updateArchive(
     service: Service,
-    rawData: RawEsoStatus,
+    rawData: EsoStatusRawData,
     connector: Connector,
     statusId: number,
   ): Promise<void> {
@@ -153,14 +152,14 @@ export class ScrapingService {
   public async updateService(
     serviceId: number,
     statusId: number,
-    rawData: RawEsoStatus,
+    rawData: EsoStatusRawData,
   ): Promise<void> {
     return this.serviceService.update(serviceId, statusId, rawData);
   }
 
   public async addMaintenance(
     serviceId: number,
-    rawData: RawEsoStatus,
+    rawData: EsoStatusRawData,
   ): Promise<Maintenance> {
     return this.maintenanceService.add(serviceId, rawData);
   }
@@ -169,7 +168,7 @@ export class ScrapingService {
     connector: Connector,
     serviceId: number,
     statusId: number,
-    rawEsoStatus: RawEsoStatus,
+    rawEsoStatus: EsoStatusRawData,
   ): Promise<Log> {
     return this.logService.add(connector, serviceId, statusId, rawEsoStatus);
   }
@@ -194,7 +193,7 @@ export class ScrapingService {
     }
 
     // Update service status in database
-    await this.updateService(service.id, newStatus.id, esoStatus.raw);
+    await this.updateService(service.id, newStatus.id, esoStatus.rawData);
 
     // Write log with detail (old and new status)
     this.winstonService.log(
@@ -253,7 +252,7 @@ export class ScrapingService {
     // Update service status in database
     const maintenance: Maintenance = await this.addMaintenance(
       service.id,
-      esoStatus.raw,
+      esoStatus.rawData,
     );
 
     // Write log
@@ -262,9 +261,8 @@ export class ScrapingService {
       'ScrapingService.updateMaintenance',
     );
 
-    const maintenanceFormated: MaintenanceEsoStatus = {
-      raw: esoStatus.raw,
-      slug: esoStatus.slug,
+    const maintenanceFormated: EsoStatusMaintenance = {
+      rawDataList: [esoStatus.rawData],
       beginnerAt: maintenance.beginnerAt.toISOString(),
     };
 
@@ -310,12 +308,12 @@ export class ScrapingService {
 
     // Write log with detail (raw)
     this.winstonService.log(
-      `[${connector}] [${service.slug.slug}] [Change] archiveChanged. New raw: ${JSON.stringify(esoStatus.raw)}`,
+      `[${connector}] [${service.slug.slug}] [Change] archiveChanged. New raw: ${JSON.stringify(esoStatus.rawData)}`,
       'ScrapingService.prepareUpdate',
     );
 
     // Create log
-    await this.addLog(connector, service.id, newStatus.id, esoStatus.raw);
+    await this.addLog(connector, service.id, newStatus.id, esoStatus.rawData);
 
     // Write log
     this.winstonService.log(
@@ -324,7 +322,12 @@ export class ScrapingService {
     );
 
     // Update archive
-    await this.updateArchive(service, esoStatus.raw, connector, newStatus.id);
+    await this.updateArchive(
+      service,
+      esoStatus.rawData,
+      connector,
+      newStatus.id,
+    );
 
     // Write log
     this.winstonService.log(
@@ -351,21 +354,22 @@ export class ScrapingService {
     }
   }
 
-  public formatData(rawEsoStatusList: RawEsoStatus[]): EsoStatus[] {
+  public formatData(rawEsoStatusList: EsoStatusRawData[]): EsoStatus[] {
     return rawEsoStatusList.map(
-      (rawEsoStatus: RawEsoStatus): EsoStatus => ({
-        slug: rawEsoStatus.slugs[0],
+      (rawEsoStatus: EsoStatusRawData): EsoStatus => ({
+        slug: rawEsoStatus.slug,
         status: rawEsoStatus.status,
-        type: rawEsoStatus.type ?? 'server',
+        type: rawEsoStatus.type,
         support: rawEsoStatus.support,
         zone: rawEsoStatus.zone,
-        raw: rawEsoStatus,
+        rawData: rawEsoStatus,
+        statusSince: moment(0),
       }),
     );
   }
 
   public async doHandle(
-    rawEsoStatus: RawEsoStatus[],
+    rawEsoStatus: EsoStatusRawData[],
     connector: Connector,
   ): Promise<void> {
     await Promise.all(
@@ -392,11 +396,13 @@ export class ScrapingService {
 
   @Interval(Number(process.env.LIVE_SERVICES_UPDATE_INTERVAL))
   public async handleLiveServices(): Promise<void> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     await this.doHandle(await LiveServices.getData(), 'LiveServices');
   }
 
   @Interval(Number(process.env.SERVICE_ALERTS_UPDATE_INTERVAL))
   public async handleServiceAlerts(): Promise<void> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     await this.doHandle(await ServiceAlerts.getData(), 'ServiceAlerts');
   }
 }

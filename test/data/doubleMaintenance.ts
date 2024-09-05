@@ -1,172 +1,182 @@
 import {
   EsoStatus,
-  MaintenanceEsoStatus,
-  RawEsoStatus,
+  EsoStatusMaintenance,
+  EsoStatusRawData,
 } from '@eso-status/types';
 
-import * as moment from 'moment/moment';
+import * as moment from 'moment';
 
-import { RawEsoStatus as CustomRawEsoStatus } from '../../src/interface/rawEsoStatus.interface';
+import { EsoStatusRawData as CustomEsoStatusRawData } from '../../src/interface/esoStatusRawData.interface';
 import { Initial } from '../interface/initial.interface';
 import { Scenario } from '../interface/scenario.interface';
 import { Step } from '../interface/step.interface';
 
-const LiveServicesServerPcEuUpRaw: RawEsoStatus = {
-  sources: ['https://live-services.elderscrollsonline.com/status/realms'],
-  raw: ['The Elder Scrolls Online (EU)', 'UP'],
+const LiveServicesServerPcEuUpRaw: EsoStatusRawData = {
+  source: 'https://live-services.elderscrollsonline.com/status/realms',
+  raw: 'The Elder Scrolls Online (EU) UP',
   rawSlug: 'The Elder Scrolls Online (EU)',
   rawStatus: 'UP',
-  slugs: ['server_pc_eu'],
+  slug: 'server_pc_eu',
+  type: 'server',
   support: 'pc',
   zone: 'eu',
   status: 'up',
 };
-const LiveServicesServerPcEuUpRawStringDate: CustomRawEsoStatus = {
-  sources: LiveServicesServerPcEuUpRaw.sources,
+const LiveServicesServerPcEuUpRawStringDate: CustomEsoStatusRawData = {
+  source: LiveServicesServerPcEuUpRaw.source,
   raw: LiveServicesServerPcEuUpRaw.raw,
   rawSlug: LiveServicesServerPcEuUpRaw.rawSlug,
   rawStatus: LiveServicesServerPcEuUpRaw.rawStatus,
-  slugs: LiveServicesServerPcEuUpRaw.slugs,
+  slug: LiveServicesServerPcEuUpRaw.slug,
+  type: LiveServicesServerPcEuUpRaw.type,
   support: LiveServicesServerPcEuUpRaw.support,
   zone: LiveServicesServerPcEuUpRaw.zone,
   status: LiveServicesServerPcEuUpRaw.status,
 };
 
-const LiveServicesServerPcNaUpRaw: RawEsoStatus = {
-  sources: ['https://live-services.elderscrollsonline.com/status/realms'],
-  raw: ['The Elder Scrolls Online (NA)', 'UP'],
+const LiveServicesServerPcNaUpRaw: EsoStatusRawData = {
+  source: 'https://live-services.elderscrollsonline.com/status/realms',
+  raw: 'The Elder Scrolls Online (NA) UP',
   rawSlug: 'The Elder Scrolls Online (NA)',
   rawStatus: 'UP',
-  slugs: ['server_pc_na'],
+  slug: 'server_pc_na',
+  type: 'server',
   support: 'pc',
   zone: 'na',
   status: 'up',
 };
-const LiveServicesServerPcNaUpRawStringDate: CustomRawEsoStatus = {
-  sources: LiveServicesServerPcNaUpRaw.sources,
+const LiveServicesServerPcNaUpRawStringDate: CustomEsoStatusRawData = {
+  source: LiveServicesServerPcNaUpRaw.source,
   raw: LiveServicesServerPcNaUpRaw.raw,
   rawSlug: LiveServicesServerPcNaUpRaw.rawSlug,
   rawStatus: LiveServicesServerPcNaUpRaw.rawStatus,
-  slugs: LiveServicesServerPcNaUpRaw.slugs,
+  slug: LiveServicesServerPcNaUpRaw.slug,
+  type: LiveServicesServerPcNaUpRaw.type,
   support: LiveServicesServerPcNaUpRaw.support,
   zone: LiveServicesServerPcNaUpRaw.zone,
   status: LiveServicesServerPcNaUpRaw.status,
 };
 
-const LiveServicesServerPsEuUpRaw: RawEsoStatus = {
-  sources: ['https://live-services.elderscrollsonline.com/status/realms'],
-  raw: ['The Elder Scrolls Online (PS4 - EU)', 'UP'],
+const LiveServicesServerPsEuUpRaw: EsoStatusRawData = {
+  source: 'https://live-services.elderscrollsonline.com/status/realms',
+  raw: 'The Elder Scrolls Online (PS4 - EU) UP',
   rawSlug: 'The Elder Scrolls Online (PS4 - EU)',
   rawStatus: 'UP',
-  slugs: ['server_ps_eu'],
+  slug: 'server_ps_eu',
+  type: 'server',
   support: 'ps',
   zone: 'eu',
   status: 'up',
 };
-const LiveServicesServerPsEuUpRawStringDate: CustomRawEsoStatus = {
-  sources: LiveServicesServerPsEuUpRaw.sources,
+const LiveServicesServerPsEuUpRawStringDate: CustomEsoStatusRawData = {
+  source: LiveServicesServerPsEuUpRaw.source,
   raw: LiveServicesServerPsEuUpRaw.raw,
   rawSlug: LiveServicesServerPsEuUpRaw.rawSlug,
   rawStatus: LiveServicesServerPsEuUpRaw.rawStatus,
-  slugs: LiveServicesServerPsEuUpRaw.slugs,
+  slug: LiveServicesServerPsEuUpRaw.slug,
+  type: LiveServicesServerPsEuUpRaw.type,
   support: LiveServicesServerPsEuUpRaw.support,
   zone: LiveServicesServerPsEuUpRaw.zone,
   status: LiveServicesServerPsEuUpRaw.status,
 };
 
-const LiveServicesServerPsNaUpRaw: RawEsoStatus = {
-  sources: ['https://live-services.elderscrollsonline.com/status/realms'],
-  raw: ['The Elder Scrolls Online (PS4 - US)', 'UP'],
+const LiveServicesServerPsNaUpRaw: EsoStatusRawData = {
+  source: 'https://live-services.elderscrollsonline.com/status/realms',
+  raw: 'The Elder Scrolls Online (PS4 - US) UP',
   rawSlug: 'The Elder Scrolls Online (PS4 - US)',
   rawStatus: 'UP',
-  slugs: ['server_ps_na'],
+  slug: 'server_ps_na',
+  type: 'server',
   support: 'ps',
   zone: 'na',
   status: 'up',
 };
-const LiveServicesServerPsNaUpRawStringDate: CustomRawEsoStatus = {
-  sources: LiveServicesServerPsNaUpRaw.sources,
+const LiveServicesServerPsNaUpRawStringDate: CustomEsoStatusRawData = {
+  source: LiveServicesServerPsNaUpRaw.source,
   raw: LiveServicesServerPsNaUpRaw.raw,
   rawSlug: LiveServicesServerPsNaUpRaw.rawSlug,
   rawStatus: LiveServicesServerPsNaUpRaw.rawStatus,
-  slugs: LiveServicesServerPsNaUpRaw.slugs,
+  slug: LiveServicesServerPsNaUpRaw.slug,
+  type: LiveServicesServerPsNaUpRaw.type,
   support: LiveServicesServerPsNaUpRaw.support,
   zone: LiveServicesServerPsNaUpRaw.zone,
   status: LiveServicesServerPsNaUpRaw.status,
 };
 
-const LiveServicesServerPcPtsUpRaw: RawEsoStatus = {
-  sources: ['https://live-services.elderscrollsonline.com/status/realms'],
-  raw: ['The Elder Scrolls Online (PTS)', 'UP'],
+const LiveServicesServerPcPtsUpRaw: EsoStatusRawData = {
+  source: 'https://live-services.elderscrollsonline.com/status/realms',
+  raw: 'The Elder Scrolls Online (PTS) UP',
   rawSlug: 'The Elder Scrolls Online (PTS)',
   rawStatus: 'UP',
-  slugs: ['server_pc_pts'],
+  slug: 'server_pc_pts',
+  type: 'server',
   support: 'pc',
   zone: 'pts',
   status: 'up',
 };
-const LiveServicesServerPcPtsUpRawStringDate: CustomRawEsoStatus = {
-  sources: LiveServicesServerPcPtsUpRaw.sources,
+const LiveServicesServerPcPtsUpRawStringDate: CustomEsoStatusRawData = {
+  source: LiveServicesServerPcPtsUpRaw.source,
   raw: LiveServicesServerPcPtsUpRaw.raw,
   rawSlug: LiveServicesServerPcPtsUpRaw.rawSlug,
   rawStatus: LiveServicesServerPcPtsUpRaw.rawStatus,
-  slugs: LiveServicesServerPcPtsUpRaw.slugs,
+  slug: LiveServicesServerPcPtsUpRaw.slug,
+  type: LiveServicesServerPcPtsUpRaw.type,
   support: LiveServicesServerPcPtsUpRaw.support,
   zone: LiveServicesServerPcPtsUpRaw.zone,
   status: LiveServicesServerPcPtsUpRaw.status,
 };
 
-const LiveServicesServerXboxEuUpRaw: RawEsoStatus = {
-  sources: ['https://live-services.elderscrollsonline.com/status/realms'],
-  raw: ['The Elder Scrolls Online (XBox - EU)', 'UP'],
+const LiveServicesServerXboxEuUpRaw: EsoStatusRawData = {
+  source: 'https://live-services.elderscrollsonline.com/status/realms',
+  raw: 'The Elder Scrolls Online (XBox - EU) UP',
   rawSlug: 'The Elder Scrolls Online (XBox - EU)',
   rawStatus: 'UP',
-  slugs: ['server_xbox_eu'],
+  slug: 'server_xbox_eu',
+  type: 'server',
   support: 'xbox',
   zone: 'eu',
   status: 'up',
 };
-const LiveServicesServerXboxEuUpRawStringDate: CustomRawEsoStatus = {
-  sources: LiveServicesServerXboxEuUpRaw.sources,
+const LiveServicesServerXboxEuUpRawStringDate: CustomEsoStatusRawData = {
+  source: LiveServicesServerXboxEuUpRaw.source,
   raw: LiveServicesServerXboxEuUpRaw.raw,
   rawSlug: LiveServicesServerXboxEuUpRaw.rawSlug,
   rawStatus: LiveServicesServerXboxEuUpRaw.rawStatus,
-  slugs: LiveServicesServerXboxEuUpRaw.slugs,
+  slug: LiveServicesServerXboxEuUpRaw.slug,
+  type: LiveServicesServerXboxEuUpRaw.type,
   support: LiveServicesServerXboxEuUpRaw.support,
   zone: LiveServicesServerXboxEuUpRaw.zone,
   status: LiveServicesServerXboxEuUpRaw.status,
 };
 
-const LiveServicesServerXboxNaUpRaw: RawEsoStatus = {
-  sources: ['https://live-services.elderscrollsonline.com/status/realms'],
-  raw: ['The Elder Scrolls Online (XBox - US)', 'UP'],
+const LiveServicesServerXboxNaUpRaw: EsoStatusRawData = {
+  source: 'https://live-services.elderscrollsonline.com/status/realms',
+  raw: 'The Elder Scrolls Online (XBox - US) UP',
   rawSlug: 'The Elder Scrolls Online (XBox - US)',
   rawStatus: 'UP',
-  slugs: ['server_xbox_na'],
+  slug: 'server_xbox_na',
+  type: 'server',
   support: 'xbox',
   zone: 'na',
   status: 'up',
 };
-const LiveServicesServerXboxNaUpRawStringDate: CustomRawEsoStatus = {
-  sources: LiveServicesServerXboxNaUpRaw.sources,
+const LiveServicesServerXboxNaUpRawStringDate: CustomEsoStatusRawData = {
+  source: LiveServicesServerXboxNaUpRaw.source,
   raw: LiveServicesServerXboxNaUpRaw.raw,
   rawSlug: LiveServicesServerXboxNaUpRaw.rawSlug,
   rawStatus: LiveServicesServerXboxNaUpRaw.rawStatus,
-  slugs: LiveServicesServerXboxNaUpRaw.slugs,
+  slug: LiveServicesServerXboxNaUpRaw.slug,
+  type: LiveServicesServerXboxNaUpRaw.type,
   support: LiveServicesServerXboxNaUpRaw.support,
   zone: LiveServicesServerXboxNaUpRaw.zone,
   status: LiveServicesServerXboxNaUpRaw.status,
 };
 
-const ServiceAlertsServerXboxNaUpRaw: RawEsoStatus = {
-  sources: ['https://help.elderscrollsonline.com/app/answers/detail/a_id/4320'],
-  raw: [
-    '<div><!-- ENTER ESO SERVICE ALERTS BELOW THIS LINE -->\\n<p>2024.08.08 - 15:30 UTC (11:30 EDT)</p>\\n<p>The issues related to logging in to the North American and European Xbox megaservers have been resolved at this time. </p>\\n',
-  ],
+const ServiceAlertsServerXboxNaUpRaw: EsoStatusRawData = {
+  source: 'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
+  raw: '<div><!-- ENTER ESO SERVICE ALERTS BELOW THIS LINE -->\\n<p>2024.08.08 - 15:30 UTC (11:30 EDT)</p>\\n<p>The issues related to logging in to the North American and European Xbox megaservers have been resolved at this time. </p>\\n',
   rawDate: '2024.08.08 - 15:30 UTC (11:30 EDT)',
-  rawData:
-    'The issues related to logging in to the North American and European Xbox megaservers have been resolved at this time. ',
-  slugs: ['server_xbox_na'],
+  slug: 'server_xbox_na',
   dates: [
     moment()
       .utc()
@@ -183,17 +193,14 @@ const ServiceAlertsServerXboxNaUpRaw: RawEsoStatus = {
   support: 'xbox',
   zone: 'na',
   status: 'up',
+  rawSlug: '',
 };
 
-const ServiceAlertsServerXboxEuUpRaw: RawEsoStatus = {
-  sources: ['https://help.elderscrollsonline.com/app/answers/detail/a_id/4320'],
-  raw: [
-    '<div><!-- ENTER ESO SERVICE ALERTS BELOW THIS LINE -->\\n<p>2024.08.08 - 15:30 UTC (11:30 EDT)</p>\\n<p>The issues related to logging in to the North American and European Xbox megaservers have been resolved at this time. </p>\\n',
-  ],
+const ServiceAlertsServerXboxEuUpRaw: EsoStatusRawData = {
+  source: 'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
+  raw: '<div><!-- ENTER ESO SERVICE ALERTS BELOW THIS LINE -->\\n<p>2024.08.08 - 15:30 UTC (11:30 EDT)</p>\\n<p>The issues related to logging in to the North American and European Xbox megaservers have been resolved at this time. </p>\\n',
   rawDate: '2024.08.08 - 15:30 UTC (11:30 EDT)',
-  rawData:
-    'The issues related to logging in to the North American and European Xbox megaservers have been resolved at this time. ',
-  slugs: ['server_xbox_eu'],
+  slug: 'server_xbox_eu',
   dates: [
     moment()
       .utc()
@@ -210,16 +217,14 @@ const ServiceAlertsServerXboxEuUpRaw: RawEsoStatus = {
   support: 'xbox',
   zone: 'eu',
   status: 'up',
+  rawSlug: '',
 };
 
-const ServiceAlertsServerPsNaUpRaw: RawEsoStatus = {
-  sources: ['https://help.elderscrollsonline.com/app/answers/detail/a_id/4320'],
-  raw: [
-    '<div><!-- ENTER ESO SERVICE ALERTS BELOW THIS LINE -->\\n   <p>2024.08.07 - 15:45 UTC (11:45 EDT)</p>\\n<p>The North American megaservers are currently available.</p>\\n<p>The European megaservers are currently available.</p>\\n<p>The PTS is currently available.</p>\\n<p>The ESO store and account system are currently available.</p>\\n',
-  ],
+const ServiceAlertsServerPsNaUpRaw: EsoStatusRawData = {
+  source: 'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
+  raw: '<div><!-- ENTER ESO SERVICE ALERTS BELOW THIS LINE -->\\n   <p>2024.08.07 - 15:45 UTC (11:45 EDT)</p>\\n<p>The North American megaservers are currently available.</p>\\n<p>The European megaservers are currently available.</p>\\n<p>The PTS is currently available.</p>\\n<p>The ESO store and account system are currently available.</p>\\n',
   rawDate: '   2024.08.07 - 15:45 UTC (11:45 EDT)',
-  rawData: 'The North American megaservers are currently available.',
-  slugs: ['server_ps_na'],
+  slug: 'server_ps_na',
   dates: [
     moment()
       .utc()
@@ -236,16 +241,14 @@ const ServiceAlertsServerPsNaUpRaw: RawEsoStatus = {
   support: 'ps',
   zone: 'na',
   status: 'up',
+  rawSlug: '',
 };
 
-const ServiceAlertsServerPsEuUpRaw: RawEsoStatus = {
-  sources: ['https://help.elderscrollsonline.com/app/answers/detail/a_id/4320'],
-  raw: [
-    '<div><!-- ENTER ESO SERVICE ALERTS BELOW THIS LINE -->\\n   <p>2024.08.07 - 15:45 UTC (11:45 EDT)</p>\\n<p>The North American megaservers are currently available.</p>\\n<p>The European megaservers are currently available.</p>\\n<p>The PTS is currently available.</p>\\n<p>The ESO store and account system are currently available.</p>\\n',
-  ],
+const ServiceAlertsServerPsEuUpRaw: EsoStatusRawData = {
+  source: 'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
+  raw: '<div><!-- ENTER ESO SERVICE ALERTS BELOW THIS LINE -->\\n   <p>2024.08.07 - 15:45 UTC (11:45 EDT)</p>\\n<p>The North American megaservers are currently available.</p>\\n<p>The European megaservers are currently available.</p>\\n<p>The PTS is currently available.</p>\\n<p>The ESO store and account system are currently available.</p>\\n',
   rawDate: '   2024.08.07 - 15:45 UTC (11:45 EDT)',
-  rawData: 'The European megaservers are currently available.',
-  slugs: ['server_ps_eu'],
+  slug: 'server_ps_eu',
   dates: [
     moment()
       .utc()
@@ -262,16 +265,14 @@ const ServiceAlertsServerPsEuUpRaw: RawEsoStatus = {
   support: 'ps',
   zone: 'eu',
   status: 'up',
+  rawSlug: '',
 };
 
-const ServiceAlertsServerPcNaUpRaw: RawEsoStatus = {
-  sources: ['https://help.elderscrollsonline.com/app/answers/detail/a_id/4320'],
-  raw: [
-    '<div><!-- ENTER ESO SERVICE ALERTS BELOW THIS LINE -->\\n   <p>2024.08.07 - 15:45 UTC (11:45 EDT)</p>\\n<p>The North American megaservers are currently available.</p>\\n<p>The European megaservers are currently available.</p>\\n<p>The PTS is currently available.</p>\\n<p>The ESO store and account system are currently available.</p>\\n',
-  ],
+const ServiceAlertsServerPcNaUpRaw: EsoStatusRawData = {
+  source: 'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
+  raw: '<div><!-- ENTER ESO SERVICE ALERTS BELOW THIS LINE -->\\n   <p>2024.08.07 - 15:45 UTC (11:45 EDT)</p>\\n<p>The North American megaservers are currently available.</p>\\n<p>The European megaservers are currently available.</p>\\n<p>The PTS is currently available.</p>\\n<p>The ESO store and account system are currently available.</p>\\n',
   rawDate: '   2024.08.07 - 15:45 UTC (11:45 EDT)',
-  rawData: 'The North American megaservers are currently available.',
-  slugs: ['server_pc_na'],
+  slug: 'server_pc_na',
   dates: [
     moment()
       .utc()
@@ -288,16 +289,14 @@ const ServiceAlertsServerPcNaUpRaw: RawEsoStatus = {
   support: 'pc',
   zone: 'na',
   status: 'up',
+  rawSlug: '',
 };
 
-const ServiceAlertsServerPcEuUpRaw: RawEsoStatus = {
-  sources: ['https://help.elderscrollsonline.com/app/answers/detail/a_id/4320'],
-  raw: [
-    '<div><!-- ENTER ESO SERVICE ALERTS BELOW THIS LINE -->\\n   <p>2024.08.07 - 15:45 UTC (11:45 EDT)</p>\\n<p>The North American megaservers are currently available.</p>\\n<p>The European megaservers are currently available.</p>\\n<p>The PTS is currently available.</p>\\n<p>The ESO store and account system are currently available.</p>\\n',
-  ],
+const ServiceAlertsServerPcEuUpRaw: EsoStatusRawData = {
+  source: 'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
+  raw: '<div><!-- ENTER ESO SERVICE ALERTS BELOW THIS LINE -->\\n   <p>2024.08.07 - 15:45 UTC (11:45 EDT)</p>\\n<p>The North American megaservers are currently available.</p>\\n<p>The European megaservers are currently available.</p>\\n<p>The PTS is currently available.</p>\\n<p>The ESO store and account system are currently available.</p>\\n',
   rawDate: '   2024.08.07 - 15:45 UTC (11:45 EDT)',
-  rawData: 'The European megaservers are currently available.',
-  slugs: ['server_pc_eu'],
+  slug: 'server_pc_eu',
   dates: [
     moment()
       .utc()
@@ -314,16 +313,14 @@ const ServiceAlertsServerPcEuUpRaw: RawEsoStatus = {
   support: 'pc',
   zone: 'eu',
   status: 'up',
+  rawSlug: '',
 };
 
-const ServiceAlertsServerPcPtsUpRaw: RawEsoStatus = {
-  sources: ['https://help.elderscrollsonline.com/app/answers/detail/a_id/4320'],
-  raw: [
-    '<div><!-- ENTER ESO SERVICE ALERTS BELOW THIS LINE -->\\n<p>2024.08.05 - 18:00 UTC (14:00 EDT)</p>\\n\\n<p>The PTS is currently available.</p>\\n\\n',
-  ],
+const ServiceAlertsServerPcPtsUpRaw: EsoStatusRawData = {
+  source: 'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
+  raw: '<div><!-- ENTER ESO SERVICE ALERTS BELOW THIS LINE -->\\n<p>2024.08.05 - 18:00 UTC (14:00 EDT)</p>\\n\\n<p>The PTS is currently available.</p>\\n\\n',
   rawDate: '2024.08.05 - 18:00 UTC (14:00 EDT)',
-  rawData: 'The PTS is currently available.',
-  slugs: ['server_pc_pts'],
+  slug: 'server_pc_pts',
   dates: [
     moment()
       .utc()
@@ -340,16 +337,14 @@ const ServiceAlertsServerPcPtsUpRaw: RawEsoStatus = {
   support: 'pc',
   zone: 'pts',
   status: 'up',
+  rawSlug: '',
 };
 
-const ServiceAlertsServiceStoreEsoUpRaw: RawEsoStatus = {
-  sources: ['https://help.elderscrollsonline.com/app/answers/detail/a_id/4320'],
-  raw: [
-    '<div><!-- ENTER ESO SERVICE ALERTS BELOW THIS LINE -->\\n   <p>2024.08.07 - 15:45 UTC (11:45 EDT)</p>\\n<p>The North American megaservers are currently available.</p>\\n<p>The European megaservers are currently available.</p>\\n<p>The PTS is currently available.</p>\\n<p>The ESO store and account system are currently available.</p>\\n',
-  ],
+const ServiceAlertsServiceStoreEsoUpRaw: EsoStatusRawData = {
+  source: 'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
+  raw: '<div><!-- ENTER ESO SERVICE ALERTS BELOW THIS LINE -->\\n   <p>2024.08.07 - 15:45 UTC (11:45 EDT)</p>\\n<p>The North American megaservers are currently available.</p>\\n<p>The European megaservers are currently available.</p>\\n<p>The PTS is currently available.</p>\\n<p>The ESO store and account system are currently available.</p>\\n',
   rawDate: '   2024.08.07 - 15:45 UTC (11:45 EDT)',
-  rawData: 'The ESO store and account system are currently available.',
-  slugs: ['service_store_eso'],
+  slug: 'service_store_eso',
   dates: [
     moment()
       .utc()
@@ -366,16 +361,14 @@ const ServiceAlertsServiceStoreEsoUpRaw: RawEsoStatus = {
   support: 'store',
   zone: 'eso',
   status: 'up',
+  rawSlug: '',
 };
 
-const ServiceAlertsServiceSystemAccountUpRaw: RawEsoStatus = {
-  sources: ['https://help.elderscrollsonline.com/app/answers/detail/a_id/4320'],
-  raw: [
-    '<div><!-- ENTER ESO SERVICE ALERTS BELOW THIS LINE -->\\n   <p>2024.08.07 - 15:45 UTC (11:45 EDT)</p>\\n<p>The North American megaservers are currently available.</p>\\n<p>The European megaservers are currently available.</p>\\n<p>The PTS is currently available.</p>\\n<p>The ESO store and account system are currently available.</p>\\n',
-  ],
+const ServiceAlertsServiceSystemAccountUpRaw: EsoStatusRawData = {
+  source: 'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
+  raw: '<div><!-- ENTER ESO SERVICE ALERTS BELOW THIS LINE -->\\n   <p>2024.08.07 - 15:45 UTC (11:45 EDT)</p>\\n<p>The North American megaservers are currently available.</p>\\n<p>The European megaservers are currently available.</p>\\n<p>The PTS is currently available.</p>\\n<p>The ESO store and account system are currently available.</p>\\n',
   rawDate: '   2024.08.07 - 15:45 UTC (11:45 EDT)',
-  rawData: 'The ESO store and account system are currently available.',
-  slugs: ['service_system_account'],
+  slug: 'service_system_account',
   dates: [
     moment()
       .utc()
@@ -392,14 +385,13 @@ const ServiceAlertsServiceSystemAccountUpRaw: RawEsoStatus = {
   support: 'system',
   zone: 'account',
   status: 'up',
+  rawSlug: '',
 };
 
-const ForumMessageServiceWebSitePlannedRaw: RawEsoStatus = {
-  sources: ['https://forums.elderscrollsonline.com/'],
-  raw: [
-    '• ESO Website for maintenance – August 15, 4:30PM EDT (20:30 UTC) - 7:30PM EDT (23:30 UTC)',
-  ],
-  slugs: ['service_web_site'],
+const ForumMessageServiceWebSitePlannedRaw: EsoStatusRawData = {
+  source: 'https://forums.elderscrollsonline.com/',
+  raw: '• ESO Website for maintenance – August 15, 4:30PM EDT (20:30 UTC) - 7:30PM EDT (23:30 UTC)',
+  slug: 'service_web_site',
   rawDate: 'August 15, 4:30PM EDT (20:30 UTC) - 7:30PM EDT (23:30 UTC)',
   dates: [
     moment()
@@ -427,31 +419,30 @@ const ForumMessageServiceWebSitePlannedRaw: RawEsoStatus = {
   support: 'web',
   zone: 'site',
   status: 'planned',
+  rawSlug: '',
 };
-const ForumMessageServiceWebSitePlannedRawStringDate: CustomRawEsoStatus = {
-  sources: ForumMessageServiceWebSitePlannedRaw.sources,
+const ForumMessageServiceWebSitePlannedRawStringDate: CustomEsoStatusRawData = {
+  source: ForumMessageServiceWebSitePlannedRaw.source,
   raw: ForumMessageServiceWebSitePlannedRaw.raw,
-  slugs: ForumMessageServiceWebSitePlannedRaw.slugs,
+  slug: ForumMessageServiceWebSitePlannedRaw.slug,
   rawDate: ForumMessageServiceWebSitePlannedRaw.rawDate,
   dates: ['2024-08-15T20:30:00.000Z', '2024-08-15T23:30:00.000Z'],
   type: ForumMessageServiceWebSitePlannedRaw.type,
   support: ForumMessageServiceWebSitePlannedRaw.support,
   zone: ForumMessageServiceWebSitePlannedRaw.zone,
   status: ForumMessageServiceWebSitePlannedRaw.status,
+  rawSlug: ForumMessageServiceWebSitePlannedRaw.rawSlug,
 };
-const ForumMessageServiceWebSitePlanned: MaintenanceEsoStatus = {
-  raw: ForumMessageServiceWebSitePlannedRaw,
-  slug: 'service_web_site',
+const ForumMessageServiceWebSitePlanned: EsoStatusMaintenance = {
+  rawDataList: [ForumMessageServiceWebSitePlannedRaw],
   beginnerAt: '2024-08-15T20:30:00.000Z',
   endingAt: '2024-08-15T23:30:00.000Z',
 };
 
-const ForumMessageServiceWebSiteDownRaw: RawEsoStatus = {
-  sources: ['https://forums.elderscrollsonline.com/'],
-  raw: [
-    '• [IN PROGRESS] ESO Website for maintenance – August 15, 4:30PM EDT (20:30 UTC) - 7:30PM EDT (23:30 UTC)',
-  ],
-  slugs: ['service_web_site'],
+const ForumMessageServiceWebSiteDownRaw: EsoStatusRawData = {
+  source: 'https://forums.elderscrollsonline.com/',
+  raw: '• [IN PROGRESS] ESO Website for maintenance – August 15, 4:30PM EDT (20:30 UTC) - 7:30PM EDT (23:30 UTC)',
+  slug: 'service_web_site',
   rawDate: 'August 15, 4:30PM EDT (20:30 UTC) - 7:30PM EDT (23:30 UTC)',
   dates: [
     moment()
@@ -479,17 +470,19 @@ const ForumMessageServiceWebSiteDownRaw: RawEsoStatus = {
   support: 'web',
   zone: 'site',
   status: 'down',
+  rawSlug: '',
 };
-const ForumMessageServiceWebSiteDownRawStringDate: CustomRawEsoStatus = {
-  sources: ForumMessageServiceWebSiteDownRaw.sources,
+const ForumMessageServiceWebSiteDownRawStringDate: CustomEsoStatusRawData = {
+  source: ForumMessageServiceWebSiteDownRaw.source,
   raw: ForumMessageServiceWebSiteDownRaw.raw,
-  slugs: ForumMessageServiceWebSiteDownRaw.slugs,
+  slug: ForumMessageServiceWebSiteDownRaw.slug,
   rawDate: ForumMessageServiceWebSiteDownRaw.rawDate,
   dates: ['2024-08-15T20:30:00.000Z', '2024-08-15T23:30:00.000Z'],
   type: ForumMessageServiceWebSiteDownRaw.type,
   support: ForumMessageServiceWebSiteDownRaw.support,
   zone: ForumMessageServiceWebSiteDownRaw.zone,
   status: ForumMessageServiceWebSiteDownRaw.status,
+  rawSlug: ForumMessageServiceWebSiteDownRaw.rawSlug,
 };
 const ForumMessageServiceWebSiteDown: EsoStatus = {
   slug: 'service_web_site',
@@ -497,15 +490,14 @@ const ForumMessageServiceWebSiteDown: EsoStatus = {
   type: 'service',
   support: 'web',
   zone: 'site',
-  raw: ForumMessageServiceWebSiteDownRaw,
+  rawData: ForumMessageServiceWebSiteDownRaw,
+  statusSince: moment(0),
 };
 
-const ForumMessageServiceWebSiteUpRaw: RawEsoStatus = {
-  sources: ['https://forums.elderscrollsonline.com/'],
-  raw: [
-    '• [COMPLETE] ESO Website for maintenance – August 15, 4:30PM EDT (20:30 UTC) - 7:30PM EDT (23:30 UTC)',
-  ],
-  slugs: ['service_web_site'],
+const ForumMessageServiceWebSiteUpRaw: EsoStatusRawData = {
+  source: 'https://forums.elderscrollsonline.com/',
+  raw: '• [COMPLETE] ESO Website for maintenance – August 15, 4:30PM EDT (20:30 UTC) - 7:30PM EDT (23:30 UTC)',
+  slug: 'service_web_site',
   rawDate: 'August 15, 4:30PM EDT (20:30 UTC) - 7:30PM EDT (23:30 UTC)',
   dates: [
     moment()
@@ -533,17 +525,19 @@ const ForumMessageServiceWebSiteUpRaw: RawEsoStatus = {
   support: 'web',
   zone: 'site',
   status: 'up',
+  rawSlug: '',
 };
-const ForumMessageServiceWebSiteUpRawStringDate: CustomRawEsoStatus = {
-  sources: ForumMessageServiceWebSiteUpRaw.sources,
+const ForumMessageServiceWebSiteUpRawStringDate: CustomEsoStatusRawData = {
+  source: ForumMessageServiceWebSiteUpRaw.source,
   raw: ForumMessageServiceWebSiteUpRaw.raw,
-  slugs: ForumMessageServiceWebSiteUpRaw.slugs,
+  slug: ForumMessageServiceWebSiteUpRaw.slug,
   rawDate: ForumMessageServiceWebSiteUpRaw.rawDate,
   dates: ['2024-08-15T20:30:00.000Z', '2024-08-15T23:30:00.000Z'],
   type: ForumMessageServiceWebSiteUpRaw.type,
   support: ForumMessageServiceWebSiteUpRaw.support,
   zone: ForumMessageServiceWebSiteUpRaw.zone,
   status: ForumMessageServiceWebSiteUpRaw.status,
+  rawSlug: ForumMessageServiceWebSiteUpRaw.rawSlug,
 };
 const ForumMessageServiceWebSiteUp: EsoStatus = {
   slug: 'service_web_site',
@@ -551,15 +545,14 @@ const ForumMessageServiceWebSiteUp: EsoStatus = {
   type: 'service',
   support: 'web',
   zone: 'site',
-  raw: ForumMessageServiceWebSiteUpRaw,
+  rawData: ForumMessageServiceWebSiteUpRaw,
+  statusSince: moment(0),
 };
 
-const ForumMessagePtsServiceWebSitePlannedRaw: RawEsoStatus = {
-  sources: ['https://forums.elderscrollsonline.com/en/categories/pts'],
-  raw: [
-    '• ESO Website for maintenance – August 15, 4:30PM EDT (20:30 UTC) - 7:30PM EDT (23:30 UTC)',
-  ],
-  slugs: ['service_web_site'],
+const ForumMessagePtsServiceWebSitePlannedRaw: EsoStatusRawData = {
+  source: 'https://forums.elderscrollsonline.com/en/categories/pts',
+  raw: '• ESO Website for maintenance – August 15, 4:30PM EDT (20:30 UTC) - 7:30PM EDT (23:30 UTC)',
+  slug: 'service_web_site',
   rawDate: 'August 15, 4:30PM EDT (20:30 UTC) - 7:30PM EDT (23:30 UTC)',
   dates: [
     moment()
@@ -587,13 +580,12 @@ const ForumMessagePtsServiceWebSitePlannedRaw: RawEsoStatus = {
   support: 'web',
   zone: 'site',
   status: 'planned',
+  rawSlug: '',
 };
-const ForumMessagePtsServiceWebSiteDownRaw: RawEsoStatus = {
-  sources: ['https://forums.elderscrollsonline.com/en/categories/pts'],
-  raw: [
-    '• [IN PROGRESS] ESO Website for maintenance – August 15, 4:30PM EDT (20:30 UTC) - 7:30PM EDT (23:30 UTC)',
-  ],
-  slugs: ['service_web_site'],
+const ForumMessagePtsServiceWebSiteDownRaw: EsoStatusRawData = {
+  source: 'https://forums.elderscrollsonline.com/en/categories/pts',
+  raw: '• [IN PROGRESS] ESO Website for maintenance – August 15, 4:30PM EDT (20:30 UTC) - 7:30PM EDT (23:30 UTC)',
+  slug: 'service_web_site',
   rawDate: 'August 15, 4:30PM EDT (20:30 UTC) - 7:30PM EDT (23:30 UTC)',
   dates: [
     moment()
@@ -621,13 +613,12 @@ const ForumMessagePtsServiceWebSiteDownRaw: RawEsoStatus = {
   support: 'web',
   zone: 'site',
   status: 'down',
+  rawSlug: '',
 };
-const ForumMessagePtsServiceWebSiteUpRaw: RawEsoStatus = {
-  sources: ['https://forums.elderscrollsonline.com/en/categories/pts'],
-  raw: [
-    '• [COMPLETE] ESO Website for maintenance – August 15, 4:30PM EDT (20:30 UTC) - 7:30PM EDT (23:30 UTC)',
-  ],
-  slugs: ['service_web_site'],
+const ForumMessagePtsServiceWebSiteUpRaw: EsoStatusRawData = {
+  source: 'https://forums.elderscrollsonline.com/en/categories/pts',
+  raw: '• [COMPLETE] ESO Website for maintenance – August 15, 4:30PM EDT (20:30 UTC) - 7:30PM EDT (23:30 UTC)',
+  slug: 'service_web_site',
   rawDate: 'August 15, 4:30PM EDT (20:30 UTC) - 7:30PM EDT (23:30 UTC)',
   dates: [
     moment()
@@ -655,6 +646,7 @@ const ForumMessagePtsServiceWebSiteUpRaw: RawEsoStatus = {
   support: 'web',
   zone: 'site',
   status: 'up',
+  rawSlug: '',
 };
 
 const initial: Initial = {
@@ -960,7 +952,8 @@ const initial: Initial = {
       type: 'server',
       support: 'xbox',
       zone: 'na',
-      raw: LiveServicesServerXboxNaUpRawStringDate,
+      rawData: LiveServicesServerXboxNaUpRawStringDate,
+      statusSince: moment(0).toISOString(),
     },
     {
       slug: 'server_xbox_eu',
@@ -968,7 +961,8 @@ const initial: Initial = {
       type: 'server',
       support: 'xbox',
       zone: 'eu',
-      raw: LiveServicesServerXboxEuUpRawStringDate,
+      rawData: LiveServicesServerXboxEuUpRawStringDate,
+      statusSince: moment(0).toISOString(),
     },
     {
       slug: 'server_ps_na',
@@ -976,7 +970,8 @@ const initial: Initial = {
       type: 'server',
       support: 'ps',
       zone: 'na',
-      raw: LiveServicesServerPsNaUpRawStringDate,
+      rawData: LiveServicesServerPsNaUpRawStringDate,
+      statusSince: moment(0).toISOString(),
     },
     {
       slug: 'server_ps_eu',
@@ -984,7 +979,8 @@ const initial: Initial = {
       type: 'server',
       support: 'ps',
       zone: 'eu',
-      raw: LiveServicesServerPsEuUpRawStringDate,
+      rawData: LiveServicesServerPsEuUpRawStringDate,
+      statusSince: moment(0).toISOString(),
     },
     {
       slug: 'server_pc_na',
@@ -992,7 +988,8 @@ const initial: Initial = {
       type: 'server',
       support: 'pc',
       zone: 'na',
-      raw: LiveServicesServerPcNaUpRawStringDate,
+      rawData: LiveServicesServerPcNaUpRawStringDate,
+      statusSince: moment(0).toISOString(),
     },
     {
       slug: 'server_pc_eu',
@@ -1000,7 +997,8 @@ const initial: Initial = {
       type: 'server',
       support: 'pc',
       zone: 'eu',
-      raw: LiveServicesServerPcEuUpRawStringDate,
+      rawData: LiveServicesServerPcEuUpRawStringDate,
+      statusSince: moment(0).toISOString(),
     },
     {
       slug: 'server_pc_pts',
@@ -1008,7 +1006,8 @@ const initial: Initial = {
       type: 'server',
       support: 'pc',
       zone: 'pts',
-      raw: LiveServicesServerPcPtsUpRawStringDate,
+      rawData: LiveServicesServerPcPtsUpRawStringDate,
+      statusSince: moment(0).toISOString(),
     },
     {
       slug: 'service_web_site',
@@ -1016,7 +1015,8 @@ const initial: Initial = {
       type: 'service',
       support: 'web',
       zone: 'site',
-      raw: ForumMessageServiceWebSiteUpRawStringDate,
+      rawData: ForumMessageServiceWebSiteUpRawStringDate,
+      statusSince: moment(0).toISOString(),
     },
   ],
 };
@@ -1154,11 +1154,11 @@ const FirstForumMessagePlannedForumMessage: Step = {
       type: InitialStateLiveServices.serviceControllerReturn[7].type,
       support: InitialStateLiveServices.serviceControllerReturn[7].support,
       zone: InitialStateLiveServices.serviceControllerReturn[7].zone,
-      raw: InitialStateLiveServices.serviceControllerReturn[7].raw,
+      rawData: InitialStateLiveServices.serviceControllerReturn[7].rawData,
+      statusSince: moment(0).toISOString(),
       maintenance: {
         // created
-        raw: ForumMessageServiceWebSitePlannedRawStringDate,
-        slug: ForumMessageServiceWebSitePlannedRawStringDate.slugs[0],
+        rawDataList: [ForumMessageServiceWebSitePlannedRawStringDate],
         beginnerAt: ForumMessageServiceWebSitePlannedRawStringDate.dates[0],
         endingAt: ForumMessageServiceWebSitePlannedRawStringDate.dates[1],
       },
@@ -1401,7 +1401,8 @@ const FirstForumMessageDownForumMessage: Step = {
           .support,
       zone: FirstForumMessagePtsPlannedForumMessagePts
         .serviceControllerReturn[7].zone,
-      raw: ForumMessageServiceWebSiteDownRawStringDate, // Update from ForumMessageServiceWebSiteUpRawStringDate
+      rawData: ForumMessageServiceWebSiteDownRawStringDate, // Update from ForumMessageServiceWebSiteUpRawStringDate
+      statusSince: moment(0).toISOString(),
     },
   ],
 };
@@ -1638,7 +1639,8 @@ const FirstForumMessageUpForumMessage: Step = {
           .support,
       zone: FirstForumMessagePtsDownForumMessagePts.serviceControllerReturn[7]
         .zone,
-      raw: ForumMessageServiceWebSiteUpRawStringDate, // Update from ForumMessageServiceWebSiteDownRawStringDate
+      rawData: ForumMessageServiceWebSiteUpRawStringDate, // Update from ForumMessageServiceWebSiteDownRawStringDate
+      statusSince: moment(0).toISOString(),
     },
   ],
 };
@@ -2076,7 +2078,7 @@ const ForumMessagePtsUpStepList: Step[] = [
   ForumMessagePtsUpForumMessagePts,
 ];
 
-export const classicScenario: Scenario = {
+export const doubleMaintenance: Scenario = {
   initial,
   steps: [
     // Initial state

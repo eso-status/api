@@ -1,6 +1,7 @@
-import { EsoStatus, RawEsoStatus, Slug } from '@eso-status/types';
+import { EsoStatus, EsoStatusRawData, Slug } from '@eso-status/types';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as moment from 'moment';
 import { isValidDate } from 'rxjs/internal/util/isDate';
 import { Repository } from 'typeorm';
 
@@ -20,13 +21,15 @@ export class ServiceService {
       type: service.type.type,
       support: service.support.support,
       zone: service.zone.zone,
-      raw: <RawEsoStatus>JSON.parse(service.rawData),
+      rawData: <EsoStatusRawData>JSON.parse(service.rawData),
+      statusSince: moment(0),
     };
 
     if (service.maintenance) {
       formatedEsoStatus.maintenance = {
-        raw: <RawEsoStatus>JSON.parse(service.maintenance.rawData),
-        slug: service.slug.slug,
+        rawDataList: <EsoStatusRawData[]>[
+          <EsoStatusRawData>JSON.parse(service.maintenance.rawData),
+        ],
         beginnerAt: service.maintenance.beginnerAt.toISOString(),
       };
 
@@ -59,7 +62,11 @@ export class ServiceService {
     });
   }
 
-  async update(id: number, statusId: number, raw: RawEsoStatus): Promise<void> {
+  async update(
+    id: number,
+    statusId: number,
+    raw: EsoStatusRawData,
+  ): Promise<void> {
     await this.serviceRepository.update(id, {
       statusId,
       rawData: JSON.stringify(raw),

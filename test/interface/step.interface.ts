@@ -1,7 +1,7 @@
 import {
   EsoStatus,
-  MaintenanceEsoStatus,
-  RawEsoStatus,
+  EsoStatusMaintenance,
+  EsoStatusRawData,
   Slug,
 } from '@eso-status/types';
 
@@ -15,9 +15,9 @@ import { Connector } from '../../src/type/connector.type';
 
 export interface Step {
   connector: Connector;
-  connectorData: RawEsoStatus[];
+  connectorData: EsoStatusRawData[];
   statusUpdateList: EsoStatus[];
-  maintenancePlannedList: MaintenanceEsoStatus[];
+  maintenancePlannedList: EsoStatusMaintenance[];
   maintenanceRemovedList: Slug[];
   logs: Log[];
   archives: Archive[];
