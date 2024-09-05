@@ -1,4 +1,4 @@
-import { RawEsoStatus } from '@eso-status/types';
+import { EsoStatusRawData } from '@eso-status/types';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -30,7 +30,7 @@ export class ArchiveService {
 
   async update(
     serviceId: number,
-    rawData: RawEsoStatus,
+    rawData: EsoStatusRawData,
     connector: Connector,
     statusId: number,
   ): Promise<void> {

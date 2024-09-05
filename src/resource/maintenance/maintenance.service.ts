@@ -1,4 +1,4 @@
-import { RawEsoStatus } from '@eso-status/types';
+import { EsoStatusRawData } from '@eso-status/types';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
@@ -14,7 +14,7 @@ export class MaintenanceService {
 
   async add(
     serviceId: number,
-    rawEsoStatus: RawEsoStatus,
+    rawEsoStatus: EsoStatusRawData,
   ): Promise<Maintenance> {
     const newMaintenance: Maintenance = this.maintenanceRepository.create({
       serviceId,

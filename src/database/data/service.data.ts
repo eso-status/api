@@ -1,4 +1,4 @@
-import { RawEsoStatus } from '@eso-status/types';
+import { EsoStatusRawData } from '@eso-status/types';
 import * as moment from 'moment';
 
 import { Service } from '../../resource/service/entities/service.entity';
@@ -25,12 +25,12 @@ export const serviceData: Service[] = [
     type: { id: 1, type: 'server' },
     support: { id: 6, support: 'xbox' },
     zone: { id: 2, zone: 'na' },
-    rawData: JSON.stringify(<RawEsoStatus>{
-      sources: ['https://live-services.elderscrollsonline.com/status/realms'],
-      raw: ['The Elder Scrolls Online (XBox - US)', 'UP'],
+    rawData: JSON.stringify(<EsoStatusRawData>{
+      source: 'https://live-services.elderscrollsonline.com/status/realms',
+      raw: 'The Elder Scrolls Online (XBox - US) UP',
       rawSlug: 'The Elder Scrolls Online (XBox - US)',
       rawStatus: 'UP',
-      slugs: ['server_xbox_na'],
+      slug: 'server_xbox_na',
       support: 'xbox',
       zone: 'na',
       status: 'up',
@@ -57,12 +57,12 @@ export const serviceData: Service[] = [
     type: { id: 1, type: 'server' },
     support: { id: 6, support: 'xbox' },
     zone: { id: 1, zone: 'eu' },
-    rawData: JSON.stringify(<RawEsoStatus>{
-      sources: ['https://live-services.elderscrollsonline.com/status/realms'],
-      raw: ['The Elder Scrolls Online (XBox - EU)', 'UP'],
+    rawData: JSON.stringify(<EsoStatusRawData>{
+      source: 'https://live-services.elderscrollsonline.com/status/realms',
+      raw: 'The Elder Scrolls Online (XBox - EU) UP',
       rawSlug: 'The Elder Scrolls Online (XBox - EU)',
       rawStatus: 'UP',
-      slugs: ['server_xbox_eu'],
+      slug: 'server_xbox_eu',
       support: 'xbox',
       zone: 'eu',
       status: 'up',
@@ -89,12 +89,12 @@ export const serviceData: Service[] = [
     type: { id: 1, type: 'server' },
     support: { id: 5, support: 'ps' },
     zone: { id: 2, zone: 'na' },
-    rawData: JSON.stringify(<RawEsoStatus>{
-      sources: ['https://live-services.elderscrollsonline.com/status/realms'],
-      raw: ['The Elder Scrolls Online (PS4 - US)', 'UP'],
+    rawData: JSON.stringify(<EsoStatusRawData>{
+      source: 'https://live-services.elderscrollsonline.com/status/realms',
+      raw: 'The Elder Scrolls Online (PS4 - US) UP',
       rawSlug: 'The Elder Scrolls Online (PS4 - US)',
       rawStatus: 'UP',
-      slugs: ['server_ps_na'],
+      slug: 'server_ps_na',
       support: 'ps',
       zone: 'na',
       status: 'up',
@@ -121,12 +121,12 @@ export const serviceData: Service[] = [
     type: { id: 1, type: 'server' },
     support: { id: 5, support: 'ps' },
     zone: { id: 1, zone: 'eu' },
-    rawData: JSON.stringify(<RawEsoStatus>{
-      sources: ['https://live-services.elderscrollsonline.com/status/realms'],
-      raw: ['The Elder Scrolls Online (PS4 - EU)', 'UP'],
+    rawData: JSON.stringify(<EsoStatusRawData>{
+      source: 'https://live-services.elderscrollsonline.com/status/realms',
+      raw: 'The Elder Scrolls Online (PS4 - EU) UP',
       rawSlug: 'The Elder Scrolls Online (PS4 - EU)',
       rawStatus: 'UP',
-      slugs: ['server_ps_eu'],
+      slug: 'server_ps_eu',
       support: 'ps',
       zone: 'eu',
       status: 'up',
@@ -153,12 +153,12 @@ export const serviceData: Service[] = [
     type: { id: 1, type: 'server' },
     support: { id: 4, support: 'pc' },
     zone: { id: 2, zone: 'na' },
-    rawData: JSON.stringify(<RawEsoStatus>{
-      sources: ['https://live-services.elderscrollsonline.com/status/realms'],
-      raw: ['The Elder Scrolls Online (NA)', 'UP'],
+    rawData: JSON.stringify(<EsoStatusRawData>{
+      source: 'https://live-services.elderscrollsonline.com/status/realms',
+      raw: 'The Elder Scrolls Online (NA) UP',
       rawSlug: 'The Elder Scrolls Online (NA)',
       rawStatus: 'UP',
-      slugs: ['server_pc_na'],
+      slug: 'server_pc_na',
       support: 'pc',
       zone: 'na',
       status: 'up',
@@ -185,12 +185,12 @@ export const serviceData: Service[] = [
     type: { id: 1, type: 'server' },
     support: { id: 4, support: 'pc' },
     zone: { id: 1, zone: 'eu' },
-    rawData: JSON.stringify(<RawEsoStatus>{
-      sources: ['https://live-services.elderscrollsonline.com/status/realms'],
-      raw: ['The Elder Scrolls Online (EU)', 'UP'],
+    rawData: JSON.stringify(<EsoStatusRawData>{
+      source: 'https://live-services.elderscrollsonline.com/status/realms',
+      raw: 'The Elder Scrolls Online (EU) UP',
       rawSlug: 'The Elder Scrolls Online (EU)',
       rawStatus: 'UP',
-      slugs: ['server_pc_eu'],
+      slug: 'server_pc_eu',
       support: 'pc',
       zone: 'eu',
       status: 'up',
@@ -217,12 +217,12 @@ export const serviceData: Service[] = [
     type: { id: 1, type: 'server' },
     support: { id: 4, support: 'pc' },
     zone: { id: 3, zone: 'pts' },
-    rawData: JSON.stringify(<RawEsoStatus>{
-      sources: ['https://live-services.elderscrollsonline.com/status/realms'],
-      raw: ['The Elder Scrolls Online (PTS)', 'UP'],
+    rawData: JSON.stringify(<EsoStatusRawData>{
+      source: 'https://live-services.elderscrollsonline.com/status/realms',
+      raw: 'The Elder Scrolls Online (PTS) UP',
       rawSlug: 'The Elder Scrolls Online (PTS)',
       rawStatus: 'UP',
-      slugs: ['server_pc_pts'],
+      slug: 'server_pc_pts',
       support: 'pc',
       zone: 'pts',
       status: 'up',
@@ -249,16 +249,12 @@ export const serviceData: Service[] = [
     type: { id: 2, type: 'service' },
     support: { id: 1, support: 'web' },
     zone: { id: 4, zone: 'site' },
-    rawData: JSON.stringify(<RawEsoStatus>{
-      sources: [
+    rawData: JSON.stringify(<EsoStatusRawData>{
+      source:
         'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
-      ],
-      raw: [
-        ' />\n<p>2021.01.14 - 14:45 UTC (9:45 EST)</p>\n\n<p>The ESO Website is currently online.</p>\n\n',
-      ],
+      raw: ' />\n<p>2021.01.14 - 14:45 UTC (9:45 EST)</p>\n\n<p>The ESO Website is currently online.</p>\n\n',
       rawDate: ' />2021.01.14 - 14:45 UTC (9:45 EST)',
-      rawData: 'The ESO Website is currently online.',
-      slugs: ['service_web_site'],
+      slug: 'service_web_site',
       dates: [
         moment()
           .utc()
@@ -298,16 +294,12 @@ export const serviceData: Service[] = [
     type: { id: 2, type: 'service' },
     support: { id: 1, support: 'web' },
     zone: { id: 5, zone: 'forum' },
-    rawData: JSON.stringify(<RawEsoStatus>{
-      sources: [
+    rawData: JSON.stringify(<EsoStatusRawData>{
+      source:
         'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
-      ],
-      raw: [
-        ' />\n<p>2021.01.03 - 23:00 UTC (18:00 EST)</p>\n\n<p>The ESO Forums are currently available.</p>\n\n',
-      ],
+      raw: ' />\n<p>2021.01.03 - 23:00 UTC (18:00 EST)</p>\n\n<p>The ESO Forums are currently available.</p>\n\n',
       rawDate: ' />2021.01.03 - 23:00 UTC (18:00 EST)',
-      rawData: 'The ESO Forums are currently available.',
-      slugs: ['service_web_forum'],
+      slug: 'service_web_forum',
       dates: [
         moment()
           .utc()
@@ -347,16 +339,12 @@ export const serviceData: Service[] = [
     type: { id: 2, type: 'service' },
     support: { id: 2, support: 'store' },
     zone: { id: 7, zone: 'crown' },
-    rawData: JSON.stringify(<RawEsoStatus>{
-      sources: [
+    rawData: JSON.stringify(<EsoStatusRawData>{
+      source:
         'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
-      ],
-      raw: [
-        ' />\n<p>2021.01.03 - 23:00 UTC (18:00 EST)</p>\n\n<p>The Crown Store is currently available.</p>\n\n',
-      ],
+      raw: ' />\n<p>2021.01.03 - 23:00 UTC (18:00 EST)</p>\n\n<p>The Crown Store is currently available.</p>\n\n',
       rawDate: ' />2021.01.03 - 23:00 UTC (18:00 EST)',
-      rawData: 'The Crown Store is currently available.',
-      slugs: ['service_store_crown'],
+      slug: 'service_store_crown',
       dates: [
         moment()
           .utc()
@@ -396,16 +384,12 @@ export const serviceData: Service[] = [
     type: { id: 2, type: 'service' },
     support: { id: 2, support: 'store' },
     zone: { id: 6, zone: 'eso' },
-    rawData: JSON.stringify(<RawEsoStatus>{
-      sources: [
+    rawData: JSON.stringify(<EsoStatusRawData>{
+      source:
         'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
-      ],
-      raw: [
-        ' />\n<p>2024.07.01 - 12:00 UTC (08:00 EDT)</p>\n\n<p>The North American megaservers are currently available.</p>\n\n<p>The ESO store and account system are currently available.</p>\n\n',
-      ],
+      raw: ' />\n<p>2024.07.01 - 12:00 UTC (08:00 EDT)</p>\n\n<p>The North American megaservers are currently available.</p>\n\n<p>The ESO store and account system are currently available.</p>\n\n',
       rawDate: ' />2024.07.01 - 12:00 UTC (08:00 EDT)',
-      rawData: 'The ESO store and account system are currently available.',
-      slugs: ['service_store_eso'],
+      slug: 'service_store_eso',
       dates: [
         moment()
           .utc()
@@ -445,16 +429,12 @@ export const serviceData: Service[] = [
     type: { id: 2, type: 'service' },
     support: { id: 3, support: 'system' },
     zone: { id: 8, zone: 'account' },
-    rawData: JSON.stringify(<RawEsoStatus>{
-      sources: [
+    rawData: JSON.stringify(<EsoStatusRawData>{
+      source:
         'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
-      ],
-      raw: [
-        ' />\n<p>2024.07.01 - 12:00 UTC (08:00 EDT)</p>\n\n<p>The North American megaservers are currently available.</p>\n\n<p>The ESO store and account system are currently available.</p>\n\n',
-      ],
+      raw: ' />\n<p>2024.07.01 - 12:00 UTC (08:00 EDT)</p>\n\n<p>The North American megaservers are currently available.</p>\n\n<p>The ESO store and account system are currently available.</p>\n\n',
       rawDate: ' />2024.07.01 - 12:00 UTC (08:00 EDT)',
-      rawData: 'The ESO store and account system are currently available.',
-      slugs: ['service_system_account'],
+      slug: 'service_system_account',
       dates: [
         moment()
           .utc()

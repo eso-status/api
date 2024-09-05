@@ -1,4 +1,4 @@
-import { RawEsoStatus } from '@eso-status/types';
+import { EsoStatusRawData } from '@eso-status/types';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -18,7 +18,7 @@ export class LogService {
     connector: Connector,
     serviceId: number,
     statusId: number,
-    rawEsoStatus: RawEsoStatus,
+    rawEsoStatus: EsoStatusRawData,
   ): Promise<Log> {
     const newLog: Log = this.logRepository.create({
       connector,
