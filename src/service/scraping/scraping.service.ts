@@ -1,9 +1,6 @@
-import { ForumMessage, ForumMessagePTSURL } from '@eso-status/forum-message';
 import { LiveServices } from '@eso-status/live-services';
-import { ServiceAlerts } from '@eso-status/service-alerts';
 import {
   EsoStatus,
-  MaintenanceEsoStatus,
   RawEsoStatus,
   Status as EsoStatusStatus,
 } from '@eso-status/types';
@@ -12,16 +9,10 @@ import { Injectable } from '@nestjs/common';
 import { Interval } from '@nestjs/schedule';
 import { config } from 'dotenv';
 
-import { Moment } from 'moment';
-import * as moment from 'moment/moment';
-
-import { RawEsoStatus as CustomRawEsoStatus } from '../../interface/rawEsoStatus.interface';
 import { ArchiveService } from '../../resource/archive/archive.service';
 import { Archive } from '../../resource/archive/entities/archive.entity';
 import { Log } from '../../resource/log/entities/log.entity';
 import { LogService } from '../../resource/log/log.service';
-import { Maintenance } from '../../resource/maintenance/entities/maintenance.entity';
-import { MaintenanceService } from '../../resource/maintenance/maintenance.service';
 import { Service } from '../../resource/service/entities/service.entity';
 import { ServiceService } from '../../resource/service/service.service';
 import { Status } from '../../resource/status/entities/status.entity';
@@ -37,7 +28,6 @@ export class ScrapingService {
   constructor(
     private readonly serviceService: ServiceService,
     private readonly archiveService: ArchiveService,
-    private readonly maintenanceService: MaintenanceService,
     private readonly logService: LogService,
     private readonly statusService: StatusService,
     private readonly winstonService: WinstonService,
@@ -67,63 +57,6 @@ export class ScrapingService {
       archive.rawData !== JSON.stringify(esoStatusFromScraping.raw) ||
       archive.status.status !== esoStatusFromScraping.status
     );
-  }
-
-  public maintenanceChanged(
-    esoStatusFromScraping: EsoStatus,
-    maintenance?: Maintenance,
-  ): boolean {
-    const modifiedEsoStatusFromScrapingRaw: CustomRawEsoStatus = {
-      sources: [],
-      raw: esoStatusFromScraping.raw.raw,
-      slugs: esoStatusFromScraping.raw.slugs,
-      rawDate: esoStatusFromScraping.raw.rawDate,
-      rawData: esoStatusFromScraping.raw.rawData,
-      dates: esoStatusFromScraping.raw.dates.map((date: Moment): string => {
-        return moment(date).toISOString();
-      }),
-      type: esoStatusFromScraping.raw.type,
-      support: esoStatusFromScraping.raw.support,
-      zone: esoStatusFromScraping.raw.zone,
-      status: esoStatusFromScraping.raw.status,
-      rawSlug: esoStatusFromScraping.raw.rawSlug,
-      rawStatus: esoStatusFromScraping.raw.rawStatus,
-    };
-
-    const maintenanceRawData: CustomRawEsoStatus = <CustomRawEsoStatus>(
-      JSON.parse(maintenance.rawData)
-    );
-
-    const modifiedMaintenanceRawData: CustomRawEsoStatus = {
-      sources: [],
-      raw: maintenanceRawData.raw,
-      slugs: maintenanceRawData.slugs,
-      rawDate: maintenanceRawData.rawDate,
-      rawData: maintenanceRawData.rawData,
-      dates: maintenanceRawData.dates,
-      type: maintenanceRawData.type,
-      support: maintenanceRawData.support,
-      zone: maintenanceRawData.zone,
-      status: maintenanceRawData.status,
-      rawSlug: maintenanceRawData.rawSlug,
-      rawStatus: maintenanceRawData.rawStatus,
-    };
-
-    return (
-      JSON.stringify(modifiedMaintenanceRawData) !==
-      JSON.stringify(modifiedEsoStatusFromScrapingRaw)
-    );
-  }
-
-  /**
-   * Method used to check is EsoStatus data has planned status
-   *
-   * @param status
-   * @private
-   * @return true => if EsoStatus status is planned
-   */
-  public isPlannedStatus(status: EsoStatusStatus): boolean {
-    return status === 'planned';
   }
 
   public async getService(esoStatus: EsoStatus): Promise<Service> {
@@ -158,13 +91,6 @@ export class ScrapingService {
     return this.serviceService.update(serviceId, statusId, rawData);
   }
 
-  public async addMaintenance(
-    serviceId: number,
-    rawData: RawEsoStatus,
-  ): Promise<Maintenance> {
-    return this.maintenanceService.add(serviceId, rawData);
-  }
-
   public async addLog(
     connector: Connector,
     serviceId: number,
@@ -174,15 +100,7 @@ export class ScrapingService {
     return this.logService.add(connector, serviceId, statusId, rawEsoStatus);
   }
 
-  public serviceHaveMaintenance(service: Service): boolean {
-    return service.maintenance !== null;
-  }
-
-  public async detachMaintenanceToService(service: Service): Promise<void> {
-    await this.maintenanceService.delete(service.id);
-  }
-
-  public async updateNoMaintenance(
+  public async update(
     connector: Connector,
     esoStatus: EsoStatus,
     service: Service,
@@ -199,7 +117,7 @@ export class ScrapingService {
     // Write log with detail (old and new status)
     this.winstonService.log(
       `[${connector}] [${service.slug.slug}] [Entity] updateService: [from ${service.status.status} to ${newStatus.status}]`,
-      'ScrapingService.updateNoMaintenance',
+      'ScrapingService.update',
     );
 
     // Emit statusUpdate event
@@ -208,80 +126,7 @@ export class ScrapingService {
     // Write log
     this.winstonService.log(
       `[${connector}] [${service.slug.slug}] [Event] statusUpdate event emitted`,
-      'ScrapingService.updateNoMaintenance',
-    );
-
-    if (this.serviceHaveMaintenance(service)) {
-      await this.detachMaintenanceToService(service);
-
-      // Write log
-      this.winstonService.log(
-        `[${connector}] [${service.slug.slug}] [Entity] maintenance detached`,
-        'ScrapingService.updateNoMaintenance',
-      );
-
-      // Emit maintenanceRemoved event
-      this.websocketService.server.emit('maintenanceRemoved', esoStatus.slug);
-
-      // Write log
-      this.winstonService.log(
-        `[${connector}] [${service.slug.slug}] [Event] maintenanceRemoved event emitted`,
-        'ScrapingService.updateNoMaintenance',
-      );
-    }
-  }
-
-  public async updateMaintenance(
-    connector: Connector,
-    esoStatus: EsoStatus,
-    service: Service,
-  ): Promise<void> {
-    // Check if maintenance already exist for this service
-    if (this.serviceHaveMaintenance(service)) {
-      // Write log
-      this.winstonService.log(
-        `[${connector}] [${service.slug.slug}] [Entity] maintenance already exist`,
-        'ScrapingService.updateMaintenance',
-      );
-
-      // Return function if maintenance don't change
-      if (!this.maintenanceChanged(esoStatus, service.maintenance)) {
-        return;
-      }
-    }
-
-    // Update service status in database
-    const maintenance: Maintenance = await this.addMaintenance(
-      service.id,
-      esoStatus.raw,
-    );
-
-    // Write log
-    this.winstonService.log(
-      `[${connector}] [${service.slug.slug}] [Entity] maintenance attached`,
-      'ScrapingService.updateMaintenance',
-    );
-
-    const maintenanceFormated: MaintenanceEsoStatus = {
-      raw: esoStatus.raw,
-      slug: esoStatus.slug,
-      beginnerAt: maintenance.beginnerAt.toISOString(),
-    };
-
-    if (maintenance.endingAt) {
-      maintenanceFormated.endingAt = maintenance.endingAt.toISOString();
-    }
-
-    // Emit maintenancePlanned event
-    this.websocketService.server.emit(
-      'maintenancePlanned',
-      maintenanceFormated,
-    );
-
-    // Write log
-    this.winstonService.log(
-      `[${connector}] [${service.slug.slug}] [Event] maintenancePlanned event emitted`,
-      'ScrapingService.updateNoMaintenance',
+      'ScrapingService.update',
     );
   }
 
@@ -332,23 +177,7 @@ export class ScrapingService {
       'ScrapingService.prepareUpdate',
     );
 
-    if (this.isPlannedStatus(esoStatus.status)) {
-      // Write log
-      this.winstonService.log(
-        `[${connector}] [${service.slug.slug}] [Status] is planned status`,
-        'ScrapingService.prepareUpdate',
-      );
-
-      await this.updateMaintenance(connector, esoStatus, service);
-    } else {
-      // Write log
-      this.winstonService.log(
-        `[${connector}] [${service.slug.slug}] [Status] is not planned status`,
-        'ScrapingService.prepareUpdate',
-      );
-
-      await this.updateNoMaintenance(connector, esoStatus, service, newStatus);
-    }
+    await this.update(connector, esoStatus, service, newStatus);
   }
 
   public formatData(rawEsoStatusList: RawEsoStatus[]): EsoStatus[] {
@@ -377,26 +206,8 @@ export class ScrapingService {
     );
   }
 
-  @Interval(Number(process.env.FORUM_MESSAGE_UPDATE_INTERVAL))
-  public async handleForumMessage(): Promise<void> {
-    await this.doHandle(await ForumMessage.getData(), 'ForumMessage');
-  }
-
-  @Interval(Number(process.env.FORUM_MESSAGE_UPDATE_INTERVAL))
-  public async handleForumMessagePts(): Promise<void> {
-    await this.doHandle(
-      await ForumMessage.getData(ForumMessagePTSURL),
-      'ForumMessagePts',
-    );
-  }
-
   @Interval(Number(process.env.LIVE_SERVICES_UPDATE_INTERVAL))
   public async handleLiveServices(): Promise<void> {
     await this.doHandle(await LiveServices.getData(), 'LiveServices');
-  }
-
-  @Interval(Number(process.env.SERVICE_ALERTS_UPDATE_INTERVAL))
-  public async handleServiceAlerts(): Promise<void> {
-    await this.doHandle(await ServiceAlerts.getData(), 'ServiceAlerts');
   }
 }
