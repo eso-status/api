@@ -30,15 +30,16 @@ export class ServiceService {
         rawDataList: <EsoStatusRawData[]>[
           <EsoStatusRawData>JSON.parse(service.maintenance.rawData),
         ],
-        beginnerAt: service.maintenance.beginnerAt.toISOString(),
+        beginnerAt: moment(service.maintenance.beginnerAt.toISOString()),
       };
 
       if (
         service.maintenance.endingAt &&
         isValidDate(service.maintenance.endingAt)
       ) {
-        formatedEsoStatus.maintenance.endingAt =
-          service.maintenance.endingAt.toISOString();
+        formatedEsoStatus.maintenance.endingAt = moment(
+          service.maintenance.endingAt.toISOString(),
+        );
       }
     }
 

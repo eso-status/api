@@ -1,7 +1,7 @@
 import ForumMessage from '@eso-status/forum-message';
 import { ForumMessagePTSURL } from '@eso-status/forum-message/lib/const';
-import { LiveServices } from '@eso-status/live-services';
-import { ServiceAlerts } from '@eso-status/service-alerts';
+import LiveServices from '@eso-status/live-services';
+import ServiceAlerts from '@eso-status/service-alerts';
 import {
   EsoStatus,
   EsoStatusMaintenance,
@@ -263,11 +263,11 @@ export class ScrapingService {
 
     const maintenanceFormated: EsoStatusMaintenance = {
       rawDataList: [esoStatus.rawData],
-      beginnerAt: maintenance.beginnerAt.toISOString(),
+      beginnerAt: moment(maintenance.beginnerAt.toISOString()),
     };
 
     if (maintenance.endingAt) {
-      maintenanceFormated.endingAt = maintenance.endingAt.toISOString();
+      maintenanceFormated.endingAt = moment(maintenance.endingAt.toISOString());
     }
 
     // Emit maintenancePlanned event
@@ -396,13 +396,11 @@ export class ScrapingService {
 
   @Interval(Number(process.env.LIVE_SERVICES_UPDATE_INTERVAL))
   public async handleLiveServices(): Promise<void> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     await this.doHandle(await LiveServices.getData(), 'LiveServices');
   }
 
   @Interval(Number(process.env.SERVICE_ALERTS_UPDATE_INTERVAL))
   public async handleServiceAlerts(): Promise<void> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     await this.doHandle(await ServiceAlerts.getData(), 'ServiceAlerts');
   }
 }

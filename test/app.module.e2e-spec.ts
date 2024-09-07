@@ -1,9 +1,8 @@
 import ForumMessage from '@eso-status/forum-message';
-import { LiveServices } from '@eso-status/live-services';
-import { ServiceAlerts } from '@eso-status/service-alerts';
+import LiveServices from '@eso-status/live-services';
+import ServiceAlerts from '@eso-status/service-alerts';
 import {
   EsoStatus,
-  EsoStatusMaintenance,
   EsoStatusRawData,
   Slug as EsoStatusSlug,
 } from '@eso-status/types';
@@ -329,7 +328,7 @@ describe('AppModule (e2e)', (): void => {
                     expect(
                       step.maintenancePlannedList.map(
                         (
-                          stepMaintenancePlannedList: EsoStatusMaintenance,
+                          stepMaintenancePlannedList: CustomEsoStatusMaintenance,
                         ): string => JSON.stringify(stepMaintenancePlannedList),
                       ),
                     ).toContain(maintenanceEsoStatus),

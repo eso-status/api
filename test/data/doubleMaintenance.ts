@@ -1,11 +1,8 @@
-import {
-  EsoStatus,
-  EsoStatusMaintenance,
-  EsoStatusRawData,
-} from '@eso-status/types';
+import { EsoStatus, EsoStatusRawData } from '@eso-status/types';
 
 import * as moment from 'moment';
 
+import { EsoStatusMaintenance as CustomEsoStatusMaintenance } from '../../src/interface/esoStatusMaintenance.interface';
 import { EsoStatusRawData as CustomEsoStatusRawData } from '../../src/interface/esoStatusRawData.interface';
 import { Initial } from '../interface/initial.interface';
 import { Scenario } from '../interface/scenario.interface';
@@ -433,8 +430,8 @@ const ForumMessageServiceWebSitePlannedRawStringDate: CustomEsoStatusRawData = {
   status: ForumMessageServiceWebSitePlannedRaw.status,
   rawSlug: ForumMessageServiceWebSitePlannedRaw.rawSlug,
 };
-const ForumMessageServiceWebSitePlanned: EsoStatusMaintenance = {
-  rawDataList: [ForumMessageServiceWebSitePlannedRaw],
+const ForumMessageServiceWebSitePlanned: CustomEsoStatusMaintenance = {
+  rawDataList: [ForumMessageServiceWebSitePlannedRawStringDate],
   beginnerAt: '2024-08-15T20:30:00.000Z',
   endingAt: '2024-08-15T23:30:00.000Z',
 };

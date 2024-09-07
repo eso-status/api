@@ -1,11 +1,8 @@
-import {
-  EsoStatus,
-  EsoStatusMaintenance,
-  EsoStatusRawData,
-} from '@eso-status/types';
+import { EsoStatus, EsoStatusRawData } from '@eso-status/types';
 
 import * as moment from 'moment';
 
+import { EsoStatusMaintenance as CustomEsoStatusMaintenance } from '../../src/interface/esoStatusMaintenance.interface';
 import { EsoStatusRawData as CustomEsoStatusRawData } from '../../src/interface/esoStatusRawData.interface';
 import { Initial } from '../interface/initial.interface';
 import { Scenario } from '../interface/scenario.interface';
@@ -561,8 +558,8 @@ const ForumMessagePtsServerPcPtsPlannedRawStringDate: CustomEsoStatusRawData = {
   status: ForumMessagePtsServerPcPtsPlannedRaw.status,
   rawSlug: ForumMessagePtsServerPcPtsPlannedRaw.rawSlug,
 };
-const ForumMessagePtsServerPcPtsPlanned: EsoStatusMaintenance = {
-  rawDataList: [ForumMessagePtsServerPcPtsPlannedRaw],
+const ForumMessagePtsServerPcPtsPlanned: CustomEsoStatusMaintenance = {
+  rawDataList: [ForumMessagePtsServerPcPtsPlannedRawStringDate],
   beginnerAt: '2024-08-07T08:00:00.000Z',
 };
 
@@ -639,8 +636,8 @@ const ForumMessageServiceStoreEsoPlannedRawStringDate: CustomEsoStatusRawData =
     status: ForumMessageServiceStoreEsoPlannedRaw.status,
     rawSlug: ForumMessageServiceStoreEsoPlannedRaw.rawSlug,
   };
-const ForumMessageServiceStoreEsoPlanned: EsoStatusMaintenance = {
-  rawDataList: [ForumMessageServiceStoreEsoPlannedRaw],
+const ForumMessageServiceStoreEsoPlanned: CustomEsoStatusMaintenance = {
+  rawDataList: [ForumMessageServiceStoreEsoPlannedRawStringDate],
   beginnerAt: '2024-08-07T08:00:00.000Z',
   endingAt: '2024-08-07T16:00:00.000Z',
 };
@@ -802,8 +799,8 @@ const ForumMessageServiceSystemAccountPlannedRawStringDate: CustomEsoStatusRawDa
     status: ForumMessageServiceSystemAccountPlannedRaw.status,
     rawSlug: ForumMessageServiceSystemAccountPlannedRaw.rawSlug,
   };
-const ForumMessageServiceSystemAccountPlanned: EsoStatusMaintenance = {
-  rawDataList: [ForumMessageServiceSystemAccountPlannedRaw],
+const ForumMessageServiceSystemAccountPlanned: CustomEsoStatusMaintenance = {
+  rawDataList: [ForumMessageServiceSystemAccountPlannedRawStringDate],
   beginnerAt: '2024-08-07T08:00:00.000Z',
   endingAt: '2024-08-07T16:00:00.000Z',
 };
