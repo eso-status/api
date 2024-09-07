@@ -1,5 +1,5 @@
 import ForumMessage from '@eso-status/forum-message';
-import { LiveServices } from '@eso-status/live-services';
+import LiveServices from '@eso-status/live-services';
 import ServiceAlerts from '@eso-status/service-alerts';
 import {
   EsoStatus,
