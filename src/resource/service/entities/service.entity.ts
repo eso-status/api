@@ -5,12 +5,10 @@ import {
   PrimaryColumn,
   UpdateDateColumn,
   OneToMany,
-  OneToOne,
 } from 'typeorm';
 
 import { Archive } from '../../archive/entities/archive.entity';
 import { Log } from '../../log/entities/log.entity';
-import { Maintenance } from '../../maintenance/entities/maintenance.entity';
 import { Slug } from '../../slug/entities/slug.entity';
 import { Status } from '../../status/entities/status.entity';
 import { Support } from '../../support/entities/support.entity';
@@ -69,10 +67,4 @@ export class Service {
 
   @OneToMany(() => Log, (log: Log) => log.service)
   logs?: Log[];
-
-  @OneToOne(
-    () => Maintenance,
-    (maintenance: Maintenance) => maintenance.service,
-  )
-  maintenance?: Maintenance;
 }

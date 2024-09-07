@@ -11,7 +11,6 @@ import { TypeSeeder } from '../database/seeds/type.seeder';
 import { ZoneSeeder } from '../database/seeds/zone.seeder';
 import { Archive } from '../resource/archive/entities/archive.entity';
 import { Log } from '../resource/log/entities/log.entity';
-import { Maintenance } from '../resource/maintenance/entities/maintenance.entity';
 import { Service } from '../resource/service/entities/service.entity';
 import { Slug } from '../resource/slug/entities/slug.entity';
 import { Status } from '../resource/status/entities/status.entity';
@@ -34,17 +33,7 @@ customDataSourceOptions.mysql = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   synchronize: false,
-  entities: [
-    Type,
-    Zone,
-    Support,
-    Slug,
-    Status,
-    Service,
-    Archive,
-    Maintenance,
-    Log,
-  ],
+  entities: [Type, Zone, Support, Slug, Status, Service, Archive, Log],
   migrations: ['dist/database/migrations/*.js'],
   seeds: [
     TypeSeeder,
@@ -65,17 +54,7 @@ customDataSourceOptions.sqlite = {
   type: <'sqlite'>process.env.DB_TYPE,
   database: process.env.DB_NAME,
   synchronize: false,
-  entities: [
-    Type,
-    Zone,
-    Support,
-    Slug,
-    Status,
-    Service,
-    Archive,
-    Maintenance,
-    Log,
-  ],
+  entities: [Type, Zone, Support, Slug, Status, Service, Archive, Log],
   migrations: ['dist/database/migrations/*.js'],
   seeds: [
     TypeSeeder,

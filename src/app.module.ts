@@ -7,8 +7,6 @@ import { ArchiveService } from './resource/archive/archive.service';
 import { Archive } from './resource/archive/entities/archive.entity';
 import { Log } from './resource/log/entities/log.entity';
 import { LogService } from './resource/log/log.service';
-import { Maintenance } from './resource/maintenance/entities/maintenance.entity';
-import { MaintenanceService } from './resource/maintenance/maintenance.service';
 import { ServiceModule } from './resource/service/service.module';
 import { Slug } from './resource/slug/entities/slug.entity';
 import { Status } from './resource/status/entities/status.entity';
@@ -23,16 +21,7 @@ import { WinstonService } from './service/winston/winston.service';
 @Module({
   imports: [
     TypeOrmModule.forRoot(dataSourceOptions),
-    TypeOrmModule.forFeature([
-      Zone,
-      Type,
-      Support,
-      Slug,
-      Status,
-      Archive,
-      Maintenance,
-      Log,
-    ]),
+    TypeOrmModule.forFeature([Zone, Type, Support, Slug, Status, Archive, Log]),
     ServiceModule,
     ScheduleModule.forRoot(),
   ],
@@ -40,7 +29,6 @@ import { WinstonService } from './service/winston/winston.service';
   providers: [
     StatusService,
     ArchiveService,
-    MaintenanceService,
     LogService,
     WebsocketService,
     WinstonService,
@@ -49,7 +37,6 @@ import { WinstonService } from './service/winston/winston.service';
   exports: [
     StatusService,
     ArchiveService,
-    MaintenanceService,
     LogService,
     WebsocketService,
     WinstonService,

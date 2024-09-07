@@ -1,7 +1,6 @@
 import { EsoStatus, RawEsoStatus, Slug } from '@eso-status/types';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { isValidDate } from 'rxjs/internal/util/isDate';
 import { Repository } from 'typeorm';
 
 import { Service } from './entities/service.entity';
@@ -14,7 +13,7 @@ export class ServiceService {
   ) {}
 
   format(service: Service): EsoStatus {
-    const formatedEsoStatus: EsoStatus = {
+    return {
       slug: service.slug.slug,
       status: service.status.status,
       type: service.type.type,
@@ -22,35 +21,17 @@ export class ServiceService {
       zone: service.zone.zone,
       raw: <RawEsoStatus>JSON.parse(service.rawData),
     };
-
-    if (service.maintenance) {
-      formatedEsoStatus.maintenance = {
-        raw: <RawEsoStatus>JSON.parse(service.maintenance.rawData),
-        slug: service.slug.slug,
-        beginnerAt: service.maintenance.beginnerAt.toISOString(),
-      };
-
-      if (
-        service.maintenance.endingAt &&
-        isValidDate(service.maintenance.endingAt)
-      ) {
-        formatedEsoStatus.maintenance.endingAt =
-          service.maintenance.endingAt.toISOString();
-      }
-    }
-
-    return formatedEsoStatus;
   }
 
   async findAll(): Promise<Service[]> {
     return this.serviceRepository.find({
-      relations: ['slug', 'status', 'type', 'zone', 'support', 'maintenance'],
+      relations: ['slug', 'status', 'type', 'zone', 'support'],
     });
   }
 
   async findBySlug(slug: Slug): Promise<Service> {
     return this.serviceRepository.findOne({
-      relations: ['slug', 'status', 'type', 'zone', 'support', 'maintenance'],
+      relations: ['slug', 'status', 'type', 'zone', 'support'],
       where: {
         slug: {
           slug,
