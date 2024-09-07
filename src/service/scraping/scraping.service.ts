@@ -1,7 +1,7 @@
 import ForumMessage from '@eso-status/forum-message';
 import { ForumMessagePTSURL } from '@eso-status/forum-message/lib/const';
 import { LiveServices } from '@eso-status/live-services';
-import { ServiceAlerts } from '@eso-status/service-alerts';
+import ServiceAlerts from '@eso-status/service-alerts';
 import {
   EsoStatus,
   EsoStatusMaintenance,
