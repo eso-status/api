@@ -357,13 +357,13 @@ export class ScrapingService {
   public formatData(rawEsoStatusList: EsoStatusRawData[]): EsoStatus[] {
     return rawEsoStatusList.map(
       (rawEsoStatus: EsoStatusRawData): EsoStatus => ({
-        slug: rawEsoStatus.slug,
+        rawData: rawEsoStatus,
         status: rawEsoStatus.status,
+        statusSince: moment(0),
+        slug: rawEsoStatus.slug,
         type: rawEsoStatus.type,
         support: rawEsoStatus.support,
         zone: rawEsoStatus.zone,
-        rawData: rawEsoStatus,
-        statusSince: moment(0),
       }),
     );
   }

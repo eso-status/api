@@ -6,10 +6,9 @@ import { Archive } from '../../src/resource/archive/entities/archive.entity';
 import { Log } from '../../src/resource/log/entities/log.entity';
 import { Maintenance } from '../../src/resource/maintenance/entities/maintenance.entity';
 import { Service } from '../../src/resource/service/entities/service.entity';
-
 import { Connector } from '../../src/type/connector.type';
 
-export interface Step {
+export default interface ScenarioInitialParamInterface {
   connector: Connector;
   connectorData: EsoStatusRawData[];
   statusUpdateList: EsoStatus[];

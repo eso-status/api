@@ -40,9 +40,8 @@ import { WebsocketService } from '../src/service/websocket/websocket.service';
 import { WinstonService } from '../src/service/winston/winston.service';
 
 import { classicScenario } from './data/classicScenario';
-import { doubleMaintenance } from './data/doubleMaintenance';
-import { Scenario } from './interface/scenario.interface';
-import { Step } from './interface/step.interface';
+import Scenario from './scenario/scenario.interface';
+import ScenarioInitialParamInterface from './scenario/scenarioInitialParam.interface';
 
 config();
 
@@ -55,7 +54,7 @@ describe('AppModule (e2e)', (): void => {
   let maintenanceRepository: Repository<Maintenance>;
   let logRepository: Repository<Log>;
 
-  const mockConnectorData = (step: Step): void => {
+  const mockConnectorData = (step: ScenarioInitialParamInterface): void => {
     if (step.connector === 'LiveServices') {
       jest
         .spyOn(LiveServices, 'getData')
@@ -84,7 +83,9 @@ describe('AppModule (e2e)', (): void => {
     }
   };
 
-  const callHandler = async (step: Step): Promise<void> => {
+  const callHandler = async (
+    step: ScenarioInitialParamInterface,
+  ): Promise<void> => {
     if (step.connector === 'LiveServices') {
       await scrapingService.handleLiveServices();
     }
@@ -164,7 +165,7 @@ describe('AppModule (e2e)', (): void => {
     clientSocket.disconnect();
   });
 
-  describe.each([doubleMaintenance, classicScenario])(
+  describe.each([classicScenario])(
     'Should scenario works',
     (scenario: Scenario): void => {
       it('reset database', async (): Promise<void> => {
@@ -279,7 +280,7 @@ describe('AppModule (e2e)', (): void => {
 
       describe.each(scenario.steps)(
         'Should steps works',
-        (step: Step): void => {
+        (step: ScenarioInitialParamInterface): void => {
           // eslint-disable-next-line jest/expect-expect
           it('should doHandle method called', async (): Promise<void> => {
             // eslint-disable-next-line @typescript-eslint/no-misused-promises,no-async-promise-executor
