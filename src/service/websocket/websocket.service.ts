@@ -13,7 +13,7 @@ import { Server } from 'socket.io';
 export class WebsocketService implements OnModuleDestroy {
   @WebSocketServer() server: Server;
 
-  onModuleDestroy(): void {
-    this.server.close();
+  async onModuleDestroy(): Promise<void> {
+    await this.server.close();
   }
 }
