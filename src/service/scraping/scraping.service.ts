@@ -70,6 +70,31 @@ export class ScrapingService {
     );
   }
 
+  public async logRecentlyReceived(
+    esoStatus: EsoStatus,
+    service: Service,
+    connector: Connector,
+  ): Promise<boolean> {
+    if (connector === 'LiveServices') {
+      return false;
+    }
+
+    const logs: Log[] = await this.logService.getRecentLogByServiceAndConnector(
+      service,
+      connector,
+    );
+
+    return (
+      logs.filter((log: Log): boolean => {
+        const esoStatusRawData: EsoStatusRawData = <EsoStatusRawData>(
+          JSON.parse(log.rawData)
+        );
+
+        return esoStatusRawData.raw === esoStatus.rawData.raw;
+      }).length > 0
+    );
+  }
+
   public maintenanceChanged(
     esoStatusFromScraping: EsoStatus,
     maintenance?: Maintenance,
@@ -300,6 +325,11 @@ export class ScrapingService {
 
     // Return function if raw don't change
     if (!this.archiveChanged(esoStatus, archive)) {
+      return;
+    }
+
+    // Return function if raw already received
+    if (await this.logRecentlyReceived(esoStatus, service, connector)) {
       return;
     }
 
