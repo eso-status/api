@@ -39,8 +39,8 @@ import { ScrapingService } from '../src/service/scraping/scraping.service';
 import { WebsocketService } from '../src/service/websocket/websocket.service';
 import { WinstonService } from '../src/service/winston/winston.service';
 
-import { classicScenario } from './data/classicScenario';
-import { doubleMaintenance } from './data/doubleMaintenance';
+import { constantSwitch } from './data/constantSwitch';
+import { maintenance as maintenanceScenario } from './data/maintenance';
 import { Scenario } from './interface/scenario.interface';
 import { Step } from './interface/step.interface';
 
@@ -164,7 +164,7 @@ describe('AppModule (e2e)', (): void => {
     clientSocket.disconnect();
   });
 
-  describe.each([doubleMaintenance, classicScenario])(
+  describe.each([constantSwitch, maintenanceScenario])(
     'Should scenario works',
     (scenario: Scenario): void => {
       it('reset database', async (): Promise<void> => {
@@ -222,6 +222,32 @@ describe('AppModule (e2e)', (): void => {
         },
         15000,
       );
+
+      if (scenario.initial.maintenances.length > 0) {
+        it.each(scenario.initial.maintenances)(
+          'initialize maintenances data',
+          async (maintenance: Maintenance): Promise<void> => {
+            let newMaintenance: Maintenance = maintenanceRepository.create({
+              serviceId: maintenance.serviceId,
+              beginnerAt: maintenance.beginnerAt,
+              endingAt: maintenance.endingAt,
+              rawData: maintenance.rawData,
+            });
+            await maintenanceRepository.save(newMaintenance);
+            newMaintenance = await maintenanceRepository.findOne({
+              where: {
+                serviceId: maintenance.serviceId,
+              },
+              order: {
+                createdAt: 'DESC',
+              },
+            });
+            expect(newMaintenance.serviceId).toEqual(maintenance.serviceId);
+            expect(newMaintenance.rawData).toEqual(maintenance.rawData);
+          },
+          15000,
+        );
+      }
 
       it.each(scenario.initial.services)(
         'initialize service data',

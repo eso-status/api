@@ -5,6 +5,8 @@ import { Repository } from 'typeorm';
 
 import { Connector } from '../../type/connector.type';
 
+import { Service } from '../service/entities/service.entity';
+
 import { Log } from './entities/log.entity';
 
 @Injectable()
@@ -27,5 +29,17 @@ export class LogService {
       rawData: JSON.stringify(rawEsoStatus),
     });
     return this.logRepository.save(newLog);
+  }
+
+  async getRecentLogByServiceAndConnector(
+    service: Service,
+    connector: Connector,
+  ): Promise<Log[]> {
+    return this.logRepository.find({
+      where: {
+        serviceId: service.id,
+        connector,
+      },
+    });
   }
 }
