@@ -33,7 +33,7 @@
     "migration:run": "typeorm migration:run -d ./dist/config/typeorm.config.js"
   },
   "dependencies": {
-    "@eso-status/forum-message": "2.0.0-dev.8",
+    "@eso-status/forum-message": "2.0.0-dev.9",
     "@eso-status/live-services": "2.0.0-dev.2",
     "@eso-status/service-alerts": "2.0.0-dev.3",
     "@eso-status/types": "2.0.0-dev.12",
