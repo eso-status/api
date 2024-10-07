@@ -1,8 +1,8 @@
 import ForumMessage from '@eso-status/forum-message';
 import LiveServices from '@eso-status/live-services';
 import ServiceAlerts from '@eso-status/service-alerts';
-import {
-  EsoStatus,
+import EsoStatus, {
+  EsoStatusMaintenance,
   EsoStatusRawData,
   Slug as EsoStatusSlug,
 } from '@eso-status/types';
@@ -19,8 +19,6 @@ import { Repository } from 'typeorm';
 import { runSeeders } from 'typeorm-extension';
 
 import { dataSource, dataSourceOptions } from '../src/config/typeorm.config';
-import { EsoStatus as CustomEsoStatus } from '../src/interface/esoStatus.interface';
-import { EsoStatusMaintenance as CustomEsoStatusMaintenance } from '../src/interface/esoStatusMaintenance.interface';
 import { ArchiveService } from '../src/resource/archive/archive.service';
 import { Archive } from '../src/resource/archive/entities/archive.entity';
 import { Log } from '../src/resource/log/entities/log.entity';
@@ -283,7 +281,7 @@ describe('AppModule (e2e)', (): void => {
 
       it.each(scenario.initial.serviceControllerReturn)(
         'should service ($slug) controller return exact data',
-        async (serviceControllerData: CustomEsoStatus): Promise<void> => {
+        async (serviceControllerData: EsoStatus): Promise<void> => {
           const singleResponse: supertest.Response = await request(
             <App>app.getHttpServer(),
           ).get(`/service/${serviceControllerData.slug}`);
@@ -322,7 +320,7 @@ describe('AppModule (e2e)', (): void => {
 
               clientSocket.on(
                 'maintenancePlanned',
-                (maintenanceEsoStatus: CustomEsoStatusMaintenance): void => {
+                (maintenanceEsoStatus: EsoStatusMaintenance): void => {
                   maintenancePlannedDataReceived.push(
                     JSON.stringify(maintenanceEsoStatus),
                   );
@@ -354,7 +352,7 @@ describe('AppModule (e2e)', (): void => {
                     expect(
                       step.maintenancePlannedList.map(
                         (
-                          stepMaintenancePlannedList: CustomEsoStatusMaintenance,
+                          stepMaintenancePlannedList: EsoStatusMaintenance,
                         ): string => JSON.stringify(stepMaintenancePlannedList),
                       ),
                     ).toContain(maintenanceEsoStatus),
@@ -461,7 +459,7 @@ describe('AppModule (e2e)', (): void => {
 
           it.each(step.serviceControllerReturn)(
             'should service ($slug) controller return exact data',
-            async (serviceControllerData: CustomEsoStatus): Promise<void> => {
+            async (serviceControllerData: EsoStatus): Promise<void> => {
               const singleResponse: supertest.Response = await request(
                 <App>app.getHttpServer(),
               ).get(`/service/${serviceControllerData.slug}`);

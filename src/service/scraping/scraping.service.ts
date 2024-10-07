@@ -2,8 +2,7 @@ import ForumMessage from '@eso-status/forum-message';
 import { ForumMessagePTSURL } from '@eso-status/forum-message/lib/const';
 import LiveServices from '@eso-status/live-services';
 import ServiceAlerts from '@eso-status/service-alerts';
-import {
-  EsoStatus,
+import EsoStatus, {
   EsoStatusMaintenance,
   EsoStatusRawData,
   Status as EsoStatusStatus,
@@ -13,10 +12,6 @@ import { Injectable } from '@nestjs/common';
 import { Interval } from '@nestjs/schedule';
 import { config } from 'dotenv';
 
-import { Moment } from 'moment';
-import * as moment from 'moment';
-
-import { EsoStatusRawData as CustomEsoStatusRawData } from '../../interface/esoStatusRawData.interface';
 import { ArchiveService } from '../../resource/archive/archive.service';
 import { Archive } from '../../resource/archive/entities/archive.entity';
 import { Log } from '../../resource/log/entities/log.entity';
@@ -99,14 +94,12 @@ export class ScrapingService {
     esoStatusFromScraping: EsoStatus,
     maintenance?: Maintenance,
   ): boolean {
-    const modifiedEsoStatusFromScrapingRaw: CustomEsoStatusRawData = {
+    const modifiedEsoStatusFromScrapingRaw: EsoStatusRawData = {
       source: '',
       raw: esoStatusFromScraping.rawData.raw,
       slug: esoStatusFromScraping.rawData.slug,
       rawDate: esoStatusFromScraping.rawData.rawDate,
-      dates: esoStatusFromScraping.rawData.dates.map((date: Moment): string => {
-        return moment(date).toISOString();
-      }),
+      dates: esoStatusFromScraping.rawData.dates,
       type: esoStatusFromScraping.rawData.type,
       support: esoStatusFromScraping.rawData.support,
       zone: esoStatusFromScraping.rawData.zone,
@@ -115,11 +108,11 @@ export class ScrapingService {
       rawStatus: esoStatusFromScraping.rawData.rawStatus,
     };
 
-    const maintenanceRawData: CustomEsoStatusRawData = <CustomEsoStatusRawData>(
+    const maintenanceRawData: EsoStatusRawData = <EsoStatusRawData>(
       JSON.parse(maintenance.rawData)
     );
 
-    const modifiedMaintenanceRawData: CustomEsoStatusRawData = {
+    const modifiedMaintenanceRawData: EsoStatusRawData = {
       source: '',
       raw: maintenanceRawData.raw,
       slug: maintenanceRawData.slug,
@@ -286,13 +279,21 @@ export class ScrapingService {
       'ScrapingService.updateMaintenance',
     );
 
-    const maintenanceFormated: EsoStatusMaintenance = {
-      rawDataList: [esoStatus.rawData],
-      beginnerAt: moment(maintenance.beginnerAt.toISOString()),
-    };
+    let maintenanceFormated: EsoStatusMaintenance;
 
     if (maintenance.endingAt) {
-      maintenanceFormated.endingAt = moment(maintenance.endingAt.toISOString());
+      maintenanceFormated = {
+        rawDataList: [esoStatus.rawData],
+        beginnerAt: maintenance.beginnerAt.toISOString(),
+        endingAt: maintenance.endingAt.toISOString(),
+        plannedSince: '1970-01-01T00:00:00.000Z',
+      };
+    } else {
+      maintenanceFormated = {
+        rawDataList: [esoStatus.rawData],
+        beginnerAt: maintenance.beginnerAt.toISOString(),
+        plannedSince: '1970-01-01T00:00:00.000Z',
+      };
     }
 
     // Emit maintenancePlanned event
@@ -393,7 +394,7 @@ export class ScrapingService {
         support: rawEsoStatus.support,
         zone: rawEsoStatus.zone,
         rawData: rawEsoStatus,
-        statusSince: moment(0),
+        statusSince: '1970-01-01T00:00:00.000Z',
       }),
     );
   }

@@ -1,7 +1,6 @@
-import { EsoStatus, EsoStatusRawData, Slug } from '@eso-status/types';
+import EsoStatus, { EsoStatusRawData, Slug } from '@eso-status/types';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import * as moment from 'moment';
 import { isValidDate } from 'rxjs/internal/util/isDate';
 import { Repository } from 'typeorm';
 
@@ -22,24 +21,30 @@ export class ServiceService {
       support: service.support.support,
       zone: service.zone.zone,
       rawData: <EsoStatusRawData>JSON.parse(service.rawData),
-      statusSince: moment(0),
+      statusSince: '1970-01-01T00:00:00.000Z',
     };
 
     if (service.maintenance) {
-      formatedEsoStatus.maintenance = {
-        rawDataList: <EsoStatusRawData[]>[
-          <EsoStatusRawData>JSON.parse(service.maintenance.rawData),
-        ],
-        beginnerAt: moment(service.maintenance.beginnerAt.toISOString()),
-      };
-
       if (
         service.maintenance.endingAt &&
         isValidDate(service.maintenance.endingAt)
       ) {
-        formatedEsoStatus.maintenance.endingAt = moment(
-          service.maintenance.endingAt.toISOString(),
-        );
+        formatedEsoStatus.maintenance = {
+          rawDataList: <EsoStatusRawData[]>[
+            <EsoStatusRawData>JSON.parse(service.maintenance.rawData),
+          ],
+          beginnerAt: service.maintenance.beginnerAt.toISOString(),
+          endingAt: service.maintenance.endingAt.toISOString(),
+          plannedSince: '1970-01-01T00:00:00.000Z',
+        };
+      } else {
+        formatedEsoStatus.maintenance = {
+          rawDataList: <EsoStatusRawData[]>[
+            <EsoStatusRawData>JSON.parse(service.maintenance.rawData),
+          ],
+          beginnerAt: service.maintenance.beginnerAt.toISOString(),
+          plannedSince: '1970-01-01T00:00:00.000Z',
+        };
       }
     }
 

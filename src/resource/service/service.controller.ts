@@ -1,4 +1,4 @@
-import { EsoStatus, Slug as EsoStatusSlug } from '@eso-status/types';
+import EsoStatus, { Slug as EsoStatusSlug } from '@eso-status/types';
 import { BadRequestException, Controller, Get, Param } from '@nestjs/common';
 
 import { SlugService } from '../slug/slug.service';
