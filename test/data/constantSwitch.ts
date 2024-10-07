@@ -1,8 +1,8 @@
-import { EsoStatus, EsoStatusRawData } from '@eso-status/types';
-import * as moment from 'moment/moment';
+import EsoStatus, {
+  EsoStatusMaintenance,
+  EsoStatusRawData,
+} from '@eso-status/types';
 
-import { EsoStatusMaintenance as CustomEsoStatusMaintenance } from '../../src/interface/esoStatusMaintenance.interface';
-import { EsoStatusRawData as CustomEsoStatusRawData } from '../../src/interface/esoStatusRawData.interface';
 import { Initial } from '../interface/initial.interface';
 import { Scenario } from '../interface/scenario.interface';
 import { Step } from '../interface/step.interface';
@@ -19,17 +19,6 @@ const LiveServicesServerPsNaInitialRaw: EsoStatusRawData = {
   zone: 'na',
   status: 'up',
 };
-const LiveServicesServerPsNaInitialRawStringDate: CustomEsoStatusRawData = {
-  source: LiveServicesServerPsNaInitialRaw.source,
-  raw: LiveServicesServerPsNaInitialRaw.raw,
-  rawSlug: LiveServicesServerPsNaInitialRaw.rawSlug,
-  rawStatus: LiveServicesServerPsNaInitialRaw.rawStatus,
-  slug: LiveServicesServerPsNaInitialRaw.slug,
-  type: LiveServicesServerPsNaInitialRaw.type,
-  support: LiveServicesServerPsNaInitialRaw.support,
-  zone: LiveServicesServerPsNaInitialRaw.zone,
-  status: LiveServicesServerPsNaInitialRaw.status,
-};
 const LiveServicesServerPsNaInitial: EsoStatus = {
   slug: 'server_ps_na',
   status: 'up',
@@ -37,7 +26,7 @@ const LiveServicesServerPsNaInitial: EsoStatus = {
   support: 'ps',
   zone: 'na',
   rawData: LiveServicesServerPsNaInitialRaw,
-  statusSince: moment(0),
+  statusSince: '1970-01-01T00:00:00.000Z',
 };
 
 const LiveServicesServerPsEuInitialRaw: EsoStatusRawData = {
@@ -51,17 +40,6 @@ const LiveServicesServerPsEuInitialRaw: EsoStatusRawData = {
   zone: 'eu',
   status: 'up',
 };
-const LiveServicesServerPsEuInitialRawStringDate: CustomEsoStatusRawData = {
-  source: LiveServicesServerPsEuInitialRaw.source,
-  raw: LiveServicesServerPsEuInitialRaw.raw,
-  rawSlug: LiveServicesServerPsEuInitialRaw.rawSlug,
-  rawStatus: LiveServicesServerPsEuInitialRaw.rawStatus,
-  slug: LiveServicesServerPsEuInitialRaw.slug,
-  type: LiveServicesServerPsEuInitialRaw.type,
-  support: LiveServicesServerPsEuInitialRaw.support,
-  zone: LiveServicesServerPsEuInitialRaw.zone,
-  status: LiveServicesServerPsEuInitialRaw.status,
-};
 const LiveServicesServerPsEuInitial: EsoStatus = {
   slug: 'server_ps_eu',
   status: 'up',
@@ -69,7 +47,7 @@ const LiveServicesServerPsEuInitial: EsoStatus = {
   support: 'ps',
   zone: 'eu',
   rawData: LiveServicesServerPsEuInitialRaw,
-  statusSince: moment(0),
+  statusSince: '1970-01-01T00:00:00.000Z',
 };
 
 const LiveServicesServerXboxEuInitialRaw: EsoStatusRawData = {
@@ -83,17 +61,6 @@ const LiveServicesServerXboxEuInitialRaw: EsoStatusRawData = {
   zone: 'eu',
   status: 'up',
 };
-const LiveServicesServerXboxEuInitialRawStringDate: CustomEsoStatusRawData = {
-  source: LiveServicesServerXboxEuInitialRaw.source,
-  raw: LiveServicesServerXboxEuInitialRaw.raw,
-  rawSlug: LiveServicesServerXboxEuInitialRaw.rawSlug,
-  rawStatus: LiveServicesServerXboxEuInitialRaw.rawStatus,
-  slug: LiveServicesServerXboxEuInitialRaw.slug,
-  type: LiveServicesServerXboxEuInitialRaw.type,
-  support: LiveServicesServerXboxEuInitialRaw.support,
-  zone: LiveServicesServerXboxEuInitialRaw.zone,
-  status: LiveServicesServerXboxEuInitialRaw.status,
-};
 const LiveServicesServerXboxEuInitial: EsoStatus = {
   slug: 'server_xbox_eu',
   status: 'up',
@@ -101,7 +68,7 @@ const LiveServicesServerXboxEuInitial: EsoStatus = {
   support: 'xbox',
   zone: 'eu',
   rawData: LiveServicesServerXboxEuInitialRaw,
-  statusSince: moment(0),
+  statusSince: '1970-01-01T00:00:00.000Z',
 };
 
 const LiveServicesServerXboxNaInitialRaw: EsoStatusRawData = {
@@ -115,17 +82,6 @@ const LiveServicesServerXboxNaInitialRaw: EsoStatusRawData = {
   zone: 'na',
   status: 'up',
 };
-const LiveServicesServerXboxNaInitialRawStringDate: CustomEsoStatusRawData = {
-  source: LiveServicesServerXboxNaInitialRaw.source,
-  raw: LiveServicesServerXboxNaInitialRaw.raw,
-  rawSlug: LiveServicesServerXboxNaInitialRaw.rawSlug,
-  rawStatus: LiveServicesServerXboxNaInitialRaw.rawStatus,
-  slug: LiveServicesServerXboxNaInitialRaw.slug,
-  type: LiveServicesServerXboxNaInitialRaw.type,
-  support: LiveServicesServerXboxNaInitialRaw.support,
-  zone: LiveServicesServerXboxNaInitialRaw.zone,
-  status: LiveServicesServerXboxNaInitialRaw.status,
-};
 const LiveServicesServerXboxNaInitial: EsoStatus = {
   slug: 'server_xbox_na',
   status: 'up',
@@ -133,7 +89,7 @@ const LiveServicesServerXboxNaInitial: EsoStatus = {
   support: 'xbox',
   zone: 'na',
   rawData: LiveServicesServerXboxNaInitialRaw,
-  statusSince: moment(0),
+  statusSince: '1970-01-01T00:00:00.000Z',
 };
 
 const LiveServicesServerPcEuInitialRaw: EsoStatusRawData = {
@@ -147,17 +103,6 @@ const LiveServicesServerPcEuInitialRaw: EsoStatusRawData = {
   zone: 'eu',
   status: 'up',
 };
-const LiveServicesServerPcEuInitialRawStringDate: CustomEsoStatusRawData = {
-  source: LiveServicesServerPcEuInitialRaw.source,
-  raw: LiveServicesServerPcEuInitialRaw.raw,
-  rawSlug: LiveServicesServerPcEuInitialRaw.rawSlug,
-  rawStatus: LiveServicesServerPcEuInitialRaw.rawStatus,
-  slug: LiveServicesServerPcEuInitialRaw.slug,
-  type: LiveServicesServerPcEuInitialRaw.type,
-  support: LiveServicesServerPcEuInitialRaw.support,
-  zone: LiveServicesServerPcEuInitialRaw.zone,
-  status: LiveServicesServerPcEuInitialRaw.status,
-};
 
 const LiveServicesServerPcNaInitialRaw: EsoStatusRawData = {
   source: 'https://live-services.elderscrollsonline.com/status/realms',
@@ -169,17 +114,6 @@ const LiveServicesServerPcNaInitialRaw: EsoStatusRawData = {
   support: 'pc',
   zone: 'na',
   status: 'up',
-};
-const LiveServicesServerPcNaInitialRawStringDate: CustomEsoStatusRawData = {
-  source: LiveServicesServerPcNaInitialRaw.source,
-  raw: LiveServicesServerPcNaInitialRaw.raw,
-  rawSlug: LiveServicesServerPcNaInitialRaw.rawSlug,
-  rawStatus: LiveServicesServerPcNaInitialRaw.rawStatus,
-  slug: LiveServicesServerPcNaInitialRaw.slug,
-  type: LiveServicesServerPcNaInitialRaw.type,
-  support: LiveServicesServerPcNaInitialRaw.support,
-  zone: LiveServicesServerPcNaInitialRaw.zone,
-  status: LiveServicesServerPcNaInitialRaw.status,
 };
 
 const LiveServicesServerPcPtsInitialRaw: EsoStatusRawData = {
@@ -193,17 +127,6 @@ const LiveServicesServerPcPtsInitialRaw: EsoStatusRawData = {
   zone: 'pts',
   status: 'up',
 };
-const LiveServicesServerPcPtsInitialRawStringDate: CustomEsoStatusRawData = {
-  source: LiveServicesServerPcPtsInitialRaw.source,
-  raw: LiveServicesServerPcPtsInitialRaw.raw,
-  rawSlug: LiveServicesServerPcPtsInitialRaw.rawSlug,
-  rawStatus: LiveServicesServerPcPtsInitialRaw.rawStatus,
-  slug: LiveServicesServerPcPtsInitialRaw.slug,
-  type: LiveServicesServerPcPtsInitialRaw.type,
-  support: LiveServicesServerPcPtsInitialRaw.support,
-  zone: LiveServicesServerPcPtsInitialRaw.zone,
-  status: LiveServicesServerPcPtsInitialRaw.status,
-};
 
 // Initial ForumMessage
 const ForumMessageServerPsNaInitialRaw: EsoStatusRawData = {
@@ -216,45 +139,13 @@ const ForumMessageServerPsNaInitialRaw: EsoStatusRawData = {
   status: 'planned',
   rawSlug: 'PlayStation®: NA and EU megaservers for',
   rawDate: 'October 2, 6:00AM EDT (10:00 UTC) - 12:00PM EDT (16:00 UTC)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 10)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 16)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
-};
-const ForumMessageServerPsNaInitialRawStringDate: CustomEsoStatusRawData = {
-  source: ForumMessageServerPsNaInitialRaw.source,
-  raw: ForumMessageServerPsNaInitialRaw.raw,
-  slug: ForumMessageServerPsNaInitialRaw.slug,
-  type: ForumMessageServerPsNaInitialRaw.type,
-  support: ForumMessageServerPsNaInitialRaw.support,
-  zone: ForumMessageServerPsNaInitialRaw.zone,
-  status: ForumMessageServerPsNaInitialRaw.status,
-  rawSlug: ForumMessageServerPsNaInitialRaw.rawSlug,
-  rawDate: ForumMessageServerPsNaInitialRaw.rawDate,
   dates: ['2024-10-02T10:00:00.000Z', '2024-10-02T16:00:00.000Z'],
 };
-const ForumMessageServerPsNaInitialMaintenance: CustomEsoStatusMaintenance = {
-  rawDataList: [ForumMessageServerPsNaInitialRawStringDate],
+const ForumMessageServerPsNaInitialMaintenance: EsoStatusMaintenance = {
+  rawDataList: [ForumMessageServerPsNaInitialRaw],
   beginnerAt: '2024-10-02T10:00:00.000Z',
   endingAt: '2024-10-02T16:00:00.000Z',
+  plannedSince: '1970-01-01T00:00:00.000Z',
 };
 
 const ForumMessageServerPsEuInitialRaw: EsoStatusRawData = {
@@ -267,45 +158,13 @@ const ForumMessageServerPsEuInitialRaw: EsoStatusRawData = {
   zone: 'eu',
   status: 'planned',
   rawDate: 'October 2, 6:00AM EDT (10:00 UTC) - 12:00PM EDT (16:00 UTC)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 10)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 16)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
-};
-const ForumMessageServerPsEuInitialRawStringDate: CustomEsoStatusRawData = {
-  source: ForumMessageServerPsEuInitialRaw.source,
-  raw: ForumMessageServerPsEuInitialRaw.raw,
-  rawSlug: ForumMessageServerPsEuInitialRaw.rawSlug,
-  slug: ForumMessageServerPsEuInitialRaw.slug,
-  type: ForumMessageServerPsEuInitialRaw.type,
-  support: ForumMessageServerPsEuInitialRaw.support,
-  zone: ForumMessageServerPsEuInitialRaw.zone,
-  status: ForumMessageServerPsEuInitialRaw.status,
-  rawDate: ForumMessageServerPsEuInitialRaw.rawDate,
   dates: ['2024-10-02T10:00:00.000Z', '2024-10-02T16:00:00.000Z'],
 };
-const ForumMessageServerPsEuInitialMaintenance: CustomEsoStatusMaintenance = {
-  rawDataList: [ForumMessageServerPsEuInitialRawStringDate],
+const ForumMessageServerPsEuInitialMaintenance: EsoStatusMaintenance = {
+  rawDataList: [ForumMessageServerPsEuInitialRaw],
   beginnerAt: '2024-10-02T10:00:00.000Z',
   endingAt: '2024-10-02T16:00:00.000Z',
+  plannedSince: '1970-01-01T00:00:00.000Z',
 };
 
 const ForumMessageServerPcNaInitialRaw: EsoStatusRawData = {
@@ -318,28 +177,7 @@ const ForumMessageServerPcNaInitialRaw: EsoStatusRawData = {
   status: 'up',
   rawSlug: 'PC/Mac: NA and EU megaservers for',
   rawDate: 'September 30, 4:00AM EDT (8:00 UTC) - 10:00AM EDT (14:00 UTC)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 9 - 1)
-      .set('date', 30)
-      .set('hours', 8)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 9 - 1)
-      .set('date', 30)
-      .set('hours', 14)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-09-30T08:00:00.000Z', '2024-09-30T14:00:00.000Z'],
   rawStatus: '[COMPLETE]',
 };
 const ForumMessageServerPcEuInitialRaw: EsoStatusRawData = {
@@ -352,28 +190,7 @@ const ForumMessageServerPcEuInitialRaw: EsoStatusRawData = {
   status: 'up',
   rawSlug: 'PC/Mac: NA and EU megaservers for',
   rawDate: 'September 30, 4:00AM EDT (8:00 UTC) - 10:00AM EDT (14:00 UTC)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 9 - 1)
-      .set('date', 30)
-      .set('hours', 8)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 9 - 1)
-      .set('date', 30)
-      .set('hours', 14)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-09-30T08:00:00.000Z', '2024-09-30T14:00:00.000Z'],
   rawStatus: '[COMPLETE]',
 };
 
@@ -387,45 +204,13 @@ const ForumMessageServerXboxNaInitialRaw: EsoStatusRawData = {
   status: 'planned',
   rawSlug: 'Xbox: NA and EU megaservers for',
   rawDate: 'October 2, 6:00AM EDT (10:00 UTC) - 12:00PM EDT (16:00 UTC)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 10)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 16)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
-};
-const ForumMessageServerXboxNaInitialRawStringDate: CustomEsoStatusRawData = {
-  source: ForumMessageServerXboxNaInitialRaw.source,
-  raw: ForumMessageServerXboxNaInitialRaw.raw,
-  slug: ForumMessageServerXboxNaInitialRaw.slug,
-  type: ForumMessageServerXboxNaInitialRaw.type,
-  support: ForumMessageServerXboxNaInitialRaw.support,
-  zone: ForumMessageServerXboxNaInitialRaw.zone,
-  status: ForumMessageServerXboxNaInitialRaw.status,
-  rawSlug: ForumMessageServerXboxNaInitialRaw.rawSlug,
-  rawDate: ForumMessageServerXboxNaInitialRaw.rawDate,
   dates: ['2024-10-02T10:00:00.000Z', '2024-10-02T16:00:00.000Z'],
 };
-const ForumMessageServerXboxNaInitialMaintenance: CustomEsoStatusMaintenance = {
-  rawDataList: [ForumMessageServerXboxNaInitialRawStringDate],
+const ForumMessageServerXboxNaInitialMaintenance: EsoStatusMaintenance = {
+  rawDataList: [ForumMessageServerXboxNaInitialRaw],
   beginnerAt: '2024-10-02T10:00:00.000Z',
   endingAt: '2024-10-02T16:00:00.000Z',
+  plannedSince: '1970-01-01T00:00:00.000Z',
 };
 
 const ForumMessageServerXboxEuInitialRaw: EsoStatusRawData = {
@@ -438,47 +223,14 @@ const ForumMessageServerXboxEuInitialRaw: EsoStatusRawData = {
   status: 'planned',
   rawSlug: 'Xbox: NA and EU megaservers for',
   rawDate: 'October 2, 6:00AM EDT (10:00 UTC) - 12:00PM EDT (16:00 UTC)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 10)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 16)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
-};
-const ForumMessageServerXboxEuInitialRawStringDate: CustomEsoStatusRawData = {
-  source: ForumMessageServerXboxEuInitialRaw.source,
-  raw: ForumMessageServerXboxEuInitialRaw.raw,
-  slug: ForumMessageServerXboxEuInitialRaw.slug,
-  type: ForumMessageServerXboxEuInitialRaw.type,
-  support: ForumMessageServerXboxEuInitialRaw.support,
-  zone: ForumMessageServerXboxEuInitialRaw.zone,
-  status: ForumMessageServerXboxEuInitialRaw.status,
-  rawSlug: ForumMessageServerXboxEuInitialRaw.rawSlug,
-  rawDate: ForumMessageServerXboxEuInitialRaw.rawDate,
   dates: ['2024-10-02T10:00:00.000Z', '2024-10-02T16:00:00.000Z'],
 };
-const ForumMessageServerXboxEuInitialRawMaintenance: CustomEsoStatusMaintenance =
-  {
-    rawDataList: [ForumMessageServerXboxEuInitialRawStringDate],
-    beginnerAt: '2024-10-02T10:00:00.000Z',
-    endingAt: '2024-10-02T16:00:00.000Z',
-  };
+const ForumMessageServerXboxEuInitialRawMaintenance: EsoStatusMaintenance = {
+  rawDataList: [ForumMessageServerXboxEuInitialRaw],
+  beginnerAt: '2024-10-02T10:00:00.000Z',
+  endingAt: '2024-10-02T16:00:00.000Z',
+  plannedSince: '1970-01-01T00:00:00.000Z',
+};
 
 // Initial ForumMessagePts
 const ForumMessagePtsServerPsNaInitialRaw: EsoStatusRawData = {
@@ -491,28 +243,7 @@ const ForumMessagePtsServerPsNaInitialRaw: EsoStatusRawData = {
   status: 'planned',
   rawSlug: 'PlayStation®: NA and EU megaservers for',
   rawDate: 'October 2, 6:00AM EDT (10:00 UTC) - 12:00PM EDT (16:00 UTC)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 10)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 16)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-02T10:00:00.000Z', '2024-10-02T16:00:00.000Z'],
 };
 const ForumMessagePtsServerPsEuInitialRaw: EsoStatusRawData = {
   source: 'https://forums.elderscrollsonline.com/en/categories/pts',
@@ -524,28 +255,7 @@ const ForumMessagePtsServerPsEuInitialRaw: EsoStatusRawData = {
   status: 'planned',
   rawSlug: 'PlayStation®: NA and EU megaservers for',
   rawDate: 'October 2, 6:00AM EDT (10:00 UTC) - 12:00PM EDT (16:00 UTC)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 10)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 16)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-02T10:00:00.000Z', '2024-10-02T16:00:00.000Z'],
 };
 const ForumMessagePtsServerPcPtsInitialRaw: EsoStatusRawData = {
   source: 'https://forums.elderscrollsonline.com/en/categories/pts',
@@ -568,28 +278,7 @@ const ForumMessagePtsServerPcNaInitialRaw: EsoStatusRawData = {
   status: 'up',
   rawSlug: 'PC/Mac: NA and EU megaservers for',
   rawDate: 'September 30, 4:00AM EDT (8:00 UTC) - 10:00AM EDT (14:00 UTC)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 9 - 1)
-      .set('date', 30)
-      .set('hours', 8)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 9 - 1)
-      .set('date', 30)
-      .set('hours', 14)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-09-30T08:00:00.000Z', '2024-09-30T14:00:00.000Z'],
   rawStatus: '[COMPLETE]',
 };
 const ForumMessagePtsServerPcEuInitialRaw: EsoStatusRawData = {
@@ -602,28 +291,7 @@ const ForumMessagePtsServerPcEuInitialRaw: EsoStatusRawData = {
   status: 'up',
   rawSlug: 'PC/Mac: NA and EU megaservers for',
   rawDate: 'September 30, 4:00AM EDT (8:00 UTC) - 10:00AM EDT (14:00 UTC)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 9 - 1)
-      .set('date', 30)
-      .set('hours', 8)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 9 - 1)
-      .set('date', 30)
-      .set('hours', 14)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-09-30T08:00:00.000Z', '2024-09-30T14:00:00.000Z'],
   rawStatus: '[COMPLETE]',
 };
 const ForumMessagePtsServerXboxNaInitialRaw: EsoStatusRawData = {
@@ -636,28 +304,7 @@ const ForumMessagePtsServerXboxNaInitialRaw: EsoStatusRawData = {
   status: 'planned',
   rawSlug: 'Xbox: NA and EU megaservers for',
   rawDate: 'October 2, 6:00AM EDT (10:00 UTC) - 12:00PM EDT (16:00 UTC)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 10)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 16)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-02T10:00:00.000Z', '2024-10-02T16:00:00.000Z'],
 };
 const ForumMessagePtsServerXboxEuInitialRaw: EsoStatusRawData = {
   source: 'https://forums.elderscrollsonline.com/en/categories/pts',
@@ -669,28 +316,7 @@ const ForumMessagePtsServerXboxEuInitialRaw: EsoStatusRawData = {
   status: 'planned',
   rawSlug: 'Xbox: NA and EU megaservers for',
   rawDate: 'October 2, 6:00AM EDT (10:00 UTC) - 12:00PM EDT (16:00 UTC)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 10)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 16)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-02T10:00:00.000Z', '2024-10-02T16:00:00.000Z'],
 };
 
 // Initial ServiceAlerts
@@ -705,18 +331,7 @@ const ServiceAlertsServerPsNaInitialRaw: EsoStatusRawData = {
   rawStatus: 'been resolved',
   rawSlug: 'PlayStation™ Network',
   rawDate: '2024.10.01 - 9:00 UTC (5:00 EDT)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 1)
-      .set('hours', 9)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-01T09:00:00.000Z'],
 };
 const ServiceAlertsServerPsEuInitialRaw: EsoStatusRawData = {
   source: 'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
@@ -729,18 +344,7 @@ const ServiceAlertsServerPsEuInitialRaw: EsoStatusRawData = {
   rawStatus: 'been resolved',
   rawSlug: 'PlayStation™ Network',
   rawDate: '2024.10.01 - 9:00 UTC (5:00 EDT)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 1)
-      .set('hours', 9)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-01T09:00:00.000Z'],
 };
 const ServiceAlertsServerPcPtsInitialRaw: EsoStatusRawData = {
   source: 'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
@@ -753,18 +357,7 @@ const ServiceAlertsServerPcPtsInitialRaw: EsoStatusRawData = {
   rawStatus: 'currently available',
   rawSlug: 'PTS',
   rawDate: '2024.09.30 - 21:00 UTC (17:00 EDT)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 9 - 1)
-      .set('date', 30)
-      .set('hours', 21)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-09-30T21:00:00.000Z'],
 };
 const ServiceAlertsServerPcEuInitialRaw: EsoStatusRawData = {
   source: 'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
@@ -777,18 +370,7 @@ const ServiceAlertsServerPcEuInitialRaw: EsoStatusRawData = {
   rawStatus: 'currently available',
   rawSlug: 'The European PC/Mac megaserver',
   rawDate: '2024.09.30 - 13:30 UTC (9:30 EDT)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 9 - 1)
-      .set('date', 30)
-      .set('hours', 13)
-      .set('minutes', 30)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-09-30T13:30:00.000Z'],
 };
 const ServiceAlertsServerPcNaInitialRaw: EsoStatusRawData = {
   source: 'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
@@ -801,18 +383,7 @@ const ServiceAlertsServerPcNaInitialRaw: EsoStatusRawData = {
   rawStatus: 'currently available',
   rawSlug: 'The North American PC/Mac megaserver',
   rawDate: '2024.09.30 - 13:30 UTC (9:30 EDT)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 9 - 1)
-      .set('date', 30)
-      .set('hours', 13)
-      .set('minutes', 30)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-09-30T13:30:00.000Z'],
 };
 const ServiceAlertsServerXboxEuInitialRaw: EsoStatusRawData = {
   source: 'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
@@ -825,18 +396,7 @@ const ServiceAlertsServerXboxEuInitialRaw: EsoStatusRawData = {
   rawStatus: 'currently available',
   rawSlug: 'The European Xbox megaserver',
   rawDate: '2024.09.18 - 16:00 UTC (12:00 EDT)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 9 - 1)
-      .set('date', 18)
-      .set('hours', 16)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-09-18T16:00:00.000Z'],
 };
 const ServiceAlertsServerXboxNaInitialRaw: EsoStatusRawData = {
   source: 'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
@@ -849,18 +409,7 @@ const ServiceAlertsServerXboxNaInitialRaw: EsoStatusRawData = {
   rawStatus: 'currently available',
   rawSlug: 'The North American Xbox megaserver',
   rawDate: '2024.09.18 - 16:00 UTC (12:00 EDT)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 9 - 1)
-      .set('date', 18)
-      .set('hours', 16)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-09-18T16:00:00.000Z'],
 };
 
 // 2024-10-02T09:59:54 => LiveServices Xbox/Ps Down
@@ -875,17 +424,6 @@ const LiveServicesServerPsNaDownRaw: EsoStatusRawData = {
   zone: 'na',
   status: 'down',
 };
-const LiveServicesServerPsNaDownRawStringDate: CustomEsoStatusRawData = {
-  source: LiveServicesServerPsNaDownRaw.source,
-  raw: LiveServicesServerPsNaDownRaw.raw,
-  rawSlug: LiveServicesServerPsNaDownRaw.rawSlug,
-  rawStatus: LiveServicesServerPsNaDownRaw.rawStatus,
-  slug: LiveServicesServerPsNaDownRaw.slug,
-  type: LiveServicesServerPsNaDownRaw.type,
-  support: LiveServicesServerPsNaDownRaw.support,
-  zone: LiveServicesServerPsNaDownRaw.zone,
-  status: LiveServicesServerPsNaDownRaw.status,
-};
 const LiveServicesServerPsNaDown: EsoStatus = {
   slug: 'server_ps_na',
   status: 'down',
@@ -893,7 +431,7 @@ const LiveServicesServerPsNaDown: EsoStatus = {
   support: 'ps',
   zone: 'na',
   rawData: LiveServicesServerPsNaDownRaw,
-  statusSince: moment(0),
+  statusSince: '1970-01-01T00:00:00.000Z',
 };
 
 const LiveServicesServerXboxNaDownRaw: EsoStatusRawData = {
@@ -907,17 +445,6 @@ const LiveServicesServerXboxNaDownRaw: EsoStatusRawData = {
   zone: 'na',
   status: 'down',
 };
-const LiveServicesServerXboxNaDownRawStringDate: CustomEsoStatusRawData = {
-  source: LiveServicesServerXboxNaDownRaw.source,
-  raw: LiveServicesServerXboxNaDownRaw.raw,
-  rawSlug: LiveServicesServerXboxNaDownRaw.rawSlug,
-  rawStatus: LiveServicesServerXboxNaDownRaw.rawStatus,
-  slug: LiveServicesServerXboxNaDownRaw.slug,
-  type: LiveServicesServerXboxNaDownRaw.type,
-  support: LiveServicesServerXboxNaDownRaw.support,
-  zone: LiveServicesServerXboxNaDownRaw.zone,
-  status: LiveServicesServerXboxNaDownRaw.status,
-};
 const LiveServicesServerXboxNaDown: EsoStatus = {
   slug: 'server_xbox_na',
   status: 'down',
@@ -925,7 +452,7 @@ const LiveServicesServerXboxNaDown: EsoStatus = {
   support: 'xbox',
   zone: 'na',
   rawData: LiveServicesServerXboxNaDownRaw,
-  statusSince: moment(0),
+  statusSince: '1970-01-01T00:00:00.000Z',
 };
 
 const LiveServicesServerXboxEuDownRaw: EsoStatusRawData = {
@@ -939,17 +466,6 @@ const LiveServicesServerXboxEuDownRaw: EsoStatusRawData = {
   zone: 'eu',
   status: 'down',
 };
-const LiveServicesServerXboxEuDownRawStringDate: CustomEsoStatusRawData = {
-  source: LiveServicesServerXboxEuDownRaw.source,
-  raw: LiveServicesServerXboxEuDownRaw.raw,
-  rawSlug: LiveServicesServerXboxEuDownRaw.rawSlug,
-  rawStatus: LiveServicesServerXboxEuDownRaw.rawStatus,
-  slug: LiveServicesServerXboxEuDownRaw.slug,
-  type: LiveServicesServerXboxEuDownRaw.type,
-  support: LiveServicesServerXboxEuDownRaw.support,
-  zone: LiveServicesServerXboxEuDownRaw.zone,
-  status: LiveServicesServerXboxEuDownRaw.status,
-};
 const LiveServicesServerXboxEuDown: EsoStatus = {
   slug: 'server_xbox_eu',
   status: 'down',
@@ -957,7 +473,7 @@ const LiveServicesServerXboxEuDown: EsoStatus = {
   support: 'xbox',
   zone: 'eu',
   rawData: LiveServicesServerXboxEuDownRaw,
-  statusSince: moment(0),
+  statusSince: '1970-01-01T00:00:00.000Z',
 };
 
 const LiveServicesServerPsEuDownRaw: EsoStatusRawData = {
@@ -971,17 +487,6 @@ const LiveServicesServerPsEuDownRaw: EsoStatusRawData = {
   zone: 'eu',
   status: 'down',
 };
-const LiveServicesServerPsEuDownRawStringDate: CustomEsoStatusRawData = {
-  source: LiveServicesServerPsEuDownRaw.source,
-  raw: LiveServicesServerPsEuDownRaw.raw,
-  rawSlug: LiveServicesServerPsEuDownRaw.rawSlug,
-  rawStatus: LiveServicesServerPsEuDownRaw.rawStatus,
-  slug: LiveServicesServerPsEuDownRaw.slug,
-  type: LiveServicesServerPsEuDownRaw.type,
-  support: LiveServicesServerPsEuDownRaw.support,
-  zone: LiveServicesServerPsEuDownRaw.zone,
-  status: LiveServicesServerPsEuDownRaw.status,
-};
 const LiveServicesServerPsEuDown: EsoStatus = {
   slug: 'server_ps_eu',
   status: 'down',
@@ -989,7 +494,7 @@ const LiveServicesServerPsEuDown: EsoStatus = {
   support: 'ps',
   zone: 'eu',
   rawData: LiveServicesServerPsEuDownRaw,
-  statusSince: moment(0),
+  statusSince: '1970-01-01T00:00:00.000Z',
 };
 
 // 2024-10-02T10:06:03 => ServiceAlerts Xbox/Ps Down
@@ -1004,18 +509,7 @@ const ServiceAlertsServerPsNaDownRaw: EsoStatusRawData = {
   zone: 'na',
   status: 'down',
   rawDate: '2024.10.02 - 10:00 UTC (6:00 EDT)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 10)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-02T10:00:00.000Z'],
 };
 const ServiceAlertsServerXboxNaDownRaw: EsoStatusRawData = {
   source: 'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
@@ -1028,18 +522,7 @@ const ServiceAlertsServerXboxNaDownRaw: EsoStatusRawData = {
   zone: 'na',
   status: 'down',
   rawDate: '2024.10.02 - 10:00 UTC (6:00 EDT)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 10)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-02T10:00:00.000Z'],
 };
 const ServiceAlertsServerXboxEuDownRaw: EsoStatusRawData = {
   source: 'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
@@ -1052,18 +535,7 @@ const ServiceAlertsServerXboxEuDownRaw: EsoStatusRawData = {
   rawStatus: 'currently unavailable',
   rawSlug: 'The European Xbox megaserver',
   rawDate: '2024.10.02 - 10:00 UTC (6:00 EDT)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 10)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-02T10:00:00.000Z'],
 };
 const ServiceAlertsServerPsEuDownRaw: EsoStatusRawData = {
   source: 'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
@@ -1076,18 +548,7 @@ const ServiceAlertsServerPsEuDownRaw: EsoStatusRawData = {
   rawStatus: 'currently unavailable',
   rawSlug: 'The European PlayStation® megaserver',
   rawDate: '2024.10.02 - 10:00 UTC (6:00 EDT)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 10)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-02T10:00:00.000Z'],
 };
 
 // 2024-10-02T10:06:47 => ForumMessage Xbox/Ps Down
@@ -1101,28 +562,7 @@ const ForumMessageServerPsNaDownRaw: EsoStatusRawData = {
   status: 'down',
   rawSlug: 'PlayStation®: NA and EU megaservers for',
   rawDate: 'October 2, 6:00AM EDT (10:00 UTC) - 12:00PM EDT (16:00 UTC)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 10)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 16)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-02T10:00:00.000Z', '2024-10-02T16:00:00.000Z'],
   rawStatus: '[IN PROGRESS]',
 };
 const ForumMessageServerXboxNaDownRaw: EsoStatusRawData = {
@@ -1135,28 +575,7 @@ const ForumMessageServerXboxNaDownRaw: EsoStatusRawData = {
   status: 'down',
   rawSlug: 'Xbox: NA and EU megaservers for',
   rawDate: 'October 2, 6:00AM EDT (10:00 UTC) - 12:00PM EDT (16:00 UTC)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 10)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 16)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-02T10:00:00.000Z', '2024-10-02T16:00:00.000Z'],
   rawStatus: '[IN PROGRESS]',
 };
 const ForumMessageServerPsEuDownRaw: EsoStatusRawData = {
@@ -1169,28 +588,7 @@ const ForumMessageServerPsEuDownRaw: EsoStatusRawData = {
   status: 'down',
   rawSlug: 'PlayStation®: NA and EU megaservers for',
   rawDate: 'October 2, 6:00AM EDT (10:00 UTC) - 12:00PM EDT (16:00 UTC)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 10)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 16)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-02T10:00:00.000Z', '2024-10-02T16:00:00.000Z'],
   rawStatus: '[IN PROGRESS]',
 };
 const ForumMessageServerXboxEuDownRaw: EsoStatusRawData = {
@@ -1203,28 +601,7 @@ const ForumMessageServerXboxEuDownRaw: EsoStatusRawData = {
   status: 'down',
   rawSlug: 'Xbox: NA and EU megaservers for',
   rawDate: 'October 2, 6:00AM EDT (10:00 UTC) - 12:00PM EDT (16:00 UTC)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 10)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 16)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-02T10:00:00.000Z', '2024-10-02T16:00:00.000Z'],
   rawStatus: '[IN PROGRESS]',
 };
 
@@ -1239,28 +616,7 @@ const ForumMessagePtsServerXboxNaDownRaw: EsoStatusRawData = {
   status: 'down',
   rawSlug: 'Xbox: NA and EU megaservers for',
   rawDate: 'October 2, 6:00AM EDT (10:00 UTC) - 12:00PM EDT (16:00 UTC)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 10)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 16)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-02T10:00:00.000Z', '2024-10-02T16:00:00.000Z'],
   rawStatus: '[IN PROGRESS]',
 };
 const ForumMessagePtsServerXboxEuDownRaw: EsoStatusRawData = {
@@ -1273,28 +629,7 @@ const ForumMessagePtsServerXboxEuDownRaw: EsoStatusRawData = {
   status: 'down',
   rawSlug: 'Xbox: NA and EU megaservers for',
   rawDate: 'October 2, 6:00AM EDT (10:00 UTC) - 12:00PM EDT (16:00 UTC)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 10)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 16)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-02T10:00:00.000Z', '2024-10-02T16:00:00.000Z'],
   rawStatus: '[IN PROGRESS]',
 };
 const ForumMessagePtsServerPsNaDownRaw: EsoStatusRawData = {
@@ -1307,28 +642,7 @@ const ForumMessagePtsServerPsNaDownRaw: EsoStatusRawData = {
   status: 'down',
   rawSlug: 'PlayStation®: NA and EU megaservers for',
   rawDate: 'October 2, 6:00AM EDT (10:00 UTC) - 12:00PM EDT (16:00 UTC)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 10)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 16)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-02T10:00:00.000Z', '2024-10-02T16:00:00.000Z'],
   rawStatus: '[IN PROGRESS]',
 };
 const ForumMessagePtsServerPsEuDownRaw: EsoStatusRawData = {
@@ -1341,42 +655,17 @@ const ForumMessagePtsServerPsEuDownRaw: EsoStatusRawData = {
   status: 'down',
   rawSlug: 'PlayStation®: NA and EU megaservers for',
   rawDate: 'October 2, 6:00AM EDT (10:00 UTC) - 12:00PM EDT (16:00 UTC)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 10)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 16)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-02T10:00:00.000Z', '2024-10-02T16:00:00.000Z'],
   rawStatus: '[IN PROGRESS]',
 };
 
 // 2024-10-02T16:02:40 => LiveServices Xbox Up
 const LiveServicesServerXboxEuUpRaw: EsoStatusRawData =
   LiveServicesServerXboxEuInitialRaw;
-const LiveServicesServerXboxEuUpRawStringDate: CustomEsoStatusRawData =
-  LiveServicesServerXboxEuInitialRawStringDate;
 const LiveServicesServerXboxEuUp: EsoStatus = LiveServicesServerXboxEuInitial;
 
 const LiveServicesServerXboxNaUpRaw: EsoStatusRawData =
   LiveServicesServerXboxNaInitialRaw;
-const LiveServicesServerXboxNaUpRawStringDate: CustomEsoStatusRawData =
-  LiveServicesServerXboxNaInitialRawStringDate;
 const LiveServicesServerXboxNaUp: EsoStatus = LiveServicesServerXboxNaInitial;
 
 // 2024-10-02T16:07:38 => ForumMessage Xbox Up / Ps Extended
@@ -1390,28 +679,7 @@ const ForumMessageServerXboxNaUpRaw: EsoStatusRawData = {
   status: 'up',
   rawSlug: 'Xbox: NA and EU megaservers for',
   rawDate: 'October 2, 6:00AM EDT (10:00 UTC) - 12:00PM EDT (16:00 UTC)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 10)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 16)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-02T10:00:00.000Z', '2024-10-02T16:00:00.000Z'],
   rawStatus: '[COMPLETE]',
 };
 const ForumMessageServerPsEuExtendedRaw: EsoStatusRawData = {
@@ -1424,28 +692,7 @@ const ForumMessageServerPsEuExtendedRaw: EsoStatusRawData = {
   status: 'down',
   rawSlug: 'PlayStation®: NA and EU megaservers for',
   rawDate: 'October 2, 6:00AM EDT (10:00 UTC) - 4:00PM EDT (20:00 UTC)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 10)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 20)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-02T10:00:00.000Z', '2024-10-02T20:00:00.000Z'],
   rawStatus: '[EXTENDED]',
 };
 const ForumMessageServerXboxEuUpRaw: EsoStatusRawData = {
@@ -1458,28 +705,7 @@ const ForumMessageServerXboxEuUpRaw: EsoStatusRawData = {
   status: 'up',
   rawSlug: 'Xbox: NA and EU megaservers for',
   rawDate: 'October 2, 6:00AM EDT (10:00 UTC) - 12:00PM EDT (16:00 UTC)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 10)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 16)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-02T10:00:00.000Z', '2024-10-02T16:00:00.000Z'],
   rawStatus: '[COMPLETE]',
 };
 const ForumMessageServerPsNaExtendedRaw: EsoStatusRawData = {
@@ -1492,28 +718,7 @@ const ForumMessageServerPsNaExtendedRaw: EsoStatusRawData = {
   status: 'down',
   rawSlug: 'PlayStation®: NA and EU megaservers for',
   rawDate: 'October 2, 6:00AM EDT (10:00 UTC) - 4:00PM EDT (20:00 UTC)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 10)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 20)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-02T10:00:00.000Z', '2024-10-02T20:00:00.000Z'],
   rawStatus: '[EXTENDED]',
 };
 
@@ -1528,28 +733,7 @@ const ForumMessagePtsServerXboxEuUpRaw: EsoStatusRawData = {
   status: 'up',
   rawSlug: 'Xbox: NA and EU megaservers for',
   rawDate: 'October 2, 6:00AM EDT (10:00 UTC) - 12:00PM EDT (16:00 UTC)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 10)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 16)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-02T10:00:00.000Z', '2024-10-02T16:00:00.000Z'],
   rawStatus: '[COMPLETE]',
 };
 const ForumMessagePtsServerPsNaExtendedRaw: EsoStatusRawData = {
@@ -1562,28 +746,7 @@ const ForumMessagePtsServerPsNaExtendedRaw: EsoStatusRawData = {
   status: 'down',
   rawSlug: 'PlayStation®: NA and EU megaservers for',
   rawDate: 'October 2, 6:00AM EDT (10:00 UTC) - 4:00PM EDT (20:00 UTC)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 10)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 20)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-02T10:00:00.000Z', '2024-10-02T20:00:00.000Z'],
   rawStatus: '[EXTENDED]',
 };
 const ForumMessagePtsServerXboxNaUpRaw: EsoStatusRawData = {
@@ -1596,28 +759,7 @@ const ForumMessagePtsServerXboxNaUpRaw: EsoStatusRawData = {
   status: 'up',
   rawSlug: 'Xbox: NA and EU megaservers for',
   rawDate: 'October 2, 6:00AM EDT (10:00 UTC) - 12:00PM EDT (16:00 UTC)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 10)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 16)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-02T10:00:00.000Z', '2024-10-02T16:00:00.000Z'],
   rawStatus: '[COMPLETE]',
 };
 const ForumMessagePtsServerPsEuExtendedRaw: EsoStatusRawData = {
@@ -1630,28 +772,7 @@ const ForumMessagePtsServerPsEuExtendedRaw: EsoStatusRawData = {
   status: 'down',
   rawSlug: 'PlayStation®: NA and EU megaservers for',
   rawDate: 'October 2, 6:00AM EDT (10:00 UTC) - 4:00PM EDT (20:00 UTC)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 10)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 20)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-02T10:00:00.000Z', '2024-10-02T20:00:00.000Z'],
   rawStatus: '[EXTENDED]',
 };
 
@@ -1667,18 +788,7 @@ const ServiceAlertsServerXboxEuUpRaw: EsoStatusRawData = {
   rawStatus: 'currently available',
   rawSlug: 'The European Xbox megaserver',
   rawDate: '2024.10.02 - 16:00 UTC (12:00 EDT)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 16)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-02T16:00:00.000Z'],
 };
 const ServiceAlertsServerXboxNaUpRaw: EsoStatusRawData = {
   source: 'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
@@ -1691,32 +801,17 @@ const ServiceAlertsServerXboxNaUpRaw: EsoStatusRawData = {
   rawStatus: 'currently available',
   rawSlug: 'The North American Xbox megaserver',
   rawDate: '2024.10.02 - 16:00 UTC (12:00 EDT)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 16)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-02T16:00:00.000Z'],
 };
 
 // 2024-10-02T19:34:57 => LiveServices Ps Up
 const LiveServicesServerPsEuUpRaw: EsoStatusRawData =
   LiveServicesServerPsEuInitialRaw;
 const LiveServicesServerPsEuUp: EsoStatus = LiveServicesServerPsEuInitial;
-const LiveServicesServerPsEuUpRawStringDate: CustomEsoStatusRawData =
-  LiveServicesServerPsEuInitialRawStringDate;
 
 const LiveServicesServerPsNaUpRaw: EsoStatusRawData =
   LiveServicesServerPsNaInitialRaw;
 const LiveServicesServerPsNaUp: EsoStatus = LiveServicesServerPsNaInitial;
-const LiveServicesServerPsNaUpRawStringDate: CustomEsoStatusRawData =
-  LiveServicesServerPsNaInitialRawStringDate;
 
 // 2024-10-02T19:38:13 => ForumMessage Ps Up
 const ForumMessageServerPsEuUpRaw: EsoStatusRawData = {
@@ -1729,28 +824,7 @@ const ForumMessageServerPsEuUpRaw: EsoStatusRawData = {
   status: 'up',
   rawSlug: 'PlayStation®: NA and EU megaservers for',
   rawDate: 'October 2, 6:00AM EDT (10:00 UTC) - 12:00PM EDT (16:00 UTC)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 10)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 16)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-02T10:00:00.000Z', '2024-10-02T16:00:00.000Z'],
   rawStatus: '[COMPLETE]',
 };
 const ForumMessageServerPsNaUpRaw: EsoStatusRawData = {
@@ -1763,28 +837,7 @@ const ForumMessageServerPsNaUpRaw: EsoStatusRawData = {
   status: 'up',
   rawSlug: 'PlayStation®: NA and EU megaservers for',
   rawDate: 'October 2, 6:00AM EDT (10:00 UTC) - 12:00PM EDT (16:00 UTC)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 10)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 16)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-02T10:00:00.000Z', '2024-10-02T16:00:00.000Z'],
   rawStatus: '[COMPLETE]',
 };
 
@@ -1811,28 +864,7 @@ const ForumMessagePtsServerPsEuUpRaw: EsoStatusRawData = {
   status: 'up',
   rawSlug: 'PlayStation®: NA and EU megaservers for',
   rawDate: 'October 2, 6:00AM EDT (10:00 UTC) - 12:00PM EDT (16:00 UTC)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 10)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 16)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-02T10:00:00.000Z', '2024-10-02T16:00:00.000Z'],
   rawStatus: '[COMPLETE]',
 };
 const ForumMessagePtsServerPsNaUpRaw: EsoStatusRawData = {
@@ -1845,28 +877,7 @@ const ForumMessagePtsServerPsNaUpRaw: EsoStatusRawData = {
   status: 'up',
   rawSlug: 'PlayStation®: NA and EU megaservers for',
   rawDate: 'October 2, 6:00AM EDT (10:00 UTC) - 12:00PM EDT (16:00 UTC)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 10)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 16)
-      .set('minutes', 0)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-02T10:00:00.000Z', '2024-10-02T16:00:00.000Z'],
   rawStatus: '[COMPLETE]',
 };
 
@@ -1882,18 +893,7 @@ const ServiceAlertsServerPsNaUpRaw: EsoStatusRawData = {
   rawStatus: 'currently available',
   rawSlug: 'North American PlayStation® megaserver',
   rawDate: '2024.10.02 - 19:40 UTC (15:40 EDT)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 19)
-      .set('minutes', 40)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-02T19:40:00.000Z'],
 };
 const ServiceAlertsServerPsEuUpRaw: EsoStatusRawData = {
   source: 'https://help.elderscrollsonline.com/app/answers/detail/a_id/4320',
@@ -1906,18 +906,7 @@ const ServiceAlertsServerPsEuUpRaw: EsoStatusRawData = {
   rawStatus: 'currently available',
   rawSlug: 'The European PlayStation® megaserver',
   rawDate: '2024.10.02 - 19:40 UTC (15:40 EDT)',
-  dates: [
-    moment()
-      .utc()
-      .set('years', 2024)
-      .set('months', 10 - 1)
-      .set('date', 2)
-      .set('hours', 19)
-      .set('minutes', 40)
-      .set('seconds', 0)
-      .set('milliseconds', 0)
-      .utcOffset(0),
-  ],
+  dates: ['2024-10-02T19:40:00.000Z'],
 };
 
 const initial: Initial = {
@@ -2353,12 +1342,13 @@ const initial: Initial = {
       type: 'server',
       support: 'xbox',
       zone: 'na',
-      rawData: LiveServicesServerXboxNaInitialRawStringDate,
-      statusSince: moment(0).toISOString(),
+      rawData: LiveServicesServerXboxNaInitialRaw,
+      statusSince: '1970-01-01T00:00:00.000Z',
       maintenance: {
-        rawDataList: [ForumMessageServerXboxNaInitialRawStringDate],
-        beginnerAt: ForumMessageServerXboxNaInitialRawStringDate.dates[0],
-        endingAt: ForumMessageServerXboxNaInitialRawStringDate.dates[1],
+        rawDataList: [ForumMessageServerXboxNaInitialRaw],
+        beginnerAt: ForumMessageServerXboxNaInitialRaw.dates[0],
+        endingAt: ForumMessageServerXboxNaInitialRaw.dates[1],
+        plannedSince: '1970-01-01T00:00:00.000Z',
       },
     },
     {
@@ -2367,12 +1357,13 @@ const initial: Initial = {
       type: 'server',
       support: 'xbox',
       zone: 'eu',
-      rawData: LiveServicesServerXboxEuInitialRawStringDate,
-      statusSince: moment(0).toISOString(),
+      rawData: LiveServicesServerXboxEuInitialRaw,
+      statusSince: '1970-01-01T00:00:00.000Z',
       maintenance: {
-        rawDataList: [ForumMessageServerXboxEuInitialRawStringDate],
-        beginnerAt: ForumMessageServerXboxEuInitialRawStringDate.dates[0],
-        endingAt: ForumMessageServerXboxEuInitialRawStringDate.dates[1],
+        rawDataList: [ForumMessageServerXboxEuInitialRaw],
+        beginnerAt: ForumMessageServerXboxEuInitialRaw.dates[0],
+        endingAt: ForumMessageServerXboxEuInitialRaw.dates[1],
+        plannedSince: '1970-01-01T00:00:00.000Z',
       },
     },
     {
@@ -2381,12 +1372,13 @@ const initial: Initial = {
       type: 'server',
       support: 'ps',
       zone: 'na',
-      rawData: LiveServicesServerPsNaInitialRawStringDate,
-      statusSince: moment(0).toISOString(),
+      rawData: LiveServicesServerPsNaInitialRaw,
+      statusSince: '1970-01-01T00:00:00.000Z',
       maintenance: {
-        rawDataList: [ForumMessageServerPsNaInitialRawStringDate],
-        beginnerAt: ForumMessageServerPsNaInitialRawStringDate.dates[0],
-        endingAt: ForumMessageServerPsNaInitialRawStringDate.dates[1],
+        rawDataList: [ForumMessageServerPsNaInitialRaw],
+        beginnerAt: ForumMessageServerPsNaInitialRaw.dates[0],
+        endingAt: ForumMessageServerPsNaInitialRaw.dates[1],
+        plannedSince: '1970-01-01T00:00:00.000Z',
       },
     },
     {
@@ -2395,12 +1387,13 @@ const initial: Initial = {
       type: 'server',
       support: 'ps',
       zone: 'eu',
-      rawData: LiveServicesServerPsEuInitialRawStringDate,
-      statusSince: moment(0).toISOString(),
+      rawData: LiveServicesServerPsEuInitialRaw,
+      statusSince: '1970-01-01T00:00:00.000Z',
       maintenance: {
-        rawDataList: [ForumMessageServerPsEuInitialRawStringDate],
-        beginnerAt: ForumMessageServerPsEuInitialRawStringDate.dates[0],
-        endingAt: ForumMessageServerPsEuInitialRawStringDate.dates[1],
+        rawDataList: [ForumMessageServerPsEuInitialRaw],
+        beginnerAt: ForumMessageServerPsEuInitialRaw.dates[0],
+        endingAt: ForumMessageServerPsEuInitialRaw.dates[1],
+        plannedSince: '1970-01-01T00:00:00.000Z',
       },
     },
     {
@@ -2409,8 +1402,8 @@ const initial: Initial = {
       type: 'server',
       support: 'pc',
       zone: 'na',
-      rawData: LiveServicesServerPcNaInitialRawStringDate,
-      statusSince: moment(0).toISOString(),
+      rawData: LiveServicesServerPcNaInitialRaw,
+      statusSince: '1970-01-01T00:00:00.000Z',
     },
     {
       slug: 'server_pc_eu',
@@ -2418,8 +1411,8 @@ const initial: Initial = {
       type: 'server',
       support: 'pc',
       zone: 'eu',
-      rawData: LiveServicesServerPcEuInitialRawStringDate,
-      statusSince: moment(0).toISOString(),
+      rawData: LiveServicesServerPcEuInitialRaw,
+      statusSince: '1970-01-01T00:00:00.000Z',
     },
     {
       slug: 'server_pc_pts',
@@ -2427,8 +1420,8 @@ const initial: Initial = {
       type: 'server',
       support: 'pc',
       zone: 'pts',
-      rawData: LiveServicesServerPcPtsInitialRawStringDate,
-      statusSince: moment(0).toISOString(),
+      rawData: LiveServicesServerPcPtsInitialRaw,
+      statusSince: '1970-01-01T00:00:00.000Z',
     },
   ],
 };
@@ -2667,7 +1660,7 @@ const FirstLiveServicesDownLiveServices: Step = {
       typeId: initial.services[0].typeId,
       supportId: initial.services[0].supportId,
       zoneId: initial.services[0].zoneId,
-      rawData: JSON.stringify(LiveServicesServerXboxNaDownRaw), // Updated from LiveServicesServerXboxNaInitialRawStringDate
+      rawData: JSON.stringify(LiveServicesServerXboxNaDownRaw), // Updated from LiveServicesServerXboxNaInitialRaw
     },
     {
       id: initial.services[1].id,
@@ -2676,7 +1669,7 @@ const FirstLiveServicesDownLiveServices: Step = {
       typeId: initial.services[1].typeId,
       supportId: initial.services[1].supportId,
       zoneId: initial.services[1].zoneId,
-      rawData: JSON.stringify(LiveServicesServerXboxEuDownRaw), // Updated from LiveServicesServerXboxEuInitialRawStringDate
+      rawData: JSON.stringify(LiveServicesServerXboxEuDownRaw), // Updated from LiveServicesServerXboxEuInitialRaw
     },
     {
       id: initial.services[2].id,
@@ -2685,7 +1678,7 @@ const FirstLiveServicesDownLiveServices: Step = {
       typeId: initial.services[2].typeId,
       supportId: initial.services[2].supportId,
       zoneId: initial.services[2].zoneId,
-      rawData: JSON.stringify(LiveServicesServerPsNaDownRaw), // Updated from LiveServicesServerPsNaInitialRawStringDate
+      rawData: JSON.stringify(LiveServicesServerPsNaDownRaw), // Updated from LiveServicesServerPsNaInitialRaw
     },
     {
       id: initial.services[3].id,
@@ -2694,7 +1687,7 @@ const FirstLiveServicesDownLiveServices: Step = {
       typeId: initial.services[3].typeId,
       supportId: initial.services[3].supportId,
       zoneId: initial.services[3].zoneId,
-      rawData: JSON.stringify(LiveServicesServerPsEuDownRaw), // Updated from LiveServicesServerPsEuInitialRawStringDate
+      rawData: JSON.stringify(LiveServicesServerPsEuDownRaw), // Updated from LiveServicesServerPsEuInitialRaw
     },
     initial.services[4],
     initial.services[5],
@@ -2708,8 +1701,8 @@ const FirstLiveServicesDownLiveServices: Step = {
       type: initial.serviceControllerReturn[0].type,
       support: initial.serviceControllerReturn[0].support,
       zone: initial.serviceControllerReturn[0].zone,
-      rawData: LiveServicesServerXboxNaDownRawStringDate, // Updated from LiveServicesServerXboxNaInitialRawStringDate
-      statusSince: moment(0).toISOString(),
+      rawData: LiveServicesServerXboxNaDownRaw, // Updated from LiveServicesServerXboxNaInitialRaw
+      statusSince: '1970-01-01T00:00:00.000Z',
     },
     {
       slug: initial.serviceControllerReturn[1].slug,
@@ -2717,8 +1710,8 @@ const FirstLiveServicesDownLiveServices: Step = {
       type: initial.serviceControllerReturn[1].type,
       support: initial.serviceControllerReturn[1].support,
       zone: initial.serviceControllerReturn[1].zone,
-      rawData: LiveServicesServerXboxEuDownRawStringDate, // Updated from LiveServicesServerXboxEuInitialRawStringDate
-      statusSince: moment(0).toISOString(),
+      rawData: LiveServicesServerXboxEuDownRaw, // Updated from LiveServicesServerXboxEuInitialRaw
+      statusSince: '1970-01-01T00:00:00.000Z',
     },
     {
       slug: initial.serviceControllerReturn[2].slug,
@@ -2726,8 +1719,8 @@ const FirstLiveServicesDownLiveServices: Step = {
       type: initial.serviceControllerReturn[2].type,
       support: initial.serviceControllerReturn[2].support,
       zone: initial.serviceControllerReturn[2].zone,
-      rawData: LiveServicesServerPsNaDownRawStringDate, // Updated from LiveServicesServerPsNaInitialRawStringDate
-      statusSince: moment(0).toISOString(),
+      rawData: LiveServicesServerPsNaDownRaw, // Updated from LiveServicesServerPsNaInitialRaw
+      statusSince: '1970-01-01T00:00:00.000Z',
     },
     {
       slug: initial.serviceControllerReturn[3].slug,
@@ -2735,8 +1728,8 @@ const FirstLiveServicesDownLiveServices: Step = {
       type: initial.serviceControllerReturn[3].type,
       support: initial.serviceControllerReturn[3].support,
       zone: initial.serviceControllerReturn[3].zone,
-      rawData: LiveServicesServerPsEuDownRawStringDate, // Updated from LiveServicesServerPsEuInitialRawStringDate
-      statusSince: moment(0).toISOString(),
+      rawData: LiveServicesServerPsEuDownRaw, // Updated from LiveServicesServerPsEuInitialRaw
+      statusSince: '1970-01-01T00:00:00.000Z',
     },
     initial.serviceControllerReturn[4],
     initial.serviceControllerReturn[5],
@@ -3527,8 +2520,8 @@ const FirstLiveServicesUpLiveServices: Step = {
           .support,
       zone: FirstForumMessagePtsDownForumMessagePts.serviceControllerReturn[0]
         .zone,
-      rawData: LiveServicesServerXboxNaUpRawStringDate, // Updated from LiveServicesServerXboxNaInitialRawStringDate
-      statusSince: moment(0).toISOString(),
+      rawData: LiveServicesServerXboxNaUpRaw, // Updated from LiveServicesServerXboxNaInitialRaw
+      statusSince: '1970-01-01T00:00:00.000Z',
     },
     {
       slug: FirstForumMessagePtsDownForumMessagePts.serviceControllerReturn[1]
@@ -3541,8 +2534,8 @@ const FirstLiveServicesUpLiveServices: Step = {
           .support,
       zone: FirstForumMessagePtsDownForumMessagePts.serviceControllerReturn[1]
         .zone,
-      rawData: LiveServicesServerXboxEuUpRawStringDate, // Updated from LiveServicesServerXboxNaInitialRawStringDate
-      statusSince: moment(0).toISOString(),
+      rawData: LiveServicesServerXboxEuUpRaw, // Updated from LiveServicesServerXboxNaInitialRaw
+      statusSince: '1970-01-01T00:00:00.000Z',
     },
     FirstForumMessagePtsDownForumMessagePts.serviceControllerReturn[2],
     FirstForumMessagePtsDownForumMessagePts.serviceControllerReturn[3],
@@ -4309,8 +3302,8 @@ const FirstLiveServicesUp1LiveServices: Step = {
       support:
         FirstServiceAlertsUpServiceAlerts.serviceControllerReturn[2].support,
       zone: FirstServiceAlertsUpServiceAlerts.serviceControllerReturn[2].zone,
-      rawData: LiveServicesServerPsNaUpRawStringDate, // Updated from LiveServicesServerPsNaDownRawStringDate
-      statusSince: moment(0).toISOString(),
+      rawData: LiveServicesServerPsNaUpRaw, // Updated from LiveServicesServerPsNaDownRaw
+      statusSince: '1970-01-01T00:00:00.000Z',
     },
     {
       slug: FirstServiceAlertsUpServiceAlerts.serviceControllerReturn[3].slug,
@@ -4319,8 +3312,8 @@ const FirstLiveServicesUp1LiveServices: Step = {
       support:
         FirstServiceAlertsUpServiceAlerts.serviceControllerReturn[3].support,
       zone: FirstServiceAlertsUpServiceAlerts.serviceControllerReturn[3].zone,
-      rawData: LiveServicesServerPsEuUpRawStringDate, // Updated from LiveServicesServerPsEuDownRawStringDate
-      statusSince: moment(0).toISOString(),
+      rawData: LiveServicesServerPsEuUpRaw, // Updated from LiveServicesServerPsEuDownRaw
+      statusSince: '1970-01-01T00:00:00.000Z',
     },
     FirstServiceAlertsUpServiceAlerts.serviceControllerReturn[4],
     FirstServiceAlertsUpServiceAlerts.serviceControllerReturn[5],

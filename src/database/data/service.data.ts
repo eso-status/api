@@ -1,5 +1,4 @@
 import { EsoStatusRawData } from '@eso-status/types';
-import * as moment from 'moment';
 
 import { Service } from '../../resource/service/entities/service.entity';
 
@@ -255,18 +254,7 @@ export const serviceData: Service[] = [
       raw: ' />\n<p>2021.01.14 - 14:45 UTC (9:45 EST)</p>\n\n<p>The ESO Website is currently online.</p>\n\n',
       rawDate: ' />2021.01.14 - 14:45 UTC (9:45 EST)',
       slug: 'service_web_site',
-      dates: [
-        moment()
-          .utc()
-          .set('years', 2021)
-          .set('months', 1)
-          .set('date', 14)
-          .set('hours', 14)
-          .set('minutes', 45)
-          .set('seconds', 0)
-          .set('milliseconds', 0)
-          .utcOffset(0),
-      ],
+      dates: ['2021-01-14T14:45:00.000Z'],
       type: 'service',
       support: 'web',
       zone: 'site',
@@ -300,18 +288,7 @@ export const serviceData: Service[] = [
       raw: ' />\n<p>2021.01.03 - 23:00 UTC (18:00 EST)</p>\n\n<p>The ESO Forums are currently available.</p>\n\n',
       rawDate: ' />2021.01.03 - 23:00 UTC (18:00 EST)',
       slug: 'service_web_forum',
-      dates: [
-        moment()
-          .utc()
-          .set('years', 2021)
-          .set('months', 1)
-          .set('date', 3)
-          .set('hours', 23)
-          .set('minutes', 0)
-          .set('seconds', 0)
-          .set('milliseconds', 0)
-          .utcOffset(0),
-      ],
+      dates: ['2021-01-03T23:00:00.000Z'],
       type: 'service',
       support: 'web',
       zone: 'forum',
@@ -345,18 +322,7 @@ export const serviceData: Service[] = [
       raw: ' />\n<p>2021.01.03 - 23:00 UTC (18:00 EST)</p>\n\n<p>The Crown Store is currently available.</p>\n\n',
       rawDate: ' />2021.01.03 - 23:00 UTC (18:00 EST)',
       slug: 'service_store_crown',
-      dates: [
-        moment()
-          .utc()
-          .set('years', 2021)
-          .set('months', 1)
-          .set('date', 3)
-          .set('hours', 23)
-          .set('minutes', 0)
-          .set('seconds', 0)
-          .set('milliseconds', 0)
-          .utcOffset(0),
-      ],
+      dates: ['2021-01-03T23:00:00.000Z'],
       type: 'service',
       support: 'store',
       zone: 'crown',
@@ -390,18 +356,7 @@ export const serviceData: Service[] = [
       raw: ' />\n<p>2024.07.01 - 12:00 UTC (08:00 EDT)</p>\n\n<p>The North American megaservers are currently available.</p>\n\n<p>The ESO store and account system are currently available.</p>\n\n',
       rawDate: ' />2024.07.01 - 12:00 UTC (08:00 EDT)',
       slug: 'service_store_eso',
-      dates: [
-        moment()
-          .utc()
-          .set('years', 2024)
-          .set('months', 7)
-          .set('date', 1)
-          .set('hours', 12)
-          .set('minutes', 0)
-          .set('seconds', 0)
-          .set('milliseconds', 0)
-          .utcOffset(0),
-      ],
+      dates: ['2024-07-01T12:00:00.000Z'],
       type: 'service',
       support: 'store',
       zone: 'eso',
@@ -435,18 +390,7 @@ export const serviceData: Service[] = [
       raw: ' />\n<p>2024.07.01 - 12:00 UTC (08:00 EDT)</p>\n\n<p>The North American megaservers are currently available.</p>\n\n<p>The ESO store and account system are currently available.</p>\n\n',
       rawDate: ' />2024.07.01 - 12:00 UTC (08:00 EDT)',
       slug: 'service_system_account',
-      dates: [
-        moment()
-          .utc()
-          .set('years', 2024)
-          .set('months', 7)
-          .set('date', 1)
-          .set('hours', 12)
-          .set('minutes', 0)
-          .set('seconds', 0)
-          .set('milliseconds', 0)
-          .utcOffset(0),
-      ],
+      dates: ['2024-07-01T12:00:00.000Z'],
       type: 'service',
       support: 'system',
       zone: 'account',

@@ -1,4 +1,5 @@
-import { EsoStatus as CustomEsoStatus } from '../../src/interface/esoStatus.interface';
+import EsoStatus from '@eso-status/types';
+
 import { Archive } from '../../src/resource/archive/entities/archive.entity';
 import { Log } from '../../src/resource/log/entities/log.entity';
 import { Maintenance } from '../../src/resource/maintenance/entities/maintenance.entity';
@@ -9,5 +10,5 @@ export interface Initial {
   archives: Archive[];
   services: Service[];
   maintenances: Maintenance[];
-  serviceControllerReturn: CustomEsoStatus[];
+  serviceControllerReturn: EsoStatus[];
 }

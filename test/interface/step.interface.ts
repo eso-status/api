@@ -1,7 +1,9 @@
-import { EsoStatus, EsoStatusRawData, Slug } from '@eso-status/types';
+import EsoStatus, {
+  EsoStatusMaintenance,
+  EsoStatusRawData,
+  Slug,
+} from '@eso-status/types';
 
-import { EsoStatus as CustomEsoStatus } from '../../src/interface/esoStatus.interface';
-import { EsoStatusMaintenance as CustomEsoStatusMaintenance } from '../../src/interface/esoStatusMaintenance.interface';
 import { Archive } from '../../src/resource/archive/entities/archive.entity';
 import { Log } from '../../src/resource/log/entities/log.entity';
 import { Maintenance } from '../../src/resource/maintenance/entities/maintenance.entity';
@@ -13,11 +15,11 @@ export interface Step {
   connector: Connector;
   connectorData: EsoStatusRawData[];
   statusUpdateList: EsoStatus[];
-  maintenancePlannedList: CustomEsoStatusMaintenance[];
+  maintenancePlannedList: EsoStatusMaintenance[];
   maintenanceRemovedList: Slug[];
   logs: Log[];
   archives: Archive[];
   services: Service[];
   maintenances: Maintenance[];
-  serviceControllerReturn: CustomEsoStatus[];
+  serviceControllerReturn: EsoStatus[];
 }
